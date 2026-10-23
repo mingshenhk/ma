@@ -1,0 +1,11 @@
+analysis/extracted/
+analysis/private/
+analysis/*.zip
+work/
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.env
+!.env.example
+*.log

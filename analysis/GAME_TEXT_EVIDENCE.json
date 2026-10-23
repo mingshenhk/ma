@@ -1,0 +1,287 @@
+[
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 73,
+    "text": "[\"cn\"] = \"断勾卡血战麻将\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 142,
+    "text": "[\"cn\"] = \"四人断勾卡\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 187,
+    "text": "[\"cn\"] = \"斗十四\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 202,
+    "text": "[\"cn\"] = \"跑得快\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 263,
+    "text": "[\"cn\"] = \"红二十\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 264,
+    "text": "[\"name\"] = \"platehes\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 279,
+    "text": "[\"cn\"] = \"二人断勾卡\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 296,
+    "text": "[\"cn\"] = \"二人跑得快\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/models/dfex.lua",
+    "line": 313,
+    "text": "[\"cn\"] = \"红中断勾卡\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/ClientScene.lua",
+    "line": 342,
+    "text": "--断勾卡录像分文件"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/GameClientEngine.lua",
+    "line": 3622,
+    "text": "-- self:onWeChatInvited(\"快点子，断勾卡二缺一就等你了！[二人断勾卡]\",self.m_lCellScore)"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/GameClientEngine.lua",
+    "line": 3751,
+    "text": "self:onWeChatInvited(\"快点子，断勾卡三缺一就等你了！[红中断勾卡]\",self.m_lCellScore)"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/GameClientEngine.lua",
+    "line": 4340,
+    "text": "--断勾卡位置相反"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/GameClientEngine.lua",
+    "line": 3373,
+    "text": "self:onWeChatInvited(\"快点子，断勾卡二缺一就等你了！[断勾卡麻将]\",self.m_lCellScore)"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/GameClientEngineVideo.lua",
+    "line": 106,
+    "text": "print(\"断勾卡 录像 文件\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/GameClientEngineVideo.lua",
+    "line": 3505,
+    "text": "self:onWeChatInvited(\"快点子，断勾卡二缺一就等你了！[断勾卡麻将]\",self.m_lCellScore)"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/GameClientEngineVideo.lua",
+    "line": 3802,
+    "text": "--断勾卡位置相反"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/GameClientEngine.lua",
+    "line": 702,
+    "text": "-- print(\"***== 【跑得快】==[sub:\"..sub..\"]\"..cmd.MS_NAME[sub]..\" ***\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/GameClientEngine.lua",
+    "line": 1688,
+    "text": "-- info = \" 快点子，跑得快二缺一就等你了！[二人跑得快]\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/GameClientEngine.lua",
+    "line": 1494,
+    "text": "self:onWeChatInvited(\"快点子，我在斗十四开了房等你！！[斗十四]\",self.m_lCellScore)"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/GameClientEngineVideo.lua",
+    "line": 1745,
+    "text": "self:onWeChatInvited(\"快点子，我在斗十四开了房等你！！[斗十四]\",self.m_lCellScore)"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/GameClientEngine.lua",
+    "line": 730,
+    "text": "-- print(\"***== 【跑得快】==[sub:\"..sub..\"]\"..cmd.MS_NAME[sub]..\" ***\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/GameClientEngine.lua",
+    "line": 1765,
+    "text": "-- info = info..\" 快点子，跑得快\"..playerArray[self.m_wPlayerCount]..\"缺一就等你了！[跑得快]\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/BattleRecordView.lua",
+    "line": 92,
+    "text": "local gameName = \"跑得快\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/models/CMD_Game.lua",
+    "line": 2,
+    "text": "cmd.GAME_NAME \t\t\t\t= \"二人跑得快\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/BattleRecordView.lua",
+    "line": 91,
+    "text": "local gameName = \"跑得快\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/models/CMD_Game.lua",
+    "line": 2,
+    "text": "cmd.GAME_NAME \t\t\t\t= \"跑得快\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/GameListLayer.lua",
+    "line": 653,
+    "text": "local title     = \"风里雨里，我在断勾卡等你！得奖牌换豪礼，等啥子，整起撒。\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 33,
+    "text": "[57] = {10, 100, 500, 1000, 5000, 10000, 50000, 100000, 200000},\t\t--断勾卡"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 43,
+    "text": "[76] = {10, 100, 500, 1000, 2000, 5000,  10000, 20000,  50000, 100000},\t--跑得快"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 50,
+    "text": "[88] = {10, 100, 500, 1000, 2000, 5000,  10000, 20000,  50000, 100000},\t--红中宝"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 53,
+    "text": "[91] = {10, 100, 500, 1000, 2000, 5000,  10000, 20000,  50000, 100000}, --梅州红中宝"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 56,
+    "text": "[94] = {10, 100, 500, 1000, 5000, 10000, 50000, 100000, 200000}, \t\t--四人断勾卡"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 64,
+    "text": "[114] = {10, 100, 500, 1000, 5000, 10000, 50000, 100000, 200000}, \t\t--2人断勾卡"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 65,
+    "text": "[115] = {10, 100, 500, 1000, 5000, 10000, 50000, 100000, 200000}, \t\t--2人跑得快"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "line": 67,
+    "text": "[150] = {10, 100, 500, 1000, 5000, 10000, 50000, 100000, 200000}, \t\t--红中断勾卡"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/layer/GameClientView.lua",
+    "line": 527,
+    "text": "self._infoLabel[2]:setString(\"4个红中\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/layer/GameClientView.lua",
+    "line": 528,
+    "text": "self._infoLabel[3]:setString(\"红中癞子玩法\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/layer/GameClientView.lua",
+    "line": 529,
+    "text": "self._infoLabel[4]:setString(\"红中不可碰和杠\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/TableCard.lua",
+    "line": 91,
+    "text": "--红中前移"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleListLayer.lua",
+    "line": 27,
+    "text": "[57] = \" 快点子，断勾卡二缺一就等你了！[断勾卡麻将]\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/CreateConfigView.lua",
+    "line": 9,
+    "text": "跑得快 76 去除货币类型显示"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/CreateConfigView.lua",
+    "line": 416,
+    "text": "--特殊过滤跑得快不显示货币类型"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/CreateConfigView.lua",
+    "line": 768,
+    "text": "--跑得快 4人不显示 \"减牌方式\"玩法"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/AgeTips.lua",
+    "line": 7,
+    "text": "\"2）本游戏基于中国四川本土棋牌游戏（以“断勾卡血战麻将”为主）设计，剧情简单，没有基于\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+    "line": 46,
+    "text": "self._kindid = {88,88}                   --总排 大埔红中宝"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+    "line": 54,
+    "text": "\"大埔红中宝麻将奖牌排名。\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+    "line": 77,
+    "text": "self._kindid = {57,57}                   --总排 断勾卡"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+    "line": 85,
+    "text": "df.PLATFORM_NAME..\"游戏家园首届断勾卡争霸赛。\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Info.lua",
+    "line": 38,
+    "text": "[57] = \"断勾卡\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Info.lua",
+    "line": 41,
+    "text": "[57] = \" 快点子，断勾卡二缺一就等你了！[断勾卡麻将]\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Info.lua",
+    "line": 43,
+    "text": "[95] = \"快点子，我在斗十四开了房等你！！[斗十四]\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MemberDlg.lua",
+    "line": 288,
+    "text": "self.m_OperateFrame:showAlertDlg(\"因斗十四分值过大。\\n将对分值除以100倍计算。\\n仅为统计需要，不影响实际约战分数。\")"
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_PlayRule.lua",
+    "line": 7,
+    "text": "[57] = \"断勾卡\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_RoomMember.lua",
+    "line": 6,
+    "text": "[57] = \" 快点子，断勾卡二缺一就等你了！[断勾卡麻将]\","
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_RoomMember.lua",
+    "line": 8,
+    "text": "[95] = \"快点子，我在斗十四开了房等你！！[斗十四]\""
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBalance.lua",
+    "line": 45,
+    "text": "self.m_OperateFrame:showAlertDlg(\"因斗十四分值过大。\\n将对分值除以100倍计算。\\n仅为统计需要，不影响实际约战分数。\")"
+  }
+]

@@ -1,0 +1,5470 @@
+[
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/ClientScene.lua",
+    "resources": [
+      "background2.png",
+      "plaza/res/sound/background.mp3"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/ClientScene.lua",
+        "line": 104,
+        "function": "ClientScene:onCreate"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/CheckBox.lua",
+    "resources": [
+      "bobo/total_box_num_new.png",
+      "checkbox/allin_background.png",
+      "checkbox/bt_allin_1.png",
+      "checkbox/bt_giveup_1.png",
+      "checkbox/bt_giveup_2.png",
+      "checkbox/bt_noallin_1.png",
+      "checkbox/bt_noallin_2.png",
+      "checkbox/bt_nogiveup_1.png",
+      "checkbox/bt_nogiveup_2.png",
+      "checkbox/giveup_background.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/CheckBox.lua",
+        "line": 5,
+        "function": "CheckBox:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/CheckBox.lua",
+        "line": 57,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GamePlayerLayer.lua",
+    "resources": [
+      "alpha.png",
+      "user/num_userscore_new.png",
+      "user/pic_user_head_box.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GamePlayerLayer.lua",
+        "line": 3,
+        "function": "GamePlayerLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GamePlayerLayer.lua",
+        "line": 58,
+        "function": "GamePlayerLayer:onClickEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GameViewLayer.lua",
+    "resources": [
+      "Battle/flag_room_order.png",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "action/action_fire.png",
+      "action/action_liuju.png",
+      "action/air_operate.png",
+      "action/card_type_bg.png",
+      "action/operate_add.png",
+      "action/operate_case.png",
+      "action/operate_follow.png",
+      "action/operate_giveup.png",
+      "action/operate_knock.png",
+      "action/tip_comare_head.png",
+      "action/tip_comare_tail.png",
+      "addscore/bt_add_1.png",
+      "addscore/bt_score_cancle_1.png",
+      "addscore/bt_score_cancle_2.png",
+      "addscore/bt_score_confirm_1.png",
+      "addscore/bt_score_confirm_2.png",
+      "addscore/bt_sub_1.png",
+      "addscore/pic_addscore_background.png",
+      "addscore/pic_progress_background.png",
+      "alpha.png",
+      "bg_tips.png",
+      "bobo/bobo_value_box.png",
+      "bobo/bt_confirm_1.png",
+      "bobo/bt_confirm_2.png",
+      "bobo/bt_score_add.png",
+      "bobo/bt_score_sub.png",
+      "bobo/pic_bobo_background.png",
+      "bobo/pic_bobo_bar.png",
+      "bobo/pic_bobo_progressbg.png",
+      "bobo/sprite_bar_background.png",
+      "bobo/sprite_bobo_max.png",
+      "bobo/sprite_bobo_min.png",
+      "bobo/sprite_bobo_title.png",
+      "bobo/total_box_num_new.png",
+      "bobo_state_finish.png",
+      "bobo_state_ing.png",
+      "bobo_user_box.png",
+      "bobo_user_num_new.png",
+      "bt_add_1.png",
+      "bt_add_2.png",
+      "bt_add_3.png",
+      "bt_cease_1.png",
+      "bt_cease_2.png",
+      "bt_cease_3.png",
+      "bt_change_desk_1.png",
+      "bt_change_desk_2.png",
+      "bt_follow_1.png",
+      "bt_follow_2.png",
+      "bt_follow_3.png",
+      "bt_invite_1.png",
+      "bt_invite_2.png",
+      "bt_knock_1.png",
+      "bt_knock_2.png",
+      "bt_knock_3.png",
+      "bt_share_1.png",
+      "bt_share_2.png",
+      "bt_start_1.png",
+      "bt_start_2.png",
+      "bt_throw_1.png",
+      "bt_throw_2.png",
+      "bt_throw_3.png",
+      "chat/chat_left_bg.png",
+      "chat/chat_right_bg.png",
+      "chip/chip_1.png",
+      "chip/chip_10.png",
+      "chip/chip_100.png",
+      "chip/chip_1000.png",
+      "chip/chip_5.png",
+      "chip/chip_50.png",
+      "chip/chip_500.png",
+      "chip/chip_blue.png",
+      "chip/chip_green.png",
+      "chip/chip_orange.png",
+      "chip/chip_purple.png",
+      "chip/chip_red.png",
+      "chip_user_box.png",
+      "gameend_score_lost_new.png",
+      "gameend_score_win_new.png",
+      "lefttop/battery_05.png",
+      "lefttop/bt_top_exit_1.png",
+      "lefttop/bt_top_setting_1.png",
+      "lefttop/info_background_2.png",
+      "lefttop/info_button_1.png",
+      "lefttop/info_button_2.png",
+      "lefttop/info_button_3.png",
+      "lefttop/info_button_4.png",
+      "lefttop/info_button_n_1.png",
+      "lefttop/info_button_n_2.png",
+      "lefttop/info_button_n_3.png",
+      "lefttop/info_button_n_4.png",
+      "lefttop/number_basescore.png",
+      "lefttop/number_counttime.png",
+      "lefttop/number_roomid.png",
+      "lefttop/pic_word_basescore.png",
+      "lefttop/pic_word_gamecount.png",
+      "lefttop/pic_word_gametime.png",
+      "lefttop/pic_word_roomid.png",
+      "num_center_time.png",
+      "num_chip_score_new.png",
+      "opencard/bt_open_card_1.png",
+      "opencard/bt_open_card_2.png",
+      "opencard/bt_open_card_3.png",
+      "opencard/open_tip_left.png",
+      "opencard/open_tip_right.png",
+      "opencard/open_tip_word.png",
+      "opencard/pic_head_card_background.png",
+      "opencard/pic_select_card_finish.png",
+      "opencard/pic_select_card_ing.png",
+      "opencard/user_giveup_card.png",
+      "pic_background.png",
+      "pic_background_desk.png",
+      "pic_bank_flag.png",
+      "pic_cant_play_tip.png",
+      "pic_light.png",
+      "pic_logo.png",
+      "pic_user_no_chip.png",
+      "pic_zhunbei_hand.png",
+      "sound/HIT_CARD.wav",
+      "sound/MOVE_GOLD.wav",
+      "sound/SEND_CARD.wav",
+      "sound/SHOW_HAND.wav",
+      "sound/game_lost_1.wav",
+      "sound/game_win_1.wav",
+      "specialcard_six.png",
+      "specialcard_ten.png",
+      "specialcard_tip.png",
+      "total_score_num_new.png",
+      "total_score_word.png",
+      "trustee/bt_cancleTrust_1.png",
+      "trustee/bt_cancleTrust_2.png",
+      "trustee/dot_1.png",
+      "trustee/offline_bg.png",
+      "trustee/pic_roboting_bg.png",
+      "trustee/pic_roboting_word.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GameViewLayer.lua",
+        "line": 162,
+        "function": "GameViewLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GameViewLayer.lua",
+        "line": 817,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/GameViewLayer.lua",
+        "line": 2715,
+        "function": "GameViewLayer:OnButtonClickEventListener"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/ProgressClock.lua",
+    "resources": [
+      "user/progress1.png",
+      "user/progress2.png",
+      "user/progressex.png",
+      "user/progressex2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/chexuan/src/layer/ProgressClock.lua",
+        "line": 21,
+        "function": "ProgressClock:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/BattleRecordView.lua",
+    "resources": [
+      "Head/face_nobody.png",
+      "Head/face_stencil.png",
+      "battle_num_fail.png",
+      "battle_num_win.png",
+      "battle_userframe.png",
+      "bt_battle_result.png",
+      "end/battle_flag_winner.png",
+      "end/battle_txt_end.png",
+      "end/game_btn_close.png",
+      "end/game_btn_share.png",
+      "game_background_1.png",
+      "game_background_2.png",
+      "game_btn_copy.png",
+      "game_num_cellscore.png",
+      "game_num_table.png",
+      "game_word_cellscore.png",
+      "game_word_numbers.png",
+      "game_word_tableNum.png",
+      "game_word_time.png",
+      "yz_num_count.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/BattleRecordView.lua",
+        "line": 22,
+        "function": "BattleRecordView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GameClientView.lua",
+    "resources": [
+      "Battle/flag_room_order.png",
+      "GAME_LOSE.mp3",
+      "GAME_SEND_CAED.mp3",
+      "GAME_WIN.mp3",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "Head/face_x_00.png",
+      "Option/text_skin.png",
+      "SHUNZI.mp3",
+      "UserInfo/bt_choose_0.png",
+      "UserInfo/bt_choose_1.png",
+      "animation/game_action_air_1.png",
+      "animation/game_action_air_bg.png",
+      "animation/game_action_bomb.png",
+      "animation/game_action_close.png",
+      "animation/game_action_liandui.png",
+      "animation/game_action_shunzi.png",
+      "animation/game_action_three.png",
+      "bg_tips.png",
+      "bt_cancleTrust_1.png",
+      "bt_desk.png",
+      "bt_invited.png",
+      "bt_ready.png",
+      "cbt_choose_no.png",
+      "cbt_choose_yes.png",
+      "chat/chat_left_bg.png",
+      "chat/chat_right_bg.png",
+      "clock_flag.png",
+      "dot_0.png",
+      "end/game_end_ani_bg.png",
+      "end/game_end_ani_win.png",
+      "game_action_alert_1.png",
+      "game_back_1.png",
+      "game_back_2.png",
+      "game_num_cellscore.png",
+      "game_num_multip.png",
+      "game_num_table.png",
+      "game_txt_report.png",
+      "game_word_cellscore.png",
+      "game_word_multple.png",
+      "game_word_numbers.png",
+      "game_word_tableNum.png",
+      "game_word_time.png",
+      "info_background_2.png",
+      "info_button_1.png",
+      "info_button_2.png",
+      "info_button_3.png",
+      "info_button_4.png",
+      "match/mt_info_num.png",
+      "match/mt_word_count_1.png",
+      "match/mt_word_promote1.png",
+      "match/mt_word_promote2.png",
+      "match/mt_word_promote3.png",
+      "match/mt_word_promote4.png",
+      "match/mt_word_promote5.png",
+      "match/mt_word_promote6.png",
+      "match/mt_word_score1.png",
+      "match/mt_word_score2.png",
+      "number_cardback.png",
+      "number_clock.png",
+      "operate/game_btn_close.png",
+      "operate/game_btn_noclose.png",
+      "operate/game_btn_outcard.png",
+      "operate/game_btn_tip.png",
+      "operate/game_txt_tip1.png",
+      "operate/game_txt_tip2.png",
+      "operate/game_word_pass.png",
+      "text_changebg.png",
+      "trustee/dot_1.png",
+      "trustee/offline_bg.png",
+      "trustee/pic_roboting_bg.png",
+      "trustee/pic_roboting_word.png",
+      "yz_num_count.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GameClientView.lua",
+        "line": 112,
+        "function": "GameClientView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GameClientView.lua",
+        "line": 987,
+        "function": "GameClientView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GamePlayerLayer.lua",
+    "resources": [
+      "ga_pic_zhunbei_hand.png",
+      "head_back_1.png",
+      "pic_hight_box.png",
+      "pic_userinfo_facelight.png",
+      "userinfo/num_userscore_1.png",
+      "userinfo/num_userscore_2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GamePlayerLayer.lua",
+        "line": 3,
+        "function": "GamePlayerLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GameTopInfoView.lua",
+    "resources": [
+      "battery_05.png",
+      "game_menu_back_0.png",
+      "game_menu_menu_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/GameTopInfoView.lua",
+        "line": 16,
+        "function": "GameTopInfoView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/NotifyView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/NotifyView.lua",
+        "line": 6,
+        "function": "NotifyView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/ScoreView.lua",
+    "resources": [
+      "Head/face_stencil.png",
+      "Head/face_x_00.png",
+      "end/game_btn_change.png",
+      "end/game_btn_close.png",
+      "end/game_btn_continue.png",
+      "end/game_end_txt_close1.png",
+      "end/game_end_txt_close2.png",
+      "end/game_flag_fail.png",
+      "end/game_flag_peace.png",
+      "end/game_flag_win.png",
+      "end/game_txt_bomb.png",
+      "end/game_txt_card.png",
+      "end/game_txt_runfaset.png",
+      "end/game_txt_score.png",
+      "end/game_txt_user.png",
+      "game_background_1.png",
+      "game_btn_share.png",
+      "game_end_closebg.png",
+      "game_num_boom.png",
+      "game_num_cardnum.png",
+      "game_num_fail.png",
+      "game_num_win.png",
+      "game_userframe.png",
+      "userinfo/num_userscore_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/errunfast/src/layer/ScoreView.lua",
+        "line": 23,
+        "function": "ScoreView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GameEnd.lua",
+    "resources": [
+      "bt_continue_1.png",
+      "bt_exit_ex_1.png",
+      "bt_share_1.png",
+      "end/background.png",
+      "end/item_bg.png",
+      "end/item_bg_2.png",
+      "end/item_face_bg.png",
+      "end/num_score_lost.png",
+      "end/num_score_win.png",
+      "end/pic_flag_lost.png",
+      "end/pic_flag_peace.png",
+      "end/pic_flag_win.png",
+      "end/pic_hutype_dihu.png",
+      "end/pic_hutype_heihu.png",
+      "end/pic_hutype_honghu.png",
+      "end/pic_hutype_hu.png",
+      "end/pic_hutype_tianhu.png",
+      "pic_card_light.png",
+      "userinfo/pic_userinfo_bao.png",
+      "userinfo/pic_userinfo_piao.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GameEnd.lua",
+        "line": 10,
+        "function": "GameEnd:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GameEnd.lua",
+        "line": 326,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GamePlayerLayer.lua",
+    "resources": [
+      "userinfo/num_point.png",
+      "userinfo/num_userscore_1.png",
+      "userinfo/num_userscore_2.png",
+      "userinfo/pic_user_head_box.png",
+      "userinfo/pic_user_head_box2.png",
+      "userinfo/pic_userinfo_bao.png",
+      "userinfo/pic_userinfo_facelight.png",
+      "userinfo/pic_userinfo_piao.png",
+      "userinfo/pic_userinfo_point.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GamePlayerLayer.lua",
+        "line": 3,
+        "function": "GamePlayerLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GamePlayerLayer.lua",
+        "line": 114,
+        "function": "GamePlayerLayer:onClickEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GameViewLayer.lua",
+    "resources": [
+      "Battle/flag_room_order.png",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "alpha.png",
+      "bg_tips.png",
+      "bt_cancleTrust_1.png",
+      "bt_change_desk_1.png",
+      "bt_exit_1.png",
+      "bt_heartip_1.png",
+      "bt_invited_1.png",
+      "bt_message_1.png",
+      "bt_op_an_1.png",
+      "bt_op_bao_1.png",
+      "bt_op_chi_1.png",
+      "bt_op_hu_1.png",
+      "bt_op_la_1.png",
+      "bt_op_pass_1.png",
+      "bt_op_piao_1.png",
+      "bt_ready_1.png",
+      "bt_score_1.png",
+      "bt_set_1.png",
+      "bt_top_box_1.png",
+      "bt_top_box_3.png",
+      "bt_trustee_1.png",
+      "chat/chat_left_bg.png",
+      "chat/chat_right_bg.png",
+      "dot_1.png",
+      "lefttop/battery_05.png",
+      "lefttop/info_background_2.png",
+      "lefttop/info_button_1.png",
+      "lefttop/info_button_2.png",
+      "lefttop/info_button_3.png",
+      "lefttop/info_button_4.png",
+      "lefttop/number_basescore.png",
+      "lefttop/number_counttime.png",
+      "lefttop/number_roomid.png",
+      "lefttop/pic_word_basescore.png",
+      "lefttop/pic_word_gamecount.png",
+      "lefttop/pic_word_gametime.png",
+      "lefttop/pic_word_roomid.png",
+      "num_handcard_count.png",
+      "num_left_card.png",
+      "num_timer.png",
+      "out_line.png",
+      "pic_9_operate_arr.png",
+      "pic_9_operate_bg.png",
+      "pic_background.png",
+      "pic_card_heap.png",
+      "pic_card_heap_card.png",
+      "pic_card_light.png",
+      "pic_roboting_bg.png",
+      "pic_roboting_word.png",
+      "pic_slidertip_arrow.png",
+      "pic_slidertip_finger.png",
+      "pic_slidertip_word.png",
+      "pic_top_buttonbg.png",
+      "pic_userinfo_banker.png",
+      "pic_userinfo_owner.png",
+      "pic_zhunbei_hand.png",
+      "sound/audio_button_click.mp3",
+      "sound/game_warn.wav",
+      "timer_bg.png",
+      "trustee/offline_bg.png",
+      "userinfo/pic_userinfo_piaoing.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GameViewLayer.lua",
+        "line": 100,
+        "function": "GameViewLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/GameViewLayer.lua",
+        "line": 1763,
+        "function": "GameViewLayer:OnButtonClickEventListener"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/OperateExtra.lua",
+    "resources": [
+      "pic_9_operate_arr.png",
+      "pic_9_operate_bg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/OperateExtra.lua",
+        "line": 4,
+        "function": "OperateExtra:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/OperateExtra.lua",
+        "line": 114,
+        "function": "OperateExtra:OnButtonClickEventListener"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/QuickChatView.lua",
+    "resources": [
+      "game_talk_bg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/platedss/src/layer/QuickChatView.lua",
+        "line": 20,
+        "function": "QuickChatView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/BattleRecordView.lua",
+    "resources": [
+      "Head/face_nobody.png",
+      "Head/face_stencil.png",
+      "battle_num_fail.png",
+      "battle_num_win.png",
+      "battle_userframe.png",
+      "bt_battle_result.png",
+      "end/battle_flag_winner.png",
+      "end/battle_txt_end.png",
+      "end/game_btn_close.png",
+      "end/game_btn_share.png",
+      "game_background_1.png",
+      "game_background_2.png",
+      "game_btn_copy.png",
+      "game_num_cellscore.png",
+      "game_num_table.png",
+      "game_word_cellscore.png",
+      "game_word_numbers.png",
+      "game_word_tableNum.png",
+      "game_word_time.png",
+      "yz_num_count.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/BattleRecordView.lua",
+        "line": 22,
+        "function": "BattleRecordView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GameClientView.lua",
+    "resources": [
+      "Battle/flag_room_order.png",
+      "GAME_LOSE.mp3",
+      "GAME_SEND_CAED.mp3",
+      "GAME_WIN.mp3",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "Head/face_x_00.png",
+      "Option/text_skin.png",
+      "SHUNZI.mp3",
+      "UserInfo/bt_choose_0.png",
+      "UserInfo/bt_choose_1.png",
+      "animation/game_action_air_1.png",
+      "animation/game_action_air_bg.png",
+      "animation/game_action_bomb.png",
+      "animation/game_action_close.png",
+      "animation/game_action_liandui.png",
+      "animation/game_action_shunzi.png",
+      "animation/game_action_three.png",
+      "bg_tips.png",
+      "bt_cancleTrust_1.png",
+      "bt_desk.png",
+      "bt_invited.png",
+      "bt_ready.png",
+      "cbt_choose_no.png",
+      "cbt_choose_yes.png",
+      "chat/chat_left_bg.png",
+      "chat/chat_right_bg.png",
+      "clock_flag.png",
+      "dot_0.png",
+      "end/game_end_ani_bg.png",
+      "end/game_end_ani_win.png",
+      "game_action_alert_1.png",
+      "game_back_1.png",
+      "game_back_2.png",
+      "game_num_cellscore.png",
+      "game_num_multip.png",
+      "game_num_table.png",
+      "game_txt_report.png",
+      "game_word_cellscore.png",
+      "game_word_multple.png",
+      "game_word_numbers.png",
+      "game_word_tableNum.png",
+      "game_word_time.png",
+      "info_background_2.png",
+      "info_button_1.png",
+      "info_button_2.png",
+      "info_button_3.png",
+      "info_button_4.png",
+      "match/mt_info_num.png",
+      "match/mt_word_count_1.png",
+      "match/mt_word_promote1.png",
+      "match/mt_word_promote2.png",
+      "match/mt_word_promote3.png",
+      "match/mt_word_promote4.png",
+      "match/mt_word_promote5.png",
+      "match/mt_word_promote6.png",
+      "match/mt_word_score1.png",
+      "match/mt_word_score2.png",
+      "number_cardback.png",
+      "number_clock.png",
+      "operate/game_btn_close.png",
+      "operate/game_btn_noclose.png",
+      "operate/game_btn_outcard.png",
+      "operate/game_btn_tip.png",
+      "operate/game_txt_tip1.png",
+      "operate/game_txt_tip2.png",
+      "operate/game_word_pass.png",
+      "text_changebg.png",
+      "trustee/dot_1.png",
+      "trustee/offline_bg.png",
+      "trustee/pic_roboting_bg.png",
+      "trustee/pic_roboting_word.png",
+      "yz_num_count.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GameClientView.lua",
+        "line": 119,
+        "function": "GameClientView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GameClientView.lua",
+        "line": 1074,
+        "function": "GameClientView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GamePlayerLayer.lua",
+    "resources": [
+      "ga_pic_zhunbei_hand.png",
+      "head_back_1.png",
+      "pic_hight_box.png",
+      "pic_userinfo_facelight.png",
+      "userinfo/num_userscore_1.png",
+      "userinfo/num_userscore_2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GamePlayerLayer.lua",
+        "line": 3,
+        "function": "GamePlayerLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GameTopInfoView.lua",
+    "resources": [
+      "battery_05.png",
+      "game_menu_back_0.png",
+      "game_menu_menu_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/GameTopInfoView.lua",
+        "line": 16,
+        "function": "GameTopInfoView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/NotifyView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/NotifyView.lua",
+        "line": 6,
+        "function": "NotifyView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/ScoreView.lua",
+    "resources": [
+      "Head/face_stencil.png",
+      "Head/face_x_00.png",
+      "end/game_btn_change.png",
+      "end/game_btn_close.png",
+      "end/game_btn_continue.png",
+      "end/game_end_txt_close1.png",
+      "end/game_end_txt_close2.png",
+      "end/game_flag_fail.png",
+      "end/game_flag_peace.png",
+      "end/game_flag_win.png",
+      "end/game_txt_bomb.png",
+      "end/game_txt_card.png",
+      "end/game_txt_runfaset.png",
+      "end/game_txt_score.png",
+      "end/game_txt_user.png",
+      "game_background_1.png",
+      "game_btn_share.png",
+      "game_end_closebg.png",
+      "game_num_boom.png",
+      "game_num_cardnum.png",
+      "game_num_fail.png",
+      "game_num_win.png",
+      "game_userframe.png",
+      "userinfo/num_userscore_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/recreational/runfast/src/layer/ScoreView.lua",
+        "line": 23,
+        "function": "ScoreView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameModel.lua",
+    "resources": [
+      "Dismiss/bt_dismiss_0.png",
+      "Dismiss/bt_dismiss_1.png",
+      "General/ani_speak_1.png",
+      "General/bt_speak_0.png",
+      "General/bt_speak_1.png",
+      "General/game_battle_frame.png",
+      "General/game_battle_frame_new.png",
+      "General/game_battle_gradebtn_0.png",
+      "General/game_battle_gradebtn_1.png",
+      "General/speak_bg.png",
+      "General/speak_pro.png",
+      "General/speak_pro_point.png",
+      "General/speak_tips.png",
+      "plaza/res/Match/bt_match_rank_1.png",
+      "plaza/res/Match/bt_match_rank_2.png",
+      "plaza/res/chat/bt_showchat_0.png",
+      "plaza/res/chat/bt_showchat_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameModel.lua",
+        "line": 28,
+        "function": "GameModel:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer.lua",
+    "resources": [
+      "Battle/Score/bt_session_0.png",
+      "Battle/Score/bt_wechat_0.png",
+      "PlazaShare/bt_shareSession_1.png",
+      "PlazaShare/bt_shareWechat_1.png",
+      "PlazaShare/bt_shareXianLiao_1.png",
+      "PlazaShare/bt_share_impl.png",
+      "scale_tmp_share_gameshare.jpg"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer.lua",
+        "line": 5,
+        "function": "GameShareLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer.lua",
+        "line": 10,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer.lua",
+        "line": 60,
+        "function": "GameShareLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer_v1.lua",
+    "resources": [
+      "Battle/Score/bt_session_0.png",
+      "Battle/Score/bt_wechat_0.png",
+      "General/background_share.png",
+      "General/num_share_score_lose.png",
+      "General/num_share_score_win.png",
+      "Head/face_nobody.png",
+      "Head/face_stencil.png",
+      "Head/face_x_00.png",
+      "frame_share.png",
+      "logo_girl.png",
+      "share_code.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer_v1.lua",
+        "line": 5,
+        "function": "GameShareLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer_v1.lua",
+        "line": 13,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer_v1.lua",
+        "line": 64,
+        "function": "onTouchEx"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameShareLayer_v1.lua",
+        "line": 77,
+        "function": "GameShareLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameUserInfoLayer.lua",
+    "resources": [
+      "Head/face_nobody.png",
+      "Head/face_stencil.png",
+      "gamegps/back_frame_0.png",
+      "gamegps/bt_close.png",
+      "gamegps/face_frame_fn.png",
+      "gamegps/flg_gps_1.png",
+      "gamegps/num_dis_green.png",
+      "gamegps/pop_background_2.png",
+      "gamegps/pop_background_5.png",
+      "gamegps/warn_tip.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameUserInfoLayer.lua",
+        "line": 11,
+        "function": "GameUserInfoLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/GameUserInfoLayer.lua",
+        "line": 69,
+        "function": "GameUserInfoLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/SysExitGameLayer.lua",
+    "resources": [
+      "systembox/systembox_bg.png",
+      "systembox/systembox_bg_title.png",
+      "systembox/systembox_bt_cancle.png",
+      "systembox/systembox_bt_confirm.png",
+      "systembox/systembox_title.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/SysExitGameLayer.lua",
+        "line": 10,
+        "function": "SysExitGameLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/SysExitGameLayer.lua",
+        "line": 59,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/gamebase/SysExitGameLayer.lua",
+        "line": 76,
+        "function": "SysExitGameLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchScene.lua",
+    "resources": [
+      "#match_title.png",
+      "plaza/res/match_plaza.plist",
+      "plaza/res/match_plaza.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchScene.lua",
+        "line": 24,
+        "function": "CMatchScene:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchSetting.lua",
+    "resources": [
+      "#game_clock_num_0.png",
+      "#game_clock_num_1.png",
+      "#game_clock_num_2.png",
+      "#game_clock_num_3.png",
+      "#game_clock_num_4.png",
+      "#game_clock_num_5.png",
+      "#game_clock_num_6.png",
+      "#game_clock_num_7.png",
+      "#game_clock_num_8.png",
+      "#game_clock_num_9.png",
+      "#game_clock_num_point.png",
+      "#game_match_pop_revive.png",
+      "#game_match_slider_0.png",
+      "#game_match_slider_1.png",
+      "#game_match_title_frame_1.png",
+      "#game_num_match_-.png",
+      "#game_num_match_0.png",
+      "#game_num_match_1.png",
+      "#game_num_match_2.png",
+      "#game_num_match_3.png",
+      "#game_num_match_4.png",
+      "#game_num_match_5.png",
+      "#game_num_match_6.png",
+      "#game_num_match_7.png",
+      "#game_num_match_8.png",
+      "#game_num_match_9.png",
+      "#game_num_match_a.png",
+      "#game_num_match_m.png",
+      "#game_num_match_r.png",
+      "#game_num_match_x.png",
+      "#game_num_match_y.png",
+      "#match_end_frame_1.png",
+      "#match_icon_1.png",
+      "#match_text_revive_0.png",
+      "#match_text_revive_1.png",
+      "#match_text_revive_3.png",
+      "#match_text_revive_4.png",
+      "#match_text_revive_6.png",
+      "#match_tip_10.png",
+      "#set_match_frame_9.png",
+      "#set_match_tip_1.png",
+      "#set_match_tip_15.png",
+      "#set_match_tip_2.png",
+      "#set_match_tip_3.png",
+      "#set_match_tip_5.png",
+      "Battle/Score/bt_session_0.png",
+      "Battle/Score/bt_wechat_0.png",
+      "General/back_frame_0.png",
+      "Match/match_bg.png",
+      "Match/match_bg_end.png",
+      "Match/match_frame_20.png",
+      "Match/match_logo_girl.png",
+      "Match/match_set_dot_1.png",
+      "frame_share.png",
+      "plaza/res/match_setting.plist",
+      "plaza/res/match_setting.png",
+      "set_match_btn_2.png",
+      "set_match_btn_9.png",
+      "set_match_btn_revive.png",
+      "set_match_btn_tuichu.png",
+      "share_code.png",
+      "tmp_share_matchend.jpg"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchSetting.lua",
+        "line": 58,
+        "function": "MatchSetting:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchSetting.lua",
+        "line": 107,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchSetting.lua",
+        "line": 127,
+        "function": "MatchSetting:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchWaitScene.lua",
+    "resources": [
+      "#match_wait_black_bg.png",
+      "#match_wait_dnum_-.png",
+      "#match_wait_dnum_0.png",
+      "#match_wait_dnum_1.png",
+      "#match_wait_dnum_2.png",
+      "#match_wait_dnum_3.png",
+      "#match_wait_dnum_4.png",
+      "#match_wait_dnum_5.png",
+      "#match_wait_dnum_6.png",
+      "#match_wait_dnum_7.png",
+      "#match_wait_dnum_8.png",
+      "#match_wait_dnum_9.png",
+      "#match_wait_dnum_m.png",
+      "#match_wait_dnum_r.png",
+      "#match_wait_dnum_y.png",
+      "#match_wait_text2.png",
+      "#matchwait_clock_num_0.png",
+      "#matchwait_clock_num_1.png",
+      "#matchwait_clock_num_2.png",
+      "#matchwait_clock_num_3.png",
+      "#matchwait_clock_num_4.png",
+      "#matchwait_clock_num_5.png",
+      "#matchwait_clock_num_6.png",
+      "#matchwait_clock_num_7.png",
+      "#matchwait_clock_num_8.png",
+      "#matchwait_clock_num_9.png",
+      "#matchwait_clock_num_point.png",
+      "#matchwait_frame_1.png",
+      "#matchwait_icon_2.png",
+      "#matchwait_pop_revive.png",
+      "#matchwait_signup_image.png",
+      "#matchwait_signup_text.png",
+      "#matchwait_slider_0.png",
+      "#matchwait_slider_1.png",
+      "#matchwait_text_revive_3.png",
+      "#matchwait_text_revive_4.png",
+      "#matchwait_text_revive_5.png",
+      "#matchwait_text_revive_6.png",
+      "#matchwait_tip_1.png",
+      "#matchwait_tip_13.png",
+      "#matchwait_tip_20.png",
+      "#matchwait_tip_21.png",
+      "#matchwait_tip_frame.png",
+      "#num_matchwait_-.png",
+      "#num_matchwait_0.png",
+      "#num_matchwait_1.png",
+      "#num_matchwait_2.png",
+      "#num_matchwait_3.png",
+      "#num_matchwait_4.png",
+      "#num_matchwait_5.png",
+      "#num_matchwait_6.png",
+      "#num_matchwait_7.png",
+      "#num_matchwait_8.png",
+      "#num_matchwait_9.png",
+      "#num_matchwait_a.png",
+      "#num_matchwait_m.png",
+      "#num_matchwait_r.png",
+      "#num_matchwait_x.png",
+      "#num_matchwait_y.png",
+      "#tip_matchwait_share_free.png",
+      "General/bt_return.png",
+      "bt_lora.png",
+      "bt_matchwait_share.png",
+      "general_logo.png",
+      "match_share_bg.png",
+      "match_share_image.png",
+      "match_wait_bt_reward.png",
+      "match_wait_bt_rule.png",
+      "matchwait_btn_1.png",
+      "matchwait_btn_tuisai.png",
+      "plaza/res/match_plaza.plist",
+      "plaza/res/match_plaza.png",
+      "plaza/res/match_wait.plist",
+      "plaza/res/match_wait.png",
+      "share_code.png",
+      "tmp_share_match.jpg"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchWaitScene.lua",
+        "line": 109,
+        "function": "CMatchWaiting:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MatchWaitScene.lua",
+        "line": 205,
+        "function": "CMatchWaiting:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_AlertDlg.lua",
+    "resources": [
+      "#match_alert_frame_6.png",
+      "#match_alert_title_frame_2.png",
+      "Match/match_frame_10.png",
+      "bt_match_alert_close.png",
+      "match_alert_btn_1.png",
+      "match_btn_confirm.png",
+      "match_wait_tip_btn_0.png",
+      "match_wait_tip_btn_1.png",
+      "plaza/res/match_alert.plist",
+      "plaza/res/match_alert.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_AlertDlg.lua",
+        "line": 19,
+        "function": "CMatchAlert:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_AlertDlg.lua",
+        "line": 22,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Detail.lua",
+    "resources": [
+      "#match_award_default.png",
+      "#match_line_2.png",
+      "#match_plaza_detail_tip2.png",
+      "#match_share_tip.png",
+      "#match_text_detail.png",
+      "#match_text_kaisai.png",
+      "#match_text_quantian.png",
+      "#match_text_reward.png",
+      "#match_text_rule.png",
+      "#match_tip_12.png",
+      "#match_tip_5.png",
+      "#match_tip_6.png",
+      "#match_tip_9.png",
+      "#match_tip_kaisaitime.png",
+      "#match_title_frame_3.png",
+      "#plaza_clock_num_0.png",
+      "#plaza_clock_num_1.png",
+      "#plaza_clock_num_2.png",
+      "#plaza_clock_num_3.png",
+      "#plaza_clock_num_4.png",
+      "#plaza_clock_num_5.png",
+      "#plaza_clock_num_6.png",
+      "#plaza_clock_num_7.png",
+      "#plaza_clock_num_8.png",
+      "#plaza_clock_num_9.png",
+      "#plaza_clock_num_point.png",
+      "#plaza_match_frame_6.png",
+      "#plaza_match_frame_7.png",
+      "#plaza_match_icon_2.png",
+      "#plaza_match_rule_dot.png",
+      "#plaza_match_rule_tip.png",
+      "#plaza_num_match_-.png",
+      "#plaza_num_match_0.png",
+      "#plaza_num_match_1.png",
+      "#plaza_num_match_2.png",
+      "#plaza_num_match_3.png",
+      "#plaza_num_match_4.png",
+      "#plaza_num_match_5.png",
+      "#plaza_num_match_6.png",
+      "#plaza_num_match_7.png",
+      "#plaza_num_match_8.png",
+      "#plaza_num_match_9.png",
+      "#plaza_num_match_a.png",
+      "#plaza_num_match_m.png",
+      "#plaza_num_match_r.png",
+      "#plaza_num_match_x.png",
+      "#plaza_num_match_y.png",
+      "Match/match_award_1.png",
+      "Match/match_award_2.png",
+      "Match/match_award_3.png",
+      "Match/match_award_4.png",
+      "Match/match_award_5.png",
+      "Match/match_award_6.png",
+      "Match/match_award_7.png",
+      "Match/match_award_8.png",
+      "Match/match_award_9.png",
+      "Match/match_frame_5.png",
+      "logo_girl.png",
+      "match_btn_daohang.png",
+      "match_detail_wx_tip.png",
+      "match_share_bg.png",
+      "match_text_detail.png",
+      "match_text_reward.png",
+      "match_text_rule.png",
+      "plaza_bt_match_close.png",
+      "plaza_bt_match_enter.png",
+      "plaza_match_btn_1.png",
+      "share_code.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Detail.lua",
+        "line": 111,
+        "function": "CMatchDetail:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Detail.lua",
+        "line": 119,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Detail.lua",
+        "line": 267,
+        "function": "CMatchDetail:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Quest.lua",
+    "resources": [
+      "#match_empty_tip.png",
+      "#match_frame_1.png",
+      "#match_frame_2.png",
+      "#match_frame_3.png",
+      "#match_line_1.png",
+      "#match_plaza_text_end.png",
+      "#match_plaza_text_rank.png",
+      "#match_plaza_text_reward.png",
+      "#match_plaza_text_start.png",
+      "#match_quest_num_-.png",
+      "#match_quest_num_0.png",
+      "#match_quest_num_1.png",
+      "#match_quest_num_2.png",
+      "#match_quest_num_3.png",
+      "#match_quest_num_4.png",
+      "#match_quest_num_5.png",
+      "#match_quest_num_6.png",
+      "#match_quest_num_7.png",
+      "#match_quest_num_8.png",
+      "#match_quest_num_9.png",
+      "#match_quest_num_j.png",
+      "#match_quest_num_m.png",
+      "#match_quest_num_r.png",
+      "#match_quest_num_y.png",
+      "#match_quest_start_tip.png",
+      "#match_status_1.png",
+      "#match_status_2.png",
+      "#match_status_3.png",
+      "#match_text_1_0.png",
+      "#match_text_2_0.png",
+      "#match_text_3_0.png",
+      "#match_text_4_0.png",
+      "General/bt_return.png",
+      "General/num_list_gold.png",
+      "Shop/gold_frame.png",
+      "Shop/metal_frame.png",
+      "match_bt_shop.png",
+      "match_btn_checkrank.png",
+      "match_btn_daohang.png",
+      "match_btn_detail.png",
+      "match_btn_share.png",
+      "match_btn_status_1.png",
+      "match_btn_status_1_gray.png",
+      "match_btn_status_2.png",
+      "match_btn_status_free.png",
+      "match_text_1_0.png",
+      "match_text_2_0.png",
+      "match_text_3_0.png",
+      "match_text_4_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Quest.lua",
+        "line": 46,
+        "function": "CMatchQuest:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Quest.lua",
+        "line": 377,
+        "function": "CMatchQuest:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Rank.lua",
+    "resources": [
+      "#rank_match_frame_4.png",
+      "#rank_match_frame_6.png",
+      "#rank_match_frame_7.png",
+      "#rank_match_line_2.png",
+      "#rank_match_medal_1.png",
+      "#rank_match_rule_dot.png",
+      "#rank_match_rule_tip.png",
+      "#rank_match_text_reward.png",
+      "#rank_match_text_rule.png",
+      "#rank_match_tip_16.png",
+      "#rank_match_title_frame_3.png",
+      "#rank_num_match_-.png",
+      "#rank_num_match_0.png",
+      "#rank_num_match_1.png",
+      "#rank_num_match_2.png",
+      "#rank_num_match_3.png",
+      "#rank_num_match_4.png",
+      "#rank_num_match_5.png",
+      "#rank_num_match_6.png",
+      "#rank_num_match_7.png",
+      "#rank_num_match_8.png",
+      "#rank_num_match_9.png",
+      "#rank_num_match_a.png",
+      "#rank_num_match_m.png",
+      "#rank_num_match_x.png",
+      "Match/match_frame_5.png",
+      "plaza/res/match_rank.plist",
+      "plaza/res/match_rank.png",
+      "rank_match_btn_close.png",
+      "rank_match_btn_daohang.png",
+      "rank_match_text_reward.png",
+      "rank_match_text_rule.png",
+      "rank_match_tip_16.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Rank.lua",
+        "line": 49,
+        "function": "CMatchRank:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Rank.lua",
+        "line": 57,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Rank.lua",
+        "line": 152,
+        "function": "CMatchRank:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_RecordRank.lua",
+    "resources": [
+      "#match_title_frame_3.png",
+      "#plaza_match_frame_6.png",
+      "#plaza_match_frame_7.png",
+      "#plaza_recordrank_listbg.png",
+      "Match/match_frame_5.png",
+      "plaza_bt_match_close.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_RecordRank.lua",
+        "line": 25,
+        "function": "CMatchRecordRank:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_RecordRank.lua",
+        "line": 32,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_RecordRank.lua",
+        "line": 64,
+        "function": "CMatchRecordRank:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Remind.lua",
+    "resources": [
+      "#clock_num_0.png",
+      "#clock_num_1.png",
+      "#clock_num_2.png",
+      "#clock_num_3.png",
+      "#clock_num_4.png",
+      "#clock_num_5.png",
+      "#clock_num_6.png",
+      "#clock_num_7.png",
+      "#clock_num_8.png",
+      "#clock_num_9.png",
+      "#clock_num_point.png",
+      "#match_remind_line_2.png",
+      "#match_remind_tip_11.png",
+      "#match_remind_tip_14.png",
+      "#match_remind_tip_20.png",
+      "#remind_match_frame_6.png",
+      "#remind_match_icon_2.png",
+      "#remind_match_tip1.png",
+      "#remind_match_tip2.png",
+      "#remind_match_title.png",
+      "#remind_match_title_frame.png",
+      "#remind_num_match_0.png",
+      "#remind_num_match_1.png",
+      "#remind_num_match_2.png",
+      "#remind_num_match_3.png",
+      "#remind_num_match_4.png",
+      "#remind_num_match_5.png",
+      "#remind_num_match_6.png",
+      "#remind_num_match_7.png",
+      "#remind_num_match_8.png",
+      "#remind_num_match_9.png",
+      "#remind_num_match_m.png",
+      "Match/match_frame_10.png",
+      "bt_match_remind_close.png",
+      "plaza/res/match_remind.plist",
+      "plaza/res/match_remind.png",
+      "remind_match_btn_4.png",
+      "remind_match_btn_confirm.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Remind.lua",
+        "line": 34,
+        "function": "CMatchRemind:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_Remind.lua",
+        "line": 38,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_ScoreInfo.lua",
+    "resources": [
+      "General/icon_currency_1.png",
+      "General/icon_currency_2.png",
+      "General/icon_currency_3.png",
+      "General/num_scoreunit.png",
+      "General/player_num_gold.png",
+      "General/player_num_ingot.png",
+      "General/player_num_roomcard.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/match/MS_ScoreInfo.lua",
+        "line": 22,
+        "function": "CScoreInfo:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ActiveLayer.lua",
+    "resources": [
+      "Active/back_frame_2.png",
+      "Active/back_frame_title.png",
+      "Active/bt_close.png",
+      "Active/cbt_frame_0.png",
+      "Active/cbt_frame_1.png",
+      "Active/shop_frame_2.png",
+      "Active/title_action.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ActiveLayer.lua",
+        "line": 16,
+        "function": "ActiveLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ActiveLayer.lua",
+        "line": 29,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ActiveLayer.lua",
+        "line": 106,
+        "function": "ActiveLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/AlertLayer.lua",
+    "resources": [
+      "systembox/systembox_bg.png",
+      "systembox/systembox_bg_title.png",
+      "systembox/systembox_bt_cancle.png",
+      "systembox/systembox_bt_confirm.png",
+      "systembox/systembox_title.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/AlertLayer.lua",
+        "line": 10,
+        "function": "AlertLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/AlertLayer.lua",
+        "line": 82,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/AlertLayer.lua",
+        "line": 97,
+        "function": "AlertLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/CertificationLayer.lua",
+    "resources": [
+      "Option/certificate_bt_0.png",
+      "Option/certificate_bt_1.png",
+      "Option/certificate_bt_anti_indulgence.png",
+      "Option/certificate_text_3.png",
+      "Option/certificate_text_4.png",
+      "Option/certificate_text_6.png",
+      "Regist/textfield_frame_regist.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/CertificationLayer.lua",
+        "line": 35,
+        "function": "CertificationLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/CertificationLayer.lua",
+        "line": 189,
+        "function": "CertificationLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DismissLayer.lua",
+    "resources": [
+      "Dismiss/bg_dismiss.png",
+      "Dismiss/bt_agree_0.png",
+      "Dismiss/bt_cancel_0.png",
+      "Dismiss/bt_confirm_0.png",
+      "Dismiss/bt_reject_0.png",
+      "Dismiss/num_time.png",
+      "Dismiss/state_1.png",
+      "Dismiss/text_dissmiss.png",
+      "Dismiss/text_fail_dismiss.png",
+      "Dismiss/text_start_dismiss.png",
+      "General/head_frame_0.png",
+      "Head/face_x_00.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DismissLayer.lua",
+        "line": 12,
+        "function": "DismissLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DismissLayer.lua",
+        "line": 111,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DismissLayer.lua",
+        "line": 119,
+        "function": "DismissLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DistributeLayer.lua",
+    "resources": [
+      "General/bg_distribute_mode.png",
+      "General/bt_distribute_leave_0.png",
+      "General/num_distribute_mode.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DistributeLayer.lua",
+        "line": 7,
+        "function": "DistributeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DistributeLayer.lua",
+        "line": 38,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/DistributeLayer.lua",
+        "line": 45,
+        "function": "DistributeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/FastDeskLayer.lua",
+    "resources": [
+      "#fast_desk_bg_1.png",
+      "#fast_desk_bg_2.png",
+      "#fast_desk_icon_canjoin.png",
+      "#fast_desk_icon_room.png",
+      "#fast_desk_icon_time.png",
+      "#fast_desk_item_bg.png",
+      "#fast_desk_line.png",
+      "#fast_desk_title.png",
+      "fast_desk_bt_close.png",
+      "fast_desk_bt_jion.png",
+      "fast_desk_icon_canjoin.png",
+      "fast_desk_icon_face.png",
+      "fast_desk_icon_full.png",
+      "fast_desk_icon_gaming.png",
+      "fastdesk.plist",
+      "fastdesk.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/FastDeskLayer.lua",
+        "line": 3,
+        "function": "FastDeskLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/FastDeskLayer.lua",
+        "line": 13,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/GameCustomMenuLayer.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/GameCustomMenuLayer.lua",
+        "line": 5,
+        "function": "GameCustomMenuLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/GameCustomMenuLayer.lua",
+        "line": 141,
+        "function": "GameCustomMenuLayer:onTouchBegan"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/GameCustomMenuLayer.lua",
+        "line": 158,
+        "function": "GameCustomMenuLayer:onTouchMoved"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/GameCustomMenuLayer.lua",
+        "line": 170,
+        "function": "GameCustomMenuLayer:onTouchEnded"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/HealthDisplayLayer.lua",
+    "resources": [
+      "healthdisply/health_tip.png",
+      "healthdisply/health_white_bg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/HealthDisplayLayer.lua",
+        "line": 3,
+        "function": "HealthDisplayLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/HtmlModuleLayer.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/HtmlModuleLayer.lua",
+        "line": 8,
+        "function": "HtmlModuleLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/InviteQR.lua",
+    "resources": [
+      "Battle/invite_back.png",
+      "invite_qr.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/InviteQR.lua",
+        "line": 7,
+        "function": "CInviteQR:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/NoticeLayer.lua",
+    "resources": [
+      "General/bt_close.png",
+      "General/notice_frame.png",
+      "General/text_notice.png",
+      "General/text_rule.png",
+      "General/title_agreement.png",
+      "General/title_anti_indulgence.png",
+      "General/title_matchrule.png",
+      "General/title_user_agree.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/NoticeLayer.lua",
+        "line": 19,
+        "function": "NoticeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/NoticeLayer.lua",
+        "line": 36,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/NoticeLayer.lua",
+        "line": 280,
+        "function": "NoticeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/OptionLayer.lua",
+    "resources": [
+      "/plaza/res/match_game.plist",
+      "Benefit/frame_top.png",
+      "Benefit/frame_up.png",
+      "General/back_frame_1.png",
+      "General/bt_close.png",
+      "General/bt_return.png",
+      "Option/bt_move.png",
+      "Option/cbt_opener_0.png",
+      "Option/cbt_opener_1.png",
+      "Option/game_language.png",
+      "Option/progress_0.png",
+      "Option/progress_1.png",
+      "Option/progress_2.png",
+      "Option/text_music.png",
+      "Option/text_option.png",
+      "Option/text_sound.png",
+      "Option/text_voice.png",
+      "UserInfo/bt_choose_0.png",
+      "UserInfo/bt_choose_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/OptionLayer.lua",
+        "line": 34,
+        "function": "OptionLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/OptionLayer.lua",
+        "line": 48,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/OptionLayer.lua",
+        "line": 350,
+        "function": "OptionLayer:onButtonClickedEvent"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/OptionLayer.lua",
+        "line": 401,
+        "function": "OptionLayer:onCreateNewText"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/PopWaitEx.lua",
+    "resources": [
+      "plaza/res/General/bt_closepop_0.png",
+      "plaza/res/General/bt_closepop_1.png",
+      "wait_ani_frame.png",
+      "wait_ani_round.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/PopWaitEx.lua",
+        "line": 10,
+        "function": "PopWaitEx:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/PopWaitEx.lua",
+        "line": 18,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/RichNotify.lua",
+    "resources": [
+      "General/notice_bg.png",
+      "General/notice_icon.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/RichNotify.lua",
+        "line": 5,
+        "function": "CRichNotify:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ServiceLayer.lua",
+    "resources": [
+      "General/bt_return.png",
+      "Option/text_about.png",
+      "Option/text_notice.png",
+      "Option/text_question.png",
+      "Option/text_service.png",
+      "UserInfo/back_frame_2.png",
+      "UserInfo/choose_0.png",
+      "UserInfo/choose_1.png",
+      "copyright.png",
+      "general_logo.png",
+      "image_service.png",
+      "service/service_bt_call_phone.png",
+      "service/service_bt_copy_qq.png",
+      "service/service_bt_online_service.png",
+      "service/service_hot_icon.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ServiceLayer.lua",
+        "line": 19,
+        "function": "ServiceLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/ServiceLayer.lua",
+        "line": 200,
+        "function": "ServiceLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/SystemLayer.lua",
+    "resources": [
+      "General/bt_return.png",
+      "Option/bt_exit_0.png",
+      "Option/text_3d.png",
+      "Option/text_exchange.png",
+      "Option/text_option.png",
+      "Option/title_binding.png",
+      "Option/title_exchange.png",
+      "UserInfo/back_frame_2.png",
+      "UserInfo/choose_0.png",
+      "UserInfo/choose_1.png",
+      "copyright.png",
+      "general_logo.png",
+      "gps/gps_bt_about_0.png",
+      "gps/gps_bt_about_1.png",
+      "gps/gps_bt_certification_0.png",
+      "gps/gps_bt_certification_1.png",
+      "gps/gps_bt_exchange_0.png",
+      "gps/gps_bt_exchange_1.png",
+      "gps/gps_bt_option_0.png",
+      "gps/gps_bt_option_1.png",
+      "gps/gps_bt_service_0.png",
+      "gps/gps_bt_service_1.png",
+      "image_service.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/SystemLayer.lua",
+        "line": 30,
+        "function": "SystemLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/SystemLayer.lua",
+        "line": 158,
+        "function": "SystemLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/TopInfoView.lua",
+    "resources": [
+      "General/notice_bg.png",
+      "General/notice_icon.png",
+      "battery_00.png",
+      "battery_01.png",
+      "battery_02.png",
+      "battery_03.png",
+      "battery_04.png",
+      "battery_05.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/TopInfoView.lua",
+        "line": 21,
+        "function": "TopInfoView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/TopInfoView.lua",
+        "line": 63,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/VersionText.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/VersionText.lua",
+        "line": 13,
+        "function": "CVersionText:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/VideotapeLayer.lua",
+    "resources": [
+      "Videotape/background_button.png",
+      "Videotape/background_word.png",
+      "Videotape/bt_back_1.png",
+      "Videotape/bt_exit_1.png",
+      "Videotape/bt_forward_1.png",
+      "Videotape/bt_leftuser_1.png",
+      "Videotape/bt_rightuser_1.png",
+      "Videotape/bt_spread_1.png",
+      "Videotape/bt_spread_2.png",
+      "Videotape/bt_start_1.png",
+      "Videotape/bt_stop_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/VideotapeLayer.lua",
+        "line": 12,
+        "function": "VideotapeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/VideotapeLayer.lua",
+        "line": 104,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/GameListLayer.lua",
+    "resources": [
+      "Benefit/diamond_type_6.png",
+      "GameList/active_ico.png",
+      "GameList/ani_createroom.png",
+      "GameList/arrow_down.png",
+      "GameList/arrow_up.png",
+      "GameList/battle_create_0.png",
+      "GameList/battle_create_1.png",
+      "GameList/battle_enter_0.png",
+      "GameList/battle_enter_1.png",
+      "GameList/bt_active.png",
+      "GameList/bt_bank.png",
+      "GameList/bt_battle.png",
+      "GameList/bt_exchange.png",
+      "GameList/bt_list_0.png",
+      "GameList/bt_list_1.png",
+      "GameList/bt_match.png",
+      "GameList/bt_more_game.png",
+      "GameList/bt_shop.png",
+      "GameList/bt_teahouse.png",
+      "GameList/btmatch_light.png",
+      "GameList/btmatch_mask.png",
+      "GameList/btmatch_star.png",
+      "GameList/btmatch_word.png",
+      "GameList/menu_back.png",
+      "General/bt_player_shop.png",
+      "General/general_tip_plaza.png",
+      "General/head_frame_0.png",
+      "General/head_frame_vip.png",
+      "General/icon_id.png",
+      "General/mask.png",
+      "General/mask_bg.png",
+      "General/menu_option.png",
+      "General/menu_service.png",
+      "General/menu_share.png",
+      "General/player_frame_gold.png",
+      "General/player_frame_idornick.png",
+      "General/player_frame_ingot.png",
+      "General/player_num_gold.png",
+      "General/player_num_ingot.png",
+      "PlazaShare/bt_shareClose_1.png",
+      "PlazaShare/bt_shareSession_1.png",
+      "PlazaShare/bt_shareWechat_1.png",
+      "PlazaShare/share_background.png",
+      "PlazaShare/share_tip_content.png",
+      "PlazaShare/share_title.png",
+      "Rank/rank_btn_0.png",
+      "Rank/rank_btn_1.png",
+      "bindphone/bt_left_bind_phone.png",
+      "bt_lora.png",
+      "gps/gps_icon.png",
+      "gps/gps_txt_1000.png",
+      "plaza/general/share_icon.png",
+      "share_image.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/GameListLayer.lua",
+        "line": 57,
+        "function": "GameListLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/GameListLayer.lua",
+        "line": 528,
+        "function": "GameListLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/GlobalNotify.lua",
+    "resources": [],
+    "constructors": []
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/MoreGameLayer.lua",
+    "resources": [
+      "General/bt_player_shop.png",
+      "General/bt_return.png",
+      "General/icon_id.png",
+      "General/player_frame_gold.png",
+      "General/player_frame_idornick.png",
+      "General/player_frame_ingot.png",
+      "General/player_num_gold.png",
+      "General/player_num_ingot.png",
+      "moresub_cbt_0.png",
+      "moresub_cbt_1.png",
+      "moresub_flg_all.png",
+      "moresub_flg_mj.png",
+      "moresub_flg_poker.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/MoreGameLayer.lua",
+        "line": 16,
+        "function": "MoreGameLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/MoreGameLayer.lua",
+        "line": 218,
+        "function": "MoreGameLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+    "resources": [
+      "Battle/battle_frame_2.png",
+      "Battle/text_gold.png",
+      "Battle/text_ingot.png",
+      "General/bt_list_bank_0.png",
+      "General/bt_list_recharge_0.png",
+      "General/bt_quick_start_0.png",
+      "General/bt_return.png",
+      "General/num_list_gold.png",
+      "General/num_list_ingot.png",
+      "RoomList/bt_rule_0.png",
+      "RoomList/flag_mode_distribute.png",
+      "RoomList/flag_mode_score.png",
+      "RoomList/info_frame.png",
+      "RoomList/page_0.png",
+      "RoomList/page_1.png",
+      "RoomList/room_cell_num.png",
+      "RoomList/room_frame_0.png",
+      "RoomList/room_text_0.png",
+      "RoomList/room_text_1.png",
+      "RoomList/title_info.png",
+      "background3.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+        "line": 74,
+        "function": "RoomListLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/RoomListLayer.lua",
+        "line": 420,
+        "function": "RoomListLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/WelcomeScene.lua",
+    "resources": [
+      "appurl.plist",
+      "background.png",
+      "copyright.png",
+      "general/res/logo_name_00.png",
+      "luaurl.plist",
+      "plaza/general/welcome_bg.png",
+      "progress_frame.png",
+      "progress_image.png",
+      "version.plist"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/WelcomeScene.lua",
+        "line": 19,
+        "function": "WelcomeScene:onCreate"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/layer/GameClientView.lua",
+    "resources": [
+      "/sound/ak_out_card.wav",
+      "Battle/flag_room_order.png",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "ani_gang.plist",
+      "ani_gang.png",
+      "bg_tips.png",
+      "bt_cancel_trustee_0.png",
+      "bt_cancel_trustee_1.png",
+      "bt_changedesk_3.png",
+      "bt_changedesk_4.png",
+      "bt_chihucheck_0.png",
+      "bt_chihucheck_1.png",
+      "bt_gameshare_0.png",
+      "bt_gameshare_1.png",
+      "bt_startgame_0.png",
+      "bt_startgame_1.png",
+      "chat/chat_left_bg.png",
+      "chat/chat_right_bg.png",
+      "dot_0.png",
+      "dot_1.png",
+      "game_back_0.png",
+      "game_back_1.png",
+      "game_back_2.png",
+      "game_back_logo.png",
+      "game_card_tip.png",
+      "game_handcard.png",
+      "game_handcard_1.png",
+      "game_handcard_2.png",
+      "game_handcard_up.png",
+      "game_menu_auto_0.png",
+      "game_menu_auto_1.png",
+      "game_menu_back_0.png",
+      "game_menu_back_1.png",
+      "game_menu_menu_0.png",
+      "game_menu_menu_1.png",
+      "game_menu_talk_0.png",
+      "game_menu_talk_1.png",
+      "game_query_text_wait.png",
+      "game_ready_text_start.png",
+      "game_ready_text_wait.png",
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_trustee_flag.png",
+      "game_trustee_flagex.png",
+      "game_weave_0.png",
+      "lefttop/battery_05.png",
+      "lefttop/info_background_2.png",
+      "lefttop/info_button_1.png",
+      "lefttop/info_button_2.png",
+      "lefttop/info_button_3.png",
+      "lefttop/info_button_4.png",
+      "lefttop/number_basescore.png",
+      "lefttop/number_counttime.png",
+      "lefttop/number_lastcard.png",
+      "lefttop/number_roomid.png",
+      "lefttop/pic_word_basescore.png",
+      "lefttop/pic_word_gamecount.png",
+      "lefttop/pic_word_gametime.png",
+      "lefttop/pic_word_lastcard.png",
+      "lefttop/pic_word_roomid.png",
+      "operate/notify_ani_baohu.png",
+      "operate/notify_ani_baoqing.png",
+      "operate/notify_ani_dianpao.png",
+      "operate/notify_ani_dihu.png",
+      "operate/notify_ani_gang.png",
+      "operate/notify_ani_gangshanghua.png",
+      "operate/notify_ani_gangshangpao.png",
+      "operate/notify_ani_hu.png",
+      "operate/notify_ani_liuju.png",
+      "operate/notify_ani_pass.png",
+      "operate/notify_ani_peng.png",
+      "operate/notify_ani_qing.png",
+      "operate/notify_ani_qinghu.png",
+      "operate/notify_ani_tianhu.png",
+      "operate/notify_ani_zbh.png",
+      "operate/notify_ani_zbq.png",
+      "operate/notify_ani_zimo.png",
+      "operate/notify_ani_zqh.png",
+      "ready.png",
+      "topbar/bt_top_box_1.png",
+      "topbar/bt_top_box_3.png",
+      "topbar/pic_top_bg.png",
+      "trustee/offline_bg.png",
+      "yz_num_cell.png",
+      "yz_num_count.png",
+      "yz_word_cell.png",
+      "yz_word_count.png",
+      "yz_word_tablenum.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/layer/GameClientView.lua",
+        "line": 90,
+        "function": "GameClientView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/layer/GameClientView.lua",
+        "line": 687,
+        "function": "GameClientView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/ClockView.lua",
+    "resources": [
+      "_back.png",
+      "game_east_0.png",
+      "game_east_1.png",
+      "game_north_0.png",
+      "game_north_1.png",
+      "game_num_1.png",
+      "game_south_0.png",
+      "game_south_1.png",
+      "game_time_back.png",
+      "game_time_normal_back.png",
+      "game_west_0.png",
+      "game_west_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/ClockView.lua",
+        "line": 9,
+        "function": "ClockView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/DisCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/DisCard.lua",
+        "line": 5,
+        "function": "DisCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/FanTipsView.lua",
+    "resources": [
+      "game_checkting_back_left.png",
+      "game_checkting_back_right.png",
+      "game_checkting_back_row.png",
+      "game_checkting_num.png",
+      "game_checkting_text.png",
+      "game_handcard.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/FanTipsView.lua",
+        "line": 6,
+        "function": "FanTipsView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/GamePlayerLayer.lua",
+    "resources": [
+      "user/pic_face_nobody.png",
+      "user/pic_face_stencil.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/GamePlayerLayer.lua",
+        "line": 2,
+        "function": "GamePlayerLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/GamePlayerLayer.lua",
+        "line": 58,
+        "function": "GamePlayerLayer:onClickEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/HandCard.lua",
+    "resources": [
+      "game_handcard.png",
+      "game_hucard_tip.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/HandCard.lua",
+        "line": 13,
+        "function": "HandCard:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/HandCard.lua",
+        "line": 17,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/HandCard.lua",
+        "line": 103,
+        "function": "HandCard:onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OperateView.lua",
+    "resources": [
+      "operate/bt_baohu_0.png",
+      "operate/bt_baohu_1.png",
+      "operate/bt_gang_0.png",
+      "operate/bt_gang_1.png",
+      "operate/bt_hu_0.png",
+      "operate/bt_hu_1.png",
+      "operate/bt_pass_0.png",
+      "operate/bt_pass_1.png",
+      "operate/bt_peng_0.png",
+      "operate/bt_peng_1.png",
+      "operate/bt_qing_0.png",
+      "operate/bt_qing_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OperateView.lua",
+        "line": 13,
+        "function": "OperateView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OpSelectView.lua",
+    "resources": [
+      "game_weave_0.png",
+      "operate/op_bg.png",
+      "operate/opflag_bao.png",
+      "operate/opflag_gang.png",
+      "operate/opflag_qing.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OpSelectView.lua",
+        "line": 10,
+        "function": "OpSelectView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OpSelectView.lua",
+        "line": 15,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OpSelectView.lua",
+        "line": 28,
+        "function": "OpSelectView:onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OutCard.lua",
+    "resources": [
+      "game_handcard.png",
+      "game_outcard_back.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/OutCard.lua",
+        "line": 14,
+        "function": "OutCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/QuickChatView.lua",
+    "resources": [
+      "game_talk_bg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/QuickChatView.lua",
+        "line": 19,
+        "function": "QuickChatView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/ScoreView.lua",
+    "resources": [
+      "bt_changedesk_1.png",
+      "bt_changedesk_2.png",
+      "bt_continue_1.png",
+      "bt_continue_2.png",
+      "bt_exit_1.png",
+      "bt_exit_2.png",
+      "bt_share_1.png",
+      "bt_share_2.png",
+      "chihu_order.png",
+      "game_back_1.png",
+      "game_tablecard_v.png",
+      "gameend_count_nun.png",
+      "gameend_num_lose.png",
+      "gameend_num_win.png",
+      "my_self_bg.png",
+      "pic_end_ground.png",
+      "pic_flag_lost.png",
+      "pic_flag_peace.png",
+      "pic_flag_win.png",
+      "user/pic_face_stencil.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/ScoreView.lua",
+        "line": 90,
+        "function": "ScoreView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/ScoreView.lua",
+        "line": 95,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/ScoreView.lua",
+        "line": 344,
+        "function": "ScoreView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/SiceView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/SiceView.lua",
+        "line": 6,
+        "function": "SiceView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/TableCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_weave_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/TableCard.lua",
+        "line": 12,
+        "function": "TableCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/WeaveCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_weave_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowerdgk/src/views/other/WeaveCard.lua",
+        "line": 20,
+        "function": "WeaveCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/layer/GameClientView.lua",
+    "resources": [
+      "/sound/ak_out_card.wav",
+      "Battle/flag_room_order.png",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "ani_gang.plist",
+      "ani_gang.png",
+      "bg_tips.png",
+      "bt_cancel_trustee_0.png",
+      "bt_cancel_trustee_1.png",
+      "bt_changedesk_3.png",
+      "bt_changedesk_4.png",
+      "bt_chihucheck_0.png",
+      "bt_chihucheck_1.png",
+      "bt_gameshare_0.png",
+      "bt_gameshare_1.png",
+      "bt_startgame_0.png",
+      "bt_startgame_1.png",
+      "chat/chat_left_bg.png",
+      "chat/chat_right_bg.png",
+      "dot_0.png",
+      "dot_1.png",
+      "game_back_0.png",
+      "game_back_1.png",
+      "game_back_2.png",
+      "game_back_logo.png",
+      "game_card_tip.png",
+      "game_handcard.png",
+      "game_handcard_1.png",
+      "game_handcard_2.png",
+      "game_handcard_up.png",
+      "game_menu_auto_0.png",
+      "game_menu_auto_1.png",
+      "game_menu_back_0.png",
+      "game_menu_back_1.png",
+      "game_menu_menu_0.png",
+      "game_menu_menu_1.png",
+      "game_menu_talk_0.png",
+      "game_menu_talk_1.png",
+      "game_query_text_wait.png",
+      "game_ready_text_start.png",
+      "game_ready_text_wait.png",
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_trustee_flag.png",
+      "game_trustee_flagex.png",
+      "game_weave_0.png",
+      "lefttop/battery_05.png",
+      "lefttop/info_background_2.png",
+      "lefttop/info_button_1.png",
+      "lefttop/info_button_2.png",
+      "lefttop/info_button_3.png",
+      "lefttop/info_button_4.png",
+      "lefttop/info_button_n_1.png",
+      "lefttop/info_button_n_2.png",
+      "lefttop/info_button_n_3.png",
+      "lefttop/info_button_n_4.png",
+      "lefttop/number_basescore.png",
+      "lefttop/number_counttime.png",
+      "lefttop/number_lastcard.png",
+      "lefttop/number_roomid.png",
+      "lefttop/pic_word_basescore.png",
+      "lefttop/pic_word_gamecount.png",
+      "lefttop/pic_word_gametime.png",
+      "lefttop/pic_word_lastcard.png",
+      "lefttop/pic_word_roomid.png",
+      "operate/notify_ani_baohu.png",
+      "operate/notify_ani_baoqing.png",
+      "operate/notify_ani_dianpao.png",
+      "operate/notify_ani_dihu.png",
+      "operate/notify_ani_gang.png",
+      "operate/notify_ani_gangshanghua.png",
+      "operate/notify_ani_gangshangpao.png",
+      "operate/notify_ani_hu.png",
+      "operate/notify_ani_liuju.png",
+      "operate/notify_ani_pass.png",
+      "operate/notify_ani_peng.png",
+      "operate/notify_ani_qing.png",
+      "operate/notify_ani_qinghu.png",
+      "operate/notify_ani_tianhu.png",
+      "operate/notify_ani_zbh.png",
+      "operate/notify_ani_zbq.png",
+      "operate/notify_ani_zimo.png",
+      "operate/notify_ani_zqh.png",
+      "ready.png",
+      "topbar/bt_top_box_1.png",
+      "topbar/bt_top_box_3.png",
+      "topbar/pic_top_bg.png",
+      "trustee/offline_bg.png",
+      "yz_num_cell.png",
+      "yz_num_count.png",
+      "yz_word_cell.png",
+      "yz_word_count.png",
+      "yz_word_tablenum.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/layer/GameClientView.lua",
+        "line": 94,
+        "function": "GameClientView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/layer/GameClientView.lua",
+        "line": 752,
+        "function": "GameClientView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/ClockView.lua",
+    "resources": [
+      "_back.png",
+      "game_east_0.png",
+      "game_east_1.png",
+      "game_north_0.png",
+      "game_north_1.png",
+      "game_num_1.png",
+      "game_south_0.png",
+      "game_south_1.png",
+      "game_time_back.png",
+      "game_time_normal_back.png",
+      "game_west_0.png",
+      "game_west_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/ClockView.lua",
+        "line": 9,
+        "function": "ClockView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/DisCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/DisCard.lua",
+        "line": 5,
+        "function": "DisCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/FanTipsView.lua",
+    "resources": [
+      "game_checkting_back_left.png",
+      "game_checkting_back_right.png",
+      "game_checkting_back_row.png",
+      "game_checkting_num.png",
+      "game_checkting_text.png",
+      "game_handcard.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/FanTipsView.lua",
+        "line": 6,
+        "function": "FanTipsView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/GamePlayerLayer.lua",
+    "resources": [
+      "user/pic_face_nobody.png",
+      "user/pic_face_stencil.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/GamePlayerLayer.lua",
+        "line": 2,
+        "function": "GamePlayerLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/GamePlayerLayer.lua",
+        "line": 58,
+        "function": "GamePlayerLayer:onClickEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/HandCard.lua",
+    "resources": [
+      "game_handcard.png",
+      "game_hucard_tip.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/HandCard.lua",
+        "line": 13,
+        "function": "HandCard:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/HandCard.lua",
+        "line": 17,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/HandCard.lua",
+        "line": 104,
+        "function": "HandCard:onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OperateView.lua",
+    "resources": [
+      "operate/bt_baohu_0.png",
+      "operate/bt_baohu_1.png",
+      "operate/bt_gang_0.png",
+      "operate/bt_gang_1.png",
+      "operate/bt_hu_0.png",
+      "operate/bt_hu_1.png",
+      "operate/bt_pass_0.png",
+      "operate/bt_pass_1.png",
+      "operate/bt_peng_0.png",
+      "operate/bt_peng_1.png",
+      "operate/bt_qing_0.png",
+      "operate/bt_qing_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OperateView.lua",
+        "line": 13,
+        "function": "OperateView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OpSelectView.lua",
+    "resources": [
+      "game_weave_0.png",
+      "operate/op_bg.png",
+      "operate/opflag_bao.png",
+      "operate/opflag_gang.png",
+      "operate/opflag_qing.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OpSelectView.lua",
+        "line": 11,
+        "function": "OpSelectView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OpSelectView.lua",
+        "line": 16,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OpSelectView.lua",
+        "line": 29,
+        "function": "OpSelectView:onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OutCard.lua",
+    "resources": [
+      "game_handcard.png",
+      "game_outcard_back.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/OutCard.lua",
+        "line": 14,
+        "function": "OutCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/QuickChatView.lua",
+    "resources": [
+      "game_talk_bg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/QuickChatView.lua",
+        "line": 21,
+        "function": "QuickChatView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/ScoreView.lua",
+    "resources": [
+      "bt_changedesk_1.png",
+      "bt_changedesk_2.png",
+      "bt_continue_1.png",
+      "bt_continue_2.png",
+      "bt_exit_1.png",
+      "bt_exit_2.png",
+      "bt_share_1.png",
+      "bt_share_2.png",
+      "chihu_order.png",
+      "game_back_1.png",
+      "game_tablecard_v.png",
+      "gameend_count_nun.png",
+      "gameend_num_lose.png",
+      "gameend_num_win.png",
+      "my_self_bg.png",
+      "pic_end_ground.png",
+      "pic_flag_lost.png",
+      "pic_flag_peace.png",
+      "pic_flag_win.png",
+      "user/pic_face_nobody.png",
+      "user/pic_face_stencil.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/ScoreView.lua",
+        "line": 89,
+        "function": "ScoreView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/ScoreView.lua",
+        "line": 94,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/ScoreView.lua",
+        "line": 374,
+        "function": "ScoreView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/SiceView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/SiceView.lua",
+        "line": 6,
+        "function": "SiceView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/TableCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_weave_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/TableCard.lua",
+        "line": 12,
+        "function": "TableCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/WeaveCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_weave_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowhzdgk/src/views/other/WeaveCard.lua",
+        "line": 20,
+        "function": "WeaveCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/layer/GameClientView.lua",
+    "resources": [
+      "/sound/ak_out_card.wav",
+      "Benefit/diamond_type_6.png",
+      "General/ani_speakflag_%d.png",
+      "General/ani_speakflag_1.png",
+      "General/bg_speakflag.png",
+      "Head/face_x_00.png",
+      "ani_gang.plist",
+      "ani_gang.png",
+      "bg_tips.png",
+      "bt_cancel_trustee_0.png",
+      "bt_cancel_trustee_1.png",
+      "bt_changedesk_3.png",
+      "bt_changedesk_4.png",
+      "bt_chihucheck_0.png",
+      "bt_chihucheck_1.png",
+      "bt_gameshare_0.png",
+      "bt_gameshare_1.png",
+      "bt_startgame_0.png",
+      "bt_startgame_1.png",
+      "chat_left_bg.png",
+      "chat_right_bg.png",
+      "dot_1.png",
+      "flag_downuser.png",
+      "flag_face_normal.png",
+      "flag_upuser.png",
+      "game_back_0.png",
+      "game_back_1.png",
+      "game_back_logo.png",
+      "game_card_tip.png",
+      "game_flag_cellscore.png",
+      "game_handcard.png",
+      "game_handcard_1.png",
+      "game_handcard_2.png",
+      "game_last_card.png",
+      "game_num_0.png",
+      "game_query_text_wait.png",
+      "game_ready_text_start.png",
+      "game_ready_text_wait.png",
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png",
+      "game_trustee_flag.png",
+      "game_trustee_flagex.png",
+      "game_weave_0.png",
+      "mt_info_num.png",
+      "mt_word_cell.png",
+      "mt_word_count_1.png",
+      "mt_word_count_2.png",
+      "mt_word_promote1.png",
+      "mt_word_promote2.png",
+      "mt_word_promote3.png",
+      "mt_word_promote4.png",
+      "mt_word_promote5.png",
+      "mt_word_promote6.png",
+      "mt_word_score1.png",
+      "mt_word_score2.png",
+      "operate/notify_ani_baohu.png",
+      "operate/notify_ani_baoqing.png",
+      "operate/notify_ani_dianpao.png",
+      "operate/notify_ani_dihu.png",
+      "operate/notify_ani_gang.png",
+      "operate/notify_ani_gangshanghua.png",
+      "operate/notify_ani_gangshangpao.png",
+      "operate/notify_ani_hu.png",
+      "operate/notify_ani_liuju.png",
+      "operate/notify_ani_pass.png",
+      "operate/notify_ani_peng.png",
+      "operate/notify_ani_qing.png",
+      "operate/notify_ani_qinghu.png",
+      "operate/notify_ani_tianhu.png",
+      "operate/notify_ani_zbh.png",
+      "operate/notify_ani_zbq.png",
+      "operate/notify_ani_zimo.png",
+      "operate/notify_ani_zqh.png",
+      "plaza/res/Battle/flag_room_order.png",
+      "ready.png",
+      "word_yz_desk.png",
+      "yz_num_cell.png",
+      "yz_num_count.png",
+      "yz_word_cell.png",
+      "yz_word_count.png",
+      "yz_word_tablenum.png",
+      "yz_word_time.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/layer/GameClientView.lua",
+        "line": 128,
+        "function": "GameClientView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/layer/GameClientView.lua",
+        "line": 764,
+        "function": "GameClientView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/ClockView.lua",
+    "resources": [
+      "_back.png",
+      "game_east_0.png",
+      "game_east_1.png",
+      "game_north_0.png",
+      "game_north_1.png",
+      "game_num_1.png",
+      "game_south_0.png",
+      "game_south_1.png",
+      "game_time_back.png",
+      "game_time_normal_back.png",
+      "game_west_0.png",
+      "game_west_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/ClockView.lua",
+        "line": 12,
+        "function": "ClockView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/DisCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_tablecard_v.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/DisCard.lua",
+        "line": 7,
+        "function": "DisCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/FanTipsView.lua",
+    "resources": [
+      "game_checkting_back_left.png",
+      "game_checkting_back_right.png",
+      "game_checkting_back_row.png",
+      "game_checkting_num.png",
+      "game_checkting_text.png",
+      "game_handcard.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/FanTipsView.lua",
+        "line": 6,
+        "function": "FanTipsView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/GameTopInfoView.lua",
+    "resources": [
+      "battery_00.png",
+      "battery_01.png",
+      "battery_02.png",
+      "battery_03.png",
+      "battery_04.png",
+      "battery_05.png",
+      "bg_top_menu.png",
+      "game_menu_auto_0.png",
+      "game_menu_auto_1.png",
+      "game_menu_back_0.png",
+      "game_menu_back_1.png",
+      "game_menu_menu_0.png",
+      "game_menu_menu_1.png",
+      "game_menu_talk_0.png",
+      "game_menu_talk_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/GameTopInfoView.lua",
+        "line": 20,
+        "function": "GameTopInfoView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/HandCard.lua",
+    "resources": [
+      "game_handcard.png",
+      "game_hucard_tip.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/HandCard.lua",
+        "line": 13,
+        "function": "HandCard:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/HandCard.lua",
+        "line": 17,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/HandCard.lua",
+        "line": 103,
+        "function": "HandCard:onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/NotifyView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/NotifyView.lua",
+        "line": 6,
+        "function": "NotifyView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OperateView.lua",
+    "resources": [
+      "operate/bt_baohu_0.png",
+      "operate/bt_baohu_1.png",
+      "operate/bt_gang_0.png",
+      "operate/bt_gang_1.png",
+      "operate/bt_hu_0.png",
+      "operate/bt_hu_1.png",
+      "operate/bt_pass_0.png",
+      "operate/bt_pass_1.png",
+      "operate/bt_peng_0.png",
+      "operate/bt_peng_1.png",
+      "operate/bt_qing_0.png",
+      "operate/bt_qing_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OperateView.lua",
+        "line": 13,
+        "function": "OperateView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OpSelectView.lua",
+    "resources": [
+      "game_weave_0.png",
+      "operate/op_bg.png",
+      "operate/opflag_bao.png",
+      "operate/opflag_gang.png",
+      "operate/opflag_qing.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OpSelectView.lua",
+        "line": 10,
+        "function": "OpSelectView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OpSelectView.lua",
+        "line": 15,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OpSelectView.lua",
+        "line": 28,
+        "function": "OpSelectView:onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OutCard.lua",
+    "resources": [
+      "game_handcard.png",
+      "game_outcard_back.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/OutCard.lua",
+        "line": 14,
+        "function": "OutCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/QuickChatView.lua",
+    "resources": [
+      "game_talk_bg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/QuickChatView.lua",
+        "line": 21,
+        "function": "QuickChatView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/ScoreView.lua",
+    "resources": [
+      "bt_back_0.png",
+      "bt_back_1.png",
+      "fantype/gameend_text_JIANG_WU_DUI.png",
+      "fantype/gameend_text_JLONG_WU_DUI.png",
+      "fantype/gameend_text_LONG_WU_DUI.png",
+      "fantype/gameend_text_PING_HU.png",
+      "fantype/gameend_text_QING_WU_DUI.png",
+      "fantype/gameend_text_QJLONG_WU_DUI.png",
+      "fantype/gameend_text_QLONG_WU_DUI.png",
+      "fantype/gameend_text_WU_DUI.png",
+      "fantype/gameend_type_back.png",
+      "fantype/gameend_type_baohu.png",
+      "fantype/gameend_type_daiyaojiu.png",
+      "fantype/gameend_type_dihu.png",
+      "fantype/gameend_type_duanyaojiu.png",
+      "fantype/gameend_type_duiduihu.png",
+      "fantype/gameend_type_gangshanghua.png",
+      "fantype/gameend_type_gangshangpao.png",
+      "fantype/gameend_type_gou1.png",
+      "fantype/gameend_type_gou2.png",
+      "fantype/gameend_type_gou3.png",
+      "fantype/gameend_type_haidilaoyue.png",
+      "fantype/gameend_type_haidipao.png",
+      "fantype/gameend_type_jiangduidui.png",
+      "fantype/gameend_type_ka1.png",
+      "fantype/gameend_type_ka2.png",
+      "fantype/gameend_type_ka3.png",
+      "fantype/gameend_type_qiangganghu.png",
+      "fantype/gameend_type_qingduidui.png",
+      "fantype/gameend_type_qingyaojiu.png",
+      "fantype/gameend_type_qingyise.png",
+      "fantype/gameend_type_tianhu.png",
+      "fantype/gameend_type_ting0.png",
+      "fantype/gameend_type_ting1.png",
+      "game_back_1.png",
+      "game_end_di_lose.png",
+      "game_end_di_win.png",
+      "game_num_0.png",
+      "game_weave_0.png",
+      "gameend_0_tag_0.png",
+      "gameend_0_tag_1.png",
+      "gameend_1_tag_0.png",
+      "gameend_1_tag_1.png",
+      "gameend_2_tag_0.png",
+      "gameend_2_tag_1.png",
+      "gameend_back_black.png",
+      "gameend_bt_share_0.png",
+      "gameend_bt_share_1.png",
+      "gameend_continue_bt_0.png",
+      "gameend_continue_bt_1.png",
+      "gameend_exTable_bt_0.png",
+      "gameend_exTable_bt_1.png",
+      "gameend_girl_0.png",
+      "gameend_girl_1.png",
+      "gameend_girl_2.png",
+      "gameend_line.png",
+      "gameend_num_lose.png",
+      "gameend_num_small_lose.png",
+      "gameend_num_small_win.png",
+      "gameend_num_win.png",
+      "gameend_result_0.png",
+      "gameend_result_1.png",
+      "gameend_result_2.png",
+      "gameend_text_1fan_lose.png",
+      "gameend_text_1fan_win.png",
+      "gameend_text_2fan_lose.png",
+      "gameend_text_2fan_win.png",
+      "gameend_text_3fan_lose.png",
+      "gameend_text_3fan_win.png",
+      "gameend_text_4fan_lose.png",
+      "gameend_text_4fan_win.png",
+      "gameend_text_5fan_lose.png",
+      "gameend_text_5fan_win.png",
+      "gameend_text_6fan_lose.png",
+      "gameend_text_6fan_win.png",
+      "gameend_text_6fanfd_lose.png",
+      "gameend_text_6fanfd_win.png",
+      "gameend_text_beiguafeng.png",
+      "gameend_text_beixiayu.png",
+      "gameend_text_beizimo.png",
+      "gameend_text_dianpao.png",
+      "gameend_text_guafeng.png",
+      "gameend_text_paohu.png",
+      "gameend_text_qinghu.png",
+      "gameend_text_ting_win.png",
+      "gameend_text_transfer_lose.png",
+      "gameend_text_transfer_win.png",
+      "gameend_text_wuting_lose.png",
+      "gameend_text_xiayu_win.png",
+      "gameend_text_zimo.png",
+      "share_code.png",
+      "share_logo.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/ScoreView.lua",
+        "line": 59,
+        "function": "ScoreView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/ScoreView.lua",
+        "line": 64,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/ScoreView.lua",
+        "line": 258,
+        "function": "ScoreView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/SiceView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/SiceView.lua",
+        "line": 6,
+        "function": "SiceView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/TableCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_weave_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/TableCard.lua",
+        "line": 12,
+        "function": "TableCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/WeaveCard.lua",
+    "resources": [
+      "game_tablecard_h.png",
+      "game_tablecard_h2.png",
+      "game_weave_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/game/game/chess/sparrowsclm/src/views/other/WeaveCard.lua",
+        "line": 20,
+        "function": "WeaveCard:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/ChatView.lua",
+    "resources": [
+      "ani_chatvoice_0.png",
+      "bg_chat.png",
+      "bg_chatvoice.png",
+      "bt_sendchat_0.png",
+      "chat_scorllp_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/ChatView.lua",
+        "line": 5,
+        "function": "ChatView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/NewChatView.lua",
+    "resources": [
+      "0.png",
+      "1.png",
+      "ani_chatvoice_%d.png",
+      "ani_chatvoice_3.png",
+      "bt_close_0.png",
+      "bt_send_0.png",
+      "message_box_0.png",
+      "message_box_1.png",
+      "newchat_bg_1.png",
+      "newchat_bg_2.png",
+      "newchat_bg_3.png",
+      "newchat_input_bg.png",
+      "newchat_line.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/NewChatView.lua",
+        "line": 16,
+        "function": "NewChatView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/NewChatView.lua",
+        "line": 462,
+        "function": "NewChatView:OnButtonClickEventListener"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/QuickChatView.lua",
+    "resources": [
+      "0.png",
+      "1.png",
+      "newchat_bg_1.png",
+      "newchat_bg_2.png",
+      "newchat_bg_3.png",
+      "newchat_line.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/chat/QuickChatView.lua",
+        "line": 16,
+        "function": "QuickChatView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/share/InviteChatLayer.lua",
+    "resources": [
+      "General/back_frame_1.png",
+      "General/bt_close.png",
+      "PlazaShare/bt_shareMoWang.png",
+      "PlazaShare/bt_shareWechat_1.png",
+      "PlazaShare/bt_shareXianLiao_1.png",
+      "PlazaShare/bt_share_impl.png",
+      "PlazaShare/pic_button_back.png",
+      "PlazaShare/text_share_to.png",
+      "PlazaShare/text_title_tip.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/share/InviteChatLayer.lua",
+        "line": 3,
+        "function": "InviteChatLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/twocodes/QRCodeNode.lua",
+    "resources": [
+      "General/code_black.png",
+      "General/code_white.png",
+      "share_icon.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/twocodes/QRCodeNode.lua",
+        "line": 5,
+        "function": "QRCodeNode:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/twocodes/qrencode.lua",
+    "resources": [],
+    "constructors": []
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/updata/GameUpdateLayer.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/other/updata/GameUpdateLayer.lua",
+        "line": 13,
+        "function": "GameUpdateLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleConfigDefine.lua",
+    "resources": [],
+    "constructors": []
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleFindLayer.lua",
+    "resources": [
+      "Battle/battle_frame_2.png",
+      "Battle/bt_confirm_0.png",
+      "Battle/bt_delete_0.png",
+      "Battle/bt_keyboard_0.png",
+      "Battle/num_frame.png",
+      "Battle/num_keyboard.png",
+      "Battle/num_number.png",
+      "Battle/title_battle.png",
+      "General/bt_return.png",
+      "background3.png",
+      "bt_lora.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleFindLayer.lua",
+        "line": 23,
+        "function": "BattleFindLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleFindLayer.lua",
+        "line": 159,
+        "function": "BattleFindLayer:onButtonClickedEvent"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleFindLayer.lua",
+        "line": 220,
+        "function": "BattleFindLayer:onCreateBattleCallBack"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleListLayer.lua",
+    "resources": [
+      "Battle/battle_frame_2.png",
+      "Battle/bt_create_room_0.png",
+      "Battle/bt_dismiss_0.png",
+      "Battle/bt_record_0.png",
+      "Battle/bt_share_0.png",
+      "Battle/bt_startgame_0.png",
+      "Battle/detail_frame_1.png",
+      "Battle/frame_player.png",
+      "Battle/non_room_tip.png",
+      "Battle/number_frame.png",
+      "Battle/text_detail_0.png",
+      "Battle/text_gold.png",
+      "Battle/text_ingot.png",
+      "Battle/text_leave_count.png",
+      "Battle/text_leave_time.png",
+      "Battle/title_battle.png",
+      "Battle/title_detail.png",
+      "General/back_frame_1.png",
+      "General/bt_close.png",
+      "General/bt_list_bank_0.png",
+      "General/bt_list_recharge_0.png",
+      "General/bt_return.png",
+      "General/num_list_gold.png",
+      "General/num_list_ingot.png",
+      "RoomList/info_frame.png",
+      "RoomList/page_0.png",
+      "RoomList/page_1.png",
+      "RoomList/room_frame_0.png",
+      "RoomList/title_info.png",
+      "background3.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleListLayer.lua",
+        "line": 46,
+        "function": "BattleListLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleListLayer.lua",
+        "line": 306,
+        "function": "BattleListLayer:onButtonClickedEvent"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleListLayer.lua",
+        "line": 368,
+        "function": "BattleListLayer:onCreateBattleCallBack"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleListLayer.lua",
+        "line": 643,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleRecordLayer.lua",
+    "resources": [
+      "Battle/battle_frame_2.png",
+      "Battle/battle_word_1.png",
+      "Battle/bt_other_video_0.png",
+      "Battle/bt_score_share_0.png",
+      "Battle/bt_show_video_0.png",
+      "Battle/bt_video_share_0.png",
+      "Battle/bt_watch_video_0.png",
+      "Battle/flg_winner.png",
+      "Battle/list_frame_record.png",
+      "Battle/list_frame_record_1.png",
+      "Battle/notip_record.png",
+      "Battle/title_battle.png",
+      "General/bt_return.png",
+      "Head/face_nobody.png",
+      "Head/face_stencil.png",
+      "Head/face_x_00.png",
+      "background3.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleRecordLayer.lua",
+        "line": 17,
+        "function": "BattleRecordLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleRecordLayer.lua",
+        "line": 451,
+        "function": "BattleRecordLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleScoreLayer.lua",
+    "resources": [
+      "Battle/Score/bs_numtype.png",
+      "Battle/Score/bs_txt_create.png",
+      "Battle/Score/bs_txt_roomnum.png",
+      "Battle/Score/bt_continue_battle.png",
+      "Battle/Score/bt_copy_0.png",
+      "Battle/Score/bt_return_0.png",
+      "Battle/Score/bt_session_0.png",
+      "Battle/Score/bt_share_0.png",
+      "Battle/Score/bt_wechat_0.png",
+      "Battle/Score/icon_1.png",
+      "Battle/Score/num_continue_time.png",
+      "Battle/Score/num_lose.png",
+      "Battle/Score/num_win.png",
+      "Battle/Score/text_cellscore.png",
+      "Battle/Score/text_min.png",
+      "Battle/Score/text_round.png",
+      "Battle/Score/text_time.png",
+      "Battle/flag_room_order.png",
+      "Benefit/diamond_type_6.png",
+      "General/back_frame_0.png",
+      "Head/face_frame.png",
+      "Head/face_x_00.png",
+      "PlazaShare/bt_shareMoWang.png",
+      "PlazaShare/bt_shareSession_1.png",
+      "PlazaShare/bt_shareWechat_1.png",
+      "PlazaShare/bt_shareXianLiao_1.png",
+      "PlazaShare/bt_share_impl.png",
+      "background2.png",
+      "battlescore_item_bg.png",
+      "battlescore_num_draw.png",
+      "battlescore_num_lose.png",
+      "battlescore_num_win.png",
+      "battlescore_titel.png",
+      "frame_share.png",
+      "plaza/res/Battle/Score/battllescore_listbg.png",
+      "scale_tmp_share_battlescore.jpg",
+      "share_code.png",
+      "tmp_share_battlescore.jpg"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleScoreLayer.lua",
+        "line": 17,
+        "function": "BattleScoreLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleScoreLayer.lua",
+        "line": 55,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/BattleScoreLayer.lua",
+        "line": 504,
+        "function": "BattleScoreLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/CreateConfigView.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/CreateConfigView.lua",
+        "line": 30,
+        "function": "CCreateConfigView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/NBattleCreateLayer.lua",
+    "resources": [
+      "Battle/bt_create_0.png",
+      "Battle/bt_list_0.png",
+      "Battle/bt_rule_0.png",
+      "Battle/bt_set_confirm_0.png",
+      "Battle/frame_new.png",
+      "General/bt_return.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/NBattleCreateLayer.lua",
+        "line": 39,
+        "function": "NBattleCreateLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/NBattleCreateLayer.lua",
+        "line": 378,
+        "function": "NBattleCreateLayer:onButtonClickedEvent"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/NBattleCreateLayer.lua",
+        "line": 447,
+        "function": "NBattleCreateLayer:onCreateRoom"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/OtherVideoDlg.lua",
+    "resources": [
+      "Battle/bt_input_clean_0.png",
+      "General/bt_close.png",
+      "General/bt_confirm_0.png",
+      "plaza/res/Battle/record_icon_0.png",
+      "plaza/res/video/bg_othervideo.png",
+      "plaza/res/video/bt_dlg_item.png",
+      "plaza/res/video/bt_dlg_showvideo_0.png",
+      "plaza/res/video/num_dlg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/OtherVideoDlg.lua",
+        "line": 13,
+        "function": "OtherVideoDlg:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/OtherVideoDlg.lua",
+        "line": 87,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/OtherVideoDlg.lua",
+        "line": 103,
+        "function": "OtherVideoDlg:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubCheckBoxGroup.lua",
+    "resources": [
+      "Battle/cbt_new_2.png",
+      "Battle/cbt_new_3.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubCheckBoxGroup.lua",
+        "line": 4,
+        "function": "CSubCheckBoxGroup:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubControl.lua",
+    "resources": [],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubControl.lua",
+        "line": 6,
+        "function": "CSubControl:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubGameListView.lua",
+    "resources": [
+      "Battle/battle_frame_1.png",
+      "Battle/battle_page_down.png",
+      "Battle/battle_page_up.png",
+      "Battle/icon_gamebtn_cfg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubGameListView.lua",
+        "line": 3,
+        "function": "CSubGameListView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubNumInput.lua",
+    "resources": [
+      "Battle/textfield_frame.png",
+      "Option/bt_minus.png",
+      "Option/bt_plus.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubNumInput.lua",
+        "line": 11,
+        "function": "CSubNumInput:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubRadioGroup.lua",
+    "resources": [
+      "Battle/cbt_new_0.png",
+      "Battle/cbt_new_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/battle/SubRadioGroup.lua",
+        "line": 15,
+        "function": "CSubRadioGroup:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/BaseEnsureLayer.lua",
+    "resources": [
+      "Benefit/bt_dibao_0.png",
+      "Benefit/frame_top.png",
+      "Benefit/frame_up.png",
+      "Benefit/num_dibao.png",
+      "Benefit/text_dibao_0.png",
+      "Benefit/text_dibao_1.png",
+      "Benefit/text_dibao_2.png",
+      "Benefit/text_dibao_3.png",
+      "Benefit/text_dibao_4.png",
+      "Benefit/title_1.png",
+      "General/bt_return.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/BaseEnsureLayer.lua",
+        "line": 32,
+        "function": "BaseEnsureLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/BaseEnsureLayer.lua",
+        "line": 141,
+        "function": "BaseEnsureLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/BenefitLayer.lua",
+    "resources": [
+      "Benefit/frame_top.png",
+      "Benefit/frame_up.png",
+      "Benefit/title_main.png",
+      "General/bt_return.png",
+      "General/general_tip_frame.png",
+      "General/general_tip_num.png",
+      "_0.png",
+      "bt_lora.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/BenefitLayer.lua",
+        "line": 29,
+        "function": "BenefitLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/BenefitLayer.lua",
+        "line": 165,
+        "function": "BenefitLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/LuckyRollLayer.lua",
+    "resources": [
+      "Benefit/bt_luckyroll_0_0.png",
+      "Benefit/bt_luckyroll_0_1.png",
+      "Benefit/bt_luckyroll_0_2.png",
+      "Benefit/bt_luckyroll_info.png",
+      "Benefit/bt_signin_0_0.png",
+      "Benefit/frame_top.png",
+      "Benefit/frame_up.png",
+      "Benefit/icon_4.png",
+      "Benefit/luckyroll_0_0.png",
+      "Benefit/luckyroll_1_0.png",
+      "Benefit/luckyroll_2_0.png",
+      "Benefit/luckyroll_3_0.png",
+      "Benefit/luckyroll_frame.png",
+      "Benefit/luckyroll_frame_3.png",
+      "Benefit/luckyroll_frame_4.png",
+      "Benefit/luckyroll_frame_5.png",
+      "Benefit/luckyroll_frame_6.png",
+      "Benefit/luckyroll_num_2.png",
+      "Benefit/luckyroll_text_1.png",
+      "Benefit/sign_num.png",
+      "Benefit/tip_sign_1.png",
+      "Benefit/tip_sign_2.png",
+      "Benefit/title_luckyroll.png",
+      "General/bt_return.png",
+      "_0.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/LuckyRollLayer.lua",
+        "line": 77,
+        "function": "LuckyRollLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/LuckyRollLayer.lua",
+        "line": 267,
+        "function": "LuckyRollLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RedeemCodeLayer.lua",
+    "resources": [
+      "Benefit/bt_card_0.png",
+      "Benefit/frame_top.png",
+      "Benefit/frame_up.png",
+      "Benefit/icon_card.png",
+      "Benefit/title_3.png",
+      "General/bt_return.png",
+      "Logon/icon_password.png",
+      "Logon/textfield_frame_logon.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RedeemCodeLayer.lua",
+        "line": 12,
+        "function": "RedeemCodeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RedeemCodeLayer.lua",
+        "line": 91,
+        "function": "RedeemCodeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RewardDialog.lua",
+    "resources": [
+      "Benefit/icon_4.png",
+      "_0.png",
+      "general_logo.png",
+      "reward/bg_light.png",
+      "reward/bg_reward.png",
+      "reward/bt_confirm.png",
+      "reward/bt_share_session.png",
+      "reward/num_reward.png",
+      "reward/reward_card.png",
+      "reward/reward_gold.png",
+      "reward/word_congratulate.png",
+      "share_code.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RewardDialog.lua",
+        "line": 8,
+        "function": "RewardDialog:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RewardDialog.lua",
+        "line": 11,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/benefit/RewardDialog.lua",
+        "line": 160,
+        "function": "RewardDialog:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/bindphone/BindPhoneLayer.lua",
+    "resources": [
+      "#bindphone_bg.png",
+      "#bindphone_bg_1.png",
+      "#bindphone_bg_2.png",
+      "#bindphone_bg_3.png",
+      "#bindphone_bg_input_1.png",
+      "#bindphone_bg_title_1.png",
+      "#bindphone_bg_title_2.png",
+      "#bindphone_icon_line.png",
+      "#bindphone_icon_mark_1.png",
+      "#bindphone_icon_mark_2.png",
+      "#bindphone_icon_safe.png",
+      "#bindphone_title_1.png",
+      "#bindphone_title_2.png",
+      "#bindphone_title_3.png",
+      "#bindphone_title_4.png",
+      "#bindphone_word_account.png",
+      "#bindphone_word_bind_success.png",
+      "#bindphone_word_confirm_pass.png",
+      "#bindphone_word_pass.png",
+      "#bindphone_word_phonenum.png",
+      "#bindphone_word_vtf_code.png",
+      "General/bt_close.png",
+      "bindphone.plist",
+      "bindphone.png",
+      "bindphone/bind_reward.png",
+      "bindphone_bt_bind.png",
+      "bindphone_bt_unbind_1.png",
+      "bindphone_bt_unbind_2.png",
+      "bindphone_bt_vtf_code_1.png",
+      "bindphone_bt_vtf_code_2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/bindphone/BindPhoneLayer.lua",
+        "line": 14,
+        "function": "BindPhoneLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/bindphone/BindPhoneLayer.lua",
+        "line": 36,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/AgeTips.lua",
+    "resources": [
+      "General/bt_close.png",
+      "General/notice_frame.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/AgeTips.lua",
+        "line": 21,
+        "function": "AgeTips:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/AgeTips.lua",
+        "line": 26,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonLayer.lua",
+    "resources": [
+      "General/frame_model.png",
+      "General/menu_option.png",
+      "General/menu_service.png",
+      "Logon/bt_limittips.png",
+      "bt_lora.png",
+      "gps/gps_icon.png",
+      "gps/gps_txt_1000.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonLayer.lua",
+        "line": 64,
+        "function": "LogonLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonLayer.lua",
+        "line": 278,
+        "function": "LogonLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonModeView.lua",
+    "resources": [
+      "CopyRight/CopyRight_1.png",
+      "CopyRight/CopyRight_2.png",
+      "CopyRight/CopyRight_3.png",
+      "Logon/bt_check_0.png",
+      "Logon/bt_check_1.png",
+      "Logon/bt_regist.png",
+      "Logon/bt_wechat.png",
+      "bindphone/bt_mobilephone_logon.png",
+      "bt_account.png",
+      "general_logo.png",
+      "logon_text.png",
+      "plaza/General/alpha.png",
+      "plaza/general/logon_text.png",
+      "plaza/res/CopyRight/CopyRight_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonModeView.lua",
+        "line": 18,
+        "function": "LogonModeView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonModeView.lua",
+        "line": 136,
+        "function": "LogonModeView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonPhoneView.lua",
+    "resources": [
+      "General/bt_return.png",
+      "General/choose_bg.png",
+      "General/choose_pass.png",
+      "Logon/bt_logon.png",
+      "bindphone/bt_forget_password.png",
+      "bindphone/input_back.png",
+      "bindphone/word_mobile_phone.png",
+      "bindphone/word_password.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonPhoneView.lua",
+        "line": 3,
+        "function": "LogonPhoneView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonResetView.lua",
+    "resources": [
+      "General/bt_return.png",
+      "bindphone/bt_reset_password.png",
+      "bindphone/bt_vft_code.png",
+      "bindphone/bt_vft_code_grey.png",
+      "bindphone/input_back.png",
+      "bindphone/word_confirm_password.png",
+      "bindphone/word_phone_number.png",
+      "bindphone/word_set_password.png",
+      "bindphone/word_vft_code.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonResetView.lua",
+        "line": 7,
+        "function": "LogonResetView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonView.lua",
+    "resources": [
+      "General/bt_return.png",
+      "General/choose_bg.png",
+      "General/choose_pass.png",
+      "Logon/bt_logon.png",
+      "Logon/bt_regist_2.png",
+      "Logon/icon_account.png",
+      "Logon/icon_password.png",
+      "Logon/textfield_frame_logon.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonView.lua",
+        "line": 10,
+        "function": "LogonView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/LogonView.lua",
+        "line": 131,
+        "function": "LogonView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/RegisterView.lua",
+    "resources": [
+      "General/bt_return.png",
+      "General/choose_bg.png",
+      "General/choose_pass.png",
+      "Regist/bt_regist_agree.png",
+      "Regist/bt_regist_confirm.png",
+      "Regist/text_regist_account.png",
+      "Regist/text_regist_nickname.png",
+      "Regist/text_regist_password.png",
+      "Regist/textfield_frame_regist.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/RegisterView.lua",
+        "line": 13,
+        "function": "RegisterView:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/RegisterView.lua",
+        "line": 128,
+        "function": "RegisterView:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/StationConfirm.lua",
+    "resources": [
+      "_0.png",
+      "gpsStationInfo.plist",
+      "gpslist/bt_close.png",
+      "gpslist/bt_gpsconfig.png",
+      "gpslist/cbt_select_0.png",
+      "gpslist/cbt_select_1.png",
+      "gpslist/flg_address.png",
+      "gpslist/map_0.png",
+      "gpslist/map_bg_0.png",
+      "gpslist/map_bg_1.png",
+      "gpslist/station_bg.png",
+      "gpslist/station_title.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/StationConfirm.lua",
+        "line": 15,
+        "function": "CStationConfirm:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/StationConfirm.lua",
+        "line": 16,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/logon/StationConfirm.lua",
+        "line": 178,
+        "function": "CStationConfirm:onButtonClicked"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyFaceLayer.lua",
+    "resources": [
+      "#modifyinfo_bg.png",
+      "#modifyinfo_bg_title_1.png",
+      "#modifyinfo_bg_title_2.png",
+      "#modifyinfo_face_title.png",
+      "General/bt_close.png",
+      "Head/face_x_00.png",
+      "Head/face_x_01.png",
+      "Head/face_x_02.png",
+      "Head/face_x_03.png",
+      "Head/face_x_04.png",
+      "Head/face_x_05.png",
+      "Head/face_x_06.png",
+      "Head/face_x_07.png",
+      "Head/face_x_08.png",
+      "Head/face_x_09.png",
+      "Head/face_x_10.png",
+      "Head/face_x_11.png",
+      "Head/face_x_12.png",
+      "Head/face_x_13.png",
+      "Head/face_x_14.png",
+      "Head/face_x_15.png",
+      "Head/face_x_16.png",
+      "Head/face_x_17.png",
+      "Head/face_x_18.png",
+      "Head/face_x_19.png",
+      "modifyinfo.plist",
+      "modifyinfo.png",
+      "modifyinfo_bt_modify.png",
+      "modifyinfo_face_box_1.png",
+      "modifyinfo_face_box_2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyFaceLayer.lua",
+        "line": 13,
+        "function": "ModifyFaceLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyFaceLayer.lua",
+        "line": 19,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyFaceLayer.lua",
+        "line": 106,
+        "function": "ModifyFaceLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyInfoLayer.lua",
+    "resources": [
+      "#modifyinfo_bg.png",
+      "#modifyinfo_bg_input_1.png",
+      "#modifyinfo_bg_tip.png",
+      "#modifyinfo_bg_title_1.png",
+      "#modifyinfo_bg_title_2.png",
+      "#modifyinfo_data_title.png",
+      "#modifyinfo_data_word_account.png",
+      "#modifyinfo_data_word_sex.png",
+      "#modifyinfo_icon_tip.png",
+      "General/bt_close.png",
+      "modifyinfo.plist",
+      "modifyinfo.png",
+      "modifyinfo_bt_modify.png",
+      "modifyinfo_checkbox_1.png",
+      "modifyinfo_checkbox_2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyInfoLayer.lua",
+        "line": 15,
+        "function": "ModifyInfoLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyInfoLayer.lua",
+        "line": 21,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyInfoLayer.lua",
+        "line": 167,
+        "function": "ModifyInfoLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyPassLayer.lua",
+    "resources": [
+      "#modifyinfo_bg.png",
+      "#modifyinfo_bg_input_1.png",
+      "#modifyinfo_bg_title_1.png",
+      "#modifyinfo_bg_title_2.png",
+      "#modifyinfo_pass_title.png",
+      "#modifyinfo_pass_word_confirm.png",
+      "#modifyinfo_pass_word_new.png",
+      "#modifyinfo_pass_word_old.png",
+      "General/bt_close.png",
+      "modifyinfo.plist",
+      "modifyinfo.png",
+      "modifyinfo_bt_modify.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyPassLayer.lua",
+        "line": 14,
+        "function": "ModifyPassLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyPassLayer.lua",
+        "line": 20,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/ModifyPassLayer.lua",
+        "line": 126,
+        "function": "ModifyPassLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/UserInfoLayer.lua",
+    "resources": [
+      "#userinfo_bg.png",
+      "#userinfo_bg_title.png",
+      "#userinfo_icon_bind_grey.png",
+      "#userinfo_icon_bind_light.png",
+      "#userinfo_icon_facebox.png",
+      "#userinfo_icon_member_1.png",
+      "#userinfo_icon_member_2.png",
+      "#userinfo_icon_member_3.png",
+      "#userinfo_icon_member_4.png",
+      "#userinfo_icon_modifyinfo.png",
+      "#userinfo_icon_modifypassword.png",
+      "#userinfo_icon_realname_grey.png",
+      "#userinfo_icon_realname_light.png",
+      "#userinfo_icon_vip.png",
+      "#userinfo_line_left.png",
+      "#userinfo_line_up.png",
+      "#userinfo_word_account.png",
+      "#userinfo_word_account_safe.png",
+      "#userinfo_word_id.png",
+      "#userinfo_word_name.png",
+      "#userinfo_word_sex.png",
+      "General/bt_return.png",
+      "modifyinfo.plist",
+      "modifyinfo.png",
+      "userinfo.plist",
+      "userinfo.png",
+      "userinfo_bt_bind.png",
+      "userinfo_bt_copy.png",
+      "userinfo_bt_look.png",
+      "userinfo_bt_modify.png",
+      "userinfo_bt_modify_face.png",
+      "userinfo_bt_realname.png",
+      "userinfo_icon_bind_grey.png",
+      "userinfo_icon_bind_light.png",
+      "userinfo_icon_facebox_2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/modify/UserInfoLayer.lua",
+        "line": 8,
+        "function": "UserInfoLayer:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+    "resources": [
+      "Benefit/frame_top.png",
+      "Benefit/frame_up.png",
+      "General/bt_return.png",
+      "Rank/rank_bg.png",
+      "Rank/rank_bg_0.png",
+      "Rank/rank_cbt_0.png",
+      "Rank/rank_cbt_1.png",
+      "Rank/rank_frame.png",
+      "Rank/rank_icon_0.png",
+      "Rank/rank_match_cbt_0.png",
+      "Rank/rank_match_cbt_1.png",
+      "Rank/rank_match_cbt_game1_0.png",
+      "Rank/rank_match_cbt_game1_1.png",
+      "Rank/rank_match_cbt_game4_0.png",
+      "Rank/rank_match_cbt_game4_1.png",
+      "Rank/rank_num.png",
+      "Rank/rank_text.png",
+      "Rank/rank_title.png",
+      "Rank/rank_total_cbt_0.png",
+      "Rank/rank_total_cbt_1.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+        "line": 12,
+        "function": "RankListLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/rank/RankListLayer.lua",
+        "line": 313,
+        "function": "RankListLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TeaHouse.lua",
+    "resources": [
+      "#bg_teahouse_def_0.png",
+      "#bg_teahouse_title.png",
+      "#title_teahouse.png",
+      "#title_teahouse_card.png",
+      "#title_teahouse_diamond.png",
+      "#title_teahouse_endinfo.png",
+      "#title_teahouse_info.png",
+      "bt_teahouse_return.png",
+      "plaza/res/teahouse.plist",
+      "plaza/res/teahouse.png",
+      "plaza/res/teahouse2.plist",
+      "plaza/res/teahouse2.png",
+      "plaza/res/teahouse3.plist",
+      "plaza/res/teahouse3.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TeaHouse.lua",
+        "line": 167,
+        "function": "CTeaHouse:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TeaHouse.lua",
+        "line": 687,
+        "function": "CTeaHouse:onCreateTeaHouse"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ActualTimeInfo.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#teahouse3_tip_noscore.png",
+      "CActualTimeInfo_SelectIndex.plist",
+      "bt_teahouse_close.png",
+      "cbt_teahouse_title_1.png",
+      "cbt_teahouse_title_2.png",
+      "plaza/res/Battle/atbattle_bt_showall.png",
+      "plaza/res/Battle/atbattle_title.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ActualTimeInfo.lua",
+        "line": 7,
+        "function": "CActualTimeInfo:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ActualTimeItem.lua",
+    "resources": [
+      "#bg_teahouse_def_2.png",
+      "#line_teahouse.png",
+      "#teahouse2_flg_winner.png",
+      "Head/face_nobody.png",
+      "bt_teahouse_detial.png",
+      "plaza/res/Battle/atbattle_bt_copy.png",
+      "teahouse2_bt_unshowscore.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ActualTimeItem.lua",
+        "line": 14,
+        "function": "CTH_ActualTimeItem:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_AlertDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_system.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_confirm.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_AlertDlg.lua",
+        "line": 8,
+        "function": "CTeaHouseAlert:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_AlertDlg.lua",
+        "line": 11,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ApplyListDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_apply.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_greenbg.png",
+      "bt_teahouse_orangebg.png",
+      "bt_teahouse_over.png",
+      "bt_teahouse_pass.png",
+      "bt_teahouse_refuse.png",
+      "bt_teahouse_seach.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ApplyListDlg.lua",
+        "line": 7,
+        "function": "CTeaHouseApplyList:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ApplyListDlg.lua",
+        "line": 9,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_BattleDetail.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_battledetail.png",
+      "bt_teahouse_close.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_BattleDetail.lua",
+        "line": 12,
+        "function": "CTeaHouseBattleDetail:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_BattleDetail.lua",
+        "line": 17,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_BigWinner.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#teahouse2_title_winner.png",
+      "#teahouse2_winner_bg_1.png",
+      "#teahouse2_winner_bg_2.png",
+      "#teahouse2_winner_warnbg_1.png",
+      "bt_teahouse_add.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_sub.png",
+      "teahouse2_winner_bt_save.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_BigWinner.lua",
+        "line": 5,
+        "function": "CTeaHouseBigWinner:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_BigWinner.lua",
+        "line": 7,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_CalculateDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_input.png",
+      "#bg_teahouse_title_1.png",
+      "bt_teahouse_add.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_confirm.png",
+      "bt_teahouse_save.png",
+      "bt_teahouse_sub.png",
+      "bt_teahouse_take.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_CalculateDlg.lua",
+        "line": 5,
+        "function": "CTeaHouseCalculateDlg:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_CalculateDlg.lua",
+        "line": 7,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_CreateDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#rbt_teahouse_1.png",
+      "#rbt_teahouse_2.png",
+      "#title_teahouse_create.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_confirm.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_CreateDlg.lua",
+        "line": 8,
+        "function": "CTeaHouseCreateDlg:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_CreateDlg.lua",
+        "line": 11,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Info.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#flg_teahouse_nogame.png",
+      "#flg_teahouse_tip.png",
+      "#teahouse2_cbt_text_all.png",
+      "#teahouse2_cbt_text_canjoin.png",
+      "#teahouse2_cbt_text_gaming.png",
+      "#teahouse2_flg_canjoin.png",
+      "#teahouse2_icon_room.png",
+      "#teahouse2_icon_time.png",
+      "#teahouse2_line_0.png",
+      "#teahouse2_roomitem_bg.png",
+      "bt_teahouse_createbattle.png",
+      "bt_teahouse_exit.png",
+      "bt_teahouse_msg.png",
+      "bt_teahouse_playrule.png",
+      "bt_teahouse_returnroom.png",
+      "girl_teahouse.png",
+      "plaza/res/General/tea_share_icon.png",
+      "teahouse2_bt_battlescore.png",
+      "teahouse2_bt_detail.png",
+      "teahouse2_bt_detail_2.png",
+      "teahouse2_bt_dissroom.png",
+      "teahouse2_bt_joinroom.png",
+      "teahouse2_cbt_select_off.png",
+      "teahouse2_cbt_select_on.png",
+      "teahouse2_flag_face.png",
+      "teahouse2_flg_canjoin.png",
+      "teahouse2_flg_full.png",
+      "teahouse2_flg_gaming.png",
+      "teahouse3_bt_add.png",
+      "teahouse3_bt_edit.png",
+      "teahouse3_bt_share.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Info.lua",
+        "line": 58,
+        "function": "CTeaHouseInfo:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Info.lua",
+        "line": 342,
+        "function": "CTeaHouseInfo:onButtonClickEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_JoinDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#flg_teahouse.png",
+      "#flg_teahouse_id.png",
+      "#flg_teahouse_name.png",
+      "#flg_teahouse_user.png",
+      "#line_teahouse.png",
+      "#title_teahouse_join_2.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_join_2.png",
+      "bt_teahouse_seach.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_JoinDlg.lua",
+        "line": 5,
+        "function": "CTeaHouseJoinDlg:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_JoinDlg.lua",
+        "line": 8,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Main.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#cbt_teahouse_title.png",
+      "#flg_teahouse_id.png",
+      "#flg_teahouse_name.png",
+      "#flg_teahouse_nocreate.png",
+      "#flg_teahouse_nojoin.png",
+      "#flg_teahouse_tip.png",
+      "#flg_teahouse_user.png",
+      "#line_teahouse.png",
+      "#title_teahouse_join.png",
+      "#title_teahouse_me.png",
+      "bt_teahouse_create.png",
+      "bt_teahouse_help.png",
+      "bt_teahouse_join.png",
+      "bt_teahouse_mail.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Main.lua",
+        "line": 15,
+        "function": "CTeaHouseMain:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Main.lua",
+        "line": 165,
+        "function": "CTeaHouseMain:onButtonClickEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ManagerDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#teahouse3_tip_noscore.png",
+      "#title_teahouse_endinfo.png",
+      "#title_teahouse_score.png",
+      "#title_teahouse_user.png",
+      "bg_teahouse_title_2_1.png",
+      "bg_teahouse_title_2_2.png",
+      "bg_teahouse_title_2_3.png",
+      "bg_teahouse_title_3_1.png",
+      "bg_teahouse_title_3_2.png",
+      "bg_teahouse_title_3_3.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_exit.png",
+      "bt_teahouse_seach.png",
+      "cbt_teahouse_title_1.png",
+      "cbt_teahouse_title_2.png",
+      "teahouse2_bt_sort_0.png",
+      "teahouse2_bt_sort_1.png",
+      "teahouse2_bt_winner.png",
+      "teahouse3_bt_managerset.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ManagerDlg.lua",
+        "line": 15,
+        "function": "CTeaHouseManager:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ManagerDlg.lua",
+        "line": 18,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ManagerDlg.lua",
+        "line": 276,
+        "function": "CTeaHouseManager:onCreateRank"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ManagerSet.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#line_teahouse.png",
+      "#teahouse3_icon_add.png",
+      "#teahouse3_icon_manager.png",
+      "#teahouse3_title_manager.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_seach.png",
+      "teahouse2_bt_sort_0.png",
+      "teahouse2_bt_sort_1.png",
+      "teahouse3_bt_appoint_1.png",
+      "teahouse3_bt_appoint_2.png",
+      "teahouse3_bt_relieved.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ManagerSet.lua",
+        "line": 4,
+        "function": "CTeaHouseManagerSet:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MemberDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#teahouse3_tip_noscore.png",
+      "#title_teahouse_endinfo.png",
+      "#title_teahouse_score.png",
+      "#title_teahouse_user.png",
+      "bg_teahouse_title_2_1.png",
+      "bg_teahouse_title_2_2.png",
+      "bg_teahouse_title_2_3.png",
+      "bg_teahouse_title_3_1.png",
+      "bg_teahouse_title_3_2.png",
+      "bg_teahouse_title_3_3.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_exit.png",
+      "bt_teahouse_seach.png",
+      "cbt_teahouse_title_1.png",
+      "cbt_teahouse_title_2.png",
+      "teahouse2_bt_winner.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MemberDlg.lua",
+        "line": 11,
+        "function": "CTeaHouseMember:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MemberDlg.lua",
+        "line": 13,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MessageDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_message.png",
+      "bt_teahouse_cancel_apply.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_delmsg.png",
+      "bt_teahouse_orangebg.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MessageDlg.lua",
+        "line": 5,
+        "function": "CTeaHouseMessage:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_MessageDlg.lua",
+        "line": 7,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ModifyDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#rbt_teahouse_1.png",
+      "#rbt_teahouse_2.png",
+      "#title_teahouse_modify.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_confirm.png",
+      "bt_teahouse_over.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ModifyDlg.lua",
+        "line": 8,
+        "function": "CTeaHouseModifyDlg:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_ModifyDlg.lua",
+        "line": 11,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_OwnerDlg.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_def_3.png",
+      "#teahouse3_tip_noscore.png",
+      "#title_teahouse_endinfo.png",
+      "#title_teahouse_score.png",
+      "#title_teahouse_user.png",
+      "bg_teahouse_title_2_1.png",
+      "bg_teahouse_title_2_2.png",
+      "bg_teahouse_title_2_3.png",
+      "bg_teahouse_title_3_1.png",
+      "bg_teahouse_title_3_2.png",
+      "bg_teahouse_title_3_3.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_over.png",
+      "bt_teahouse_seach.png",
+      "cbt_teahouse_title_1.png",
+      "cbt_teahouse_title_2.png",
+      "teahouse2_bt_sort_0.png",
+      "teahouse2_bt_sort_1.png",
+      "teahouse2_bt_winner.png",
+      "teahouse3_bt_managerset.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_OwnerDlg.lua",
+        "line": 15,
+        "function": "CTeaHouseOwner:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_OwnerDlg.lua",
+        "line": 18,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_OwnerDlg.lua",
+        "line": 279,
+        "function": "CTeaHouseOwner:onCreateRank"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_PlayRule.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_title_1.png",
+      "#teahouse2_text_bg_1.png",
+      "#teahouse2_text_bg_2.png",
+      "#title_teahouse_playrule.png",
+      "bt_teahouse_close.png",
+      "bt_teahouse_delete.png",
+      "bt_teahouse_modify.png",
+      "bt_teahouse_set_playrule.png",
+      "teahouse2_cbt_atuo_off.png",
+      "teahouse2_cbt_atuo_on.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_PlayRule.lua",
+        "line": 10,
+        "function": "TeaHousePlayRule:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_PlayRule.lua",
+        "line": 19,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_RoomMember.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_title_1.png",
+      "#teahouse2_title_roomdetail.png",
+      "bt_teahouse_close.png",
+      "teahouse2_bt_join.png",
+      "teahouse2_bt_share.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_RoomMember.lua",
+        "line": 10,
+        "function": "CTeaHouseRoomMember:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_RoomMember.lua",
+        "line": 14,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Rule.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_2.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_rule.png",
+      "bt_teahouse_close.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Rule.lua",
+        "line": 90,
+        "function": "CTeaHouseRule:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_Rule.lua",
+        "line": 92,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_TableView.lua",
+    "resources": [
+      "#bg_teahouse_def_2.png",
+      "#line_teahouse.png",
+      "#teahouse2_flg_winner.png",
+      "#teahouse3_icon_forbid.png",
+      "Head/face_nobody.png",
+      "Head/face_stencil.png",
+      "Head/face_x_00.png",
+      "bt_teahouse_detial.png",
+      "bt_teahouse_endinfo.png",
+      "bt_teahouse_history.png",
+      "bt_teahouse_video.png",
+      "plaza/res/Battle/atbattle_bt_copy.png",
+      "plaza/res/Battle/bt_mark.png",
+      "teahouse2_bt_unshowscore.png",
+      "teahouse2_bt_userbalance.png",
+      "teahouse3_bt_forbid.png",
+      "teahouse3_bt_kick.png",
+      "teahouse3_bt_startuse.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_TableView.lua",
+        "line": 32,
+        "function": "CTeaHouseTableView:ctor"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBalance.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_endinfo.png",
+      "bt_teahouse_close.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBalance.lua",
+        "line": 7,
+        "function": "CTeaHouseUserBalance:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBalance.lua",
+        "line": 9,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBattle.lua",
+    "resources": [
+      "#bg_teahouse_def_1.png",
+      "#bg_teahouse_def_3.png",
+      "#bg_teahouse_title_1.png",
+      "#title_teahouse_score.png",
+      "bt_teahouse_close.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBattle.lua",
+        "line": 7,
+        "function": "CTeaHouseUserBattle:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/teahouse/TH_UserBattle.lua",
+        "line": 9,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/ItemDetailLayer.lua",
+    "resources": [
+      "General/bt_confirm_0.png",
+      "General/bt_distribute_leave_0.png",
+      "General/bt_return.png",
+      "Shop/image_top.png",
+      "Shop/item_bt_edit_0.png",
+      "Shop/item_bt_exchange_0.png",
+      "Shop/item_default.png",
+      "Shop/item_frame_0.png",
+      "Shop/item_frame_1.png",
+      "Shop/item_frame_3.png",
+      "Shop/item_num.png",
+      "Shop/item_num_min.png",
+      "Shop/item_num_plus.png",
+      "Shop/metal_frame.png",
+      "Shop/text_item.png",
+      "UserInfo/back_frame_2.png",
+      "UserInfo/choose_1.png",
+      "background2.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/ItemDetailLayer.lua",
+        "line": 25,
+        "function": "ItemDetailLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/ItemDetailLayer.lua",
+        "line": 34,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/ItemDetailLayer.lua",
+        "line": 275,
+        "function": "ItemDetailLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewBankLayer.lua",
+    "resources": [
+      "Shop/bank_num.png",
+      "Shop/bt_save_0.png",
+      "Shop/bt_take_0.png",
+      "Shop/text_gold.png",
+      "Shop/text_insure.png",
+      "Shop/textfield_frame.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewBankLayer.lua",
+        "line": 12,
+        "function": "BankLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewBankLayer.lua",
+        "line": 112,
+        "function": "BankLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewExchangeLayer.lua",
+    "resources": [
+      "Shop/NewShop/bt_buy_gold_0.png",
+      "Shop/NewShop/icon_ingot.png",
+      "Shop/NewShop/shop_buy_exchange_present.png",
+      "Shop/NewShop/shop_frame_exchange.png",
+      "Shop/NewShop/shop_icon_gold_1.png",
+      "Shop/NewShop/shop_num_exchange.png",
+      "Shop/gold_frame.png",
+      "Shop/ingot_frame.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewExchangeLayer.lua",
+        "line": 14,
+        "function": "ExchangeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewExchangeLayer.lua",
+        "line": 82,
+        "function": "ExchangeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewItemLayer.lua",
+    "resources": [
+      "Shop/NewShop/bt_buy_item_0.png",
+      "Shop/NewShop/bt_frame_item.png",
+      "Shop/NewShop/icon_medal.png",
+      "Shop/NewShop/shop_num_item.png",
+      "Shop/item_default.png",
+      "Shop/metal_frame.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewItemLayer.lua",
+        "line": 20,
+        "function": "ItemLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewItemLayer.lua",
+        "line": 101,
+        "function": "ItemLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewRechargeCardLayer.lua",
+    "resources": [
+      "Shop/NewShop/bt_buy_buy_0.png",
+      "Shop/NewShop/choose_alipay.png",
+      "Shop/NewShop/choose_buy.png",
+      "Shop/NewShop/choose_wechat.png",
+      "Shop/NewShop/icon_recharge_1.png",
+      "Shop/NewShop/icon_rmb.png",
+      "Shop/NewShop/shop_frame_roomcard.png",
+      "Shop/NewShop/shop_icon_roomcard_1.png",
+      "Shop/NewShop/shop_num_buy.png",
+      "Shop/NewShop/shop_num_buy_present.png",
+      "Shop/gold_frame.png",
+      "Shop/ingot_frame.png",
+      "general_recharge_tip.png",
+      "plaza/general/general_recharge_tip.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewRechargeCardLayer.lua",
+        "line": 31,
+        "function": "RechargeCardLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewRechargeCardLayer.lua",
+        "line": 193,
+        "function": "RechargeCardLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewRechargeLayer.lua",
+    "resources": [
+      "Shop/NewShop/bt_buy_buy_0.png",
+      "Shop/NewShop/bt_frame_buy.png",
+      "Shop/NewShop/choose_alipay.png",
+      "Shop/NewShop/choose_apple_pay.png",
+      "Shop/NewShop/choose_buy.png",
+      "Shop/NewShop/choose_h5.png",
+      "Shop/NewShop/choose_wechat.png",
+      "Shop/NewShop/icon_favourable.png",
+      "Shop/NewShop/icon_recharge_1.png",
+      "Shop/NewShop/icon_rmb.png",
+      "Shop/NewShop/shop_icon_ingot_1.png",
+      "Shop/NewShop/shop_num_buy.png",
+      "Shop/NewShop/shop_num_buy_present.png",
+      "Shop/gold_frame.png",
+      "Shop/ingot_frame.png",
+      "service/service_wechat_code.png",
+      "service/shop_ingot_itembg.png",
+      "service/shopl_bt_call_phone.png",
+      "service/shopl_bt_online_service.png",
+      "service/shopl_recharge_tip.png",
+      "shop_payselect.plist"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewRechargeLayer.lua",
+        "line": 31,
+        "function": "RechargeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewRechargeLayer.lua",
+        "line": 212,
+        "function": "RechargeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewShopLayer.lua",
+    "resources": [
+      "General/bt_return.png",
+      "Shop/NewShop/bt_flushscore_0.png",
+      "Shop/NewShop/cbt_bank_0.png",
+      "Shop/NewShop/cbt_bank_1.png",
+      "Shop/NewShop/cbt_excharge_0.png",
+      "Shop/NewShop/cbt_excharge_1.png",
+      "Shop/NewShop/cbt_item_0.png",
+      "Shop/NewShop/cbt_item_1.png",
+      "Shop/NewShop/cbt_recharge_0.png",
+      "Shop/NewShop/cbt_recharge_1.png",
+      "Shop/NewShop/cbt_recharge_card_0.png",
+      "Shop/NewShop/cbt_recharge_card_1.png",
+      "Shop/NewShop/shop_background.png",
+      "Shop/image_top.png",
+      "Shop/tip_health.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewShopLayer.lua",
+        "line": 33,
+        "function": "ShopLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/NewShop/NewShopLayer.lua",
+        "line": 258,
+        "function": "ShopLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupExchangeLayer.lua",
+    "resources": [
+      "Shop/NewShop/bt_buy_gold_0.png",
+      "Shop/NewShop/icon_ingot.png",
+      "Shop/NewShop/shop_buy_exchange_present.png",
+      "Shop/NewShop/shop_frame_exchange.png",
+      "Shop/NewShop/shop_icon_gold_1.png",
+      "Shop/NewShop/shop_num_exchange.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupExchangeLayer.lua",
+        "line": 14,
+        "function": "PopupExchangeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupExchangeLayer.lua",
+        "line": 75,
+        "function": "PopupExchangeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupRechargeLayer.lua",
+    "resources": [
+      "Shop/NewShop/bt_buy_buy_0.png",
+      "Shop/NewShop/bt_frame_buy.png",
+      "Shop/NewShop/choose_alipay.png",
+      "Shop/NewShop/choose_apple_pay.png",
+      "Shop/NewShop/choose_buy.png",
+      "Shop/NewShop/choose_wechat.png",
+      "Shop/NewShop/icon_recharge_1.png",
+      "Shop/NewShop/icon_rmb.png",
+      "Shop/NewShop/shop_icon_ingot_1.png",
+      "Shop/NewShop/shop_num_buy.png",
+      "Shop/NewShop/shop_num_buy_present.png",
+      "Shop/frame_1.png",
+      "Shop/icon_recharge_1.png",
+      "Shop/icon_recharge__1.png",
+      "Shop/ingot_num.png",
+      "Shop/text_present.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupRechargeLayer.lua",
+        "line": 29,
+        "function": "PopupRechargeLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupRechargeLayer.lua",
+        "line": 154,
+        "function": "PopupRechargeLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupShopLayer.lua",
+    "resources": [
+      "Shop/NewShop/cbt_excharge_0.png",
+      "Shop/NewShop/cbt_recharge_0.png",
+      "Shop/shop_popup_close_0.png",
+      "Shop/shop_popup_close_1.png",
+      "Shop/shop_popup_exchange_1.png",
+      "Shop/shop_popup_frame.png",
+      "Shop/shop_popup_recharge_1.png",
+      "Shop/shop_popup_text.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupShopLayer.lua",
+        "line": 18,
+        "function": "PopupShopLayer:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupShopLayer.lua",
+        "line": 110,
+        "function": "onTouch"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/plaza/plaza/src/views/layer/plaza/wealth/popshop/PopupShopLayer.lua",
+        "line": 118,
+        "function": "PopupShopLayer:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/PopWait.lua",
+    "resources": [
+      "wait_ani_frame.png",
+      "wait_ani_round.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/PopWait.lua",
+        "line": 10,
+        "function": "PopWait:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/PopWait.lua",
+        "line": 18,
+        "function": "onTouch"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/QueryDialog.lua",
+    "resources": [
+      "systemdialog_bg.png",
+      "systemdialog_bg_title.png",
+      "systemdialog_bt_cancle.png",
+      "systemdialog_bt_confirm.png",
+      "systemdialog_title.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/QueryDialog.lua",
+        "line": 28,
+        "function": "QueryDialog:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/QueryDialog.lua",
+        "line": 126,
+        "function": "QueryDialog:onButtonClickedEvent"
+      }
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/Toast.lua",
+    "resources": [
+      "game_horn_bg.png"
+    ],
+    "constructors": []
+  },
+  {
+    "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/UpdateDialog.lua",
+    "resources": [
+      "systemdialog_bg.png",
+      "systemdialog_bg_title.png",
+      "systemdialog_bt_cancle.png",
+      "systemdialog_bt_confirm.png",
+      "systemdialog_title.png",
+      "update_fail.png",
+      "update_query.png",
+      "update_succeed.png"
+    ],
+    "constructors": [
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/UpdateDialog.lua",
+        "line": 11,
+        "function": "UpdateDialog:ctor"
+      },
+      {
+        "path": "majiang-readable-handoff/work/decoded/shell/assets/client/src/app/views/layer/other/UpdateDialog.lua",
+        "line": 60,
+        "function": "UpdateDialog:onButtonClickedEvent"
+      }
+    ]
+  }
+]

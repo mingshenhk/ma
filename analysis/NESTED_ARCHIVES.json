@@ -1,0 +1,50 @@
+[
+  {
+    "path": "majiang-readable-handoff/work/extracted/assets/client/res/game.zip",
+    "sha256": "99b40355714926617079e115dd6a45ac6977bb053ba211520eece695b9c04b2a",
+    "files": 1853,
+    "crc_bad": null,
+    "platehes_matches": [],
+    "modules": [
+      "chexuan",
+      "errunfast",
+      "platedss",
+      "runfast",
+      "sparrowerdgk",
+      "sparrowhzdgk",
+      "sparrowsclm"
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/extracted/assets/client/res/plaza.zip",
+    "sha256": "1e2266b634e7da855b5997db2bb9eddfe6bfecc14035906bba953be446eb6879",
+    "files": 1166,
+    "crc_bad": null,
+    "platehes_matches": [],
+    "modules": []
+  },
+  {
+    "path": "majiang-readable-handoff/work/unpacked/apktool/assets/client/res/game.zip",
+    "sha256": "99b40355714926617079e115dd6a45ac6977bb053ba211520eece695b9c04b2a",
+    "files": 1853,
+    "crc_bad": null,
+    "platehes_matches": [],
+    "modules": [
+      "chexuan",
+      "errunfast",
+      "platedss",
+      "runfast",
+      "sparrowerdgk",
+      "sparrowhzdgk",
+      "sparrowsclm"
+    ]
+  },
+  {
+    "path": "majiang-readable-handoff/work/unpacked/apktool/assets/client/res/plaza.zip",
+    "sha256": "1e2266b634e7da855b5997db2bb9eddfe6bfecc14035906bba953be446eb6879",
+    "files": 1166,
+    "crc_bad": null,
+    "platehes_matches": [],
+    "modules": []
+  }
+]

@@ -1,0 +1,139 @@
+{
+  "modules": {
+    "sparrowerdgk": 18,
+    "sparrowhzdgk": 31,
+    "sparrowsclm": 20,
+    "chexuan": 10,
+    "errunfast": 13,
+    "platedss": 15,
+    "runfast": 13
+  },
+  "decoded_functions": 5509,
+  "game_text_lines": 57,
+  "ui_files": 181,
+  "image_headers": [
+    [
+      "89504e470d0a1a0a",
+      57
+    ],
+    [
+      "b0010000dee28003",
+      8
+    ],
+    [
+      "04070000def5e6b2",
+      7
+    ],
+    [
+      "4a010000c8f3fc13",
+      7
+    ],
+    [
+      "0606000031ecfcec",
+      5
+    ],
+    [
+      "4d1d000001000000",
+      4
+    ],
+    [
+      "114102001fc0a116",
+      3
+    ],
+    [
+      "f6000000d0465006",
+      3
+    ],
+    [
+      "7f000000f555610f",
+      3
+    ],
+    [
+      "89000000c5692822",
+      3
+    ],
+    [
+      "81000000d6cfc0c0",
+      3
+    ],
+    [
+      "4b0000000774494d",
+      3
+    ]
+  ],
+  "nested_archives": [
+    {
+      "path": "majiang-readable-handoff/work/extracted/assets/client/res/game.zip",
+      "sha256": "99b40355714926617079e115dd6a45ac6977bb053ba211520eece695b9c04b2a",
+      "files": 1853,
+      "crc_bad": null,
+      "platehes_matches": [],
+      "modules": [
+        "chexuan",
+        "errunfast",
+        "platedss",
+        "runfast",
+        "sparrowerdgk",
+        "sparrowhzdgk",
+        "sparrowsclm"
+      ]
+    },
+    {
+      "path": "majiang-readable-handoff/work/extracted/assets/client/res/plaza.zip",
+      "sha256": "1e2266b634e7da855b5997db2bb9eddfe6bfecc14035906bba953be446eb6879",
+      "files": 1166,
+      "crc_bad": null,
+      "platehes_matches": [],
+      "modules": []
+    },
+    {
+      "path": "majiang-readable-handoff/work/unpacked/apktool/assets/client/res/game.zip",
+      "sha256": "99b40355714926617079e115dd6a45ac6977bb053ba211520eece695b9c04b2a",
+      "files": 1853,
+      "crc_bad": null,
+      "platehes_matches": [],
+      "modules": [
+        "chexuan",
+        "errunfast",
+        "platedss",
+        "runfast",
+        "sparrowerdgk",
+        "sparrowhzdgk",
+        "sparrowsclm"
+      ]
+    },
+    {
+      "path": "majiang-readable-handoff/work/unpacked/apktool/assets/client/res/plaza.zip",
+      "sha256": "1e2266b634e7da855b5997db2bb9eddfe6bfecc14035906bba953be446eb6879",
+      "files": 1166,
+      "crc_bad": null,
+      "platehes_matches": [],
+      "modules": []
+    }
+  ],
+  "all_filename_platehes_matches": [],
+  "category_counts": {
+    "恢复工具/文档": 23,
+    "未知资源": 242,
+    "原生/SDK/反编译": 4366,
+    "游戏配置": 119,
+    "图片": 1983,
+    "动画": 128,
+    "UI 布局": 519,
+    "茶馆系统": 96,
+    "多语言文本": 511,
+    "战绩和结算": 375,
+    "网络通信": 423,
+    "字体": 37,
+    "用户资料": 199,
+    "登录和账号": 55,
+    "游戏逻辑": 1975,
+    "图集": 19,
+    "图集/动画": 19,
+    "房间系统": 169,
+    "游戏规则": 69,
+    "房间/战绩": 257,
+    "音效": 753,
+    "UI布局": 344
+  }
+}
