@@ -13,7 +13,7 @@
 |茶馆成员/管理|MemberDlg、ManagerDlg、ManagerSet、ApplyListDlg、OwnerDlg|申请/角色/成员/设置|客户端存在|加入、角色、移除、设置|
 |茶馆统计/战绩|BattleDetail、UserBattle、CalculateDlg、BigWinner、ActualTimeInfo|按用户/桌统计|客户端存在，算法服务端|真实本地战绩|
 |游戏桌面|各游戏 views/GameViewLayer.lua、HandCard*.lua|座位/手牌/操作/出牌/听牌|四个目标模块存在|按证据牌类独立UI|
-|红二十桌面|仅dfex ID110入口|动态下载项|只有配置|缺失说明，禁止伪造|
+|红二十桌面|dfex ID110入口及客户9张截图|原模块缺失，已有牌类与动作说明|规则补充，服务器缺失|二人独立桌面，完整计分待定|
 |结算/回放|GameEndLayer、GameEndRecord、GameVideo模块|单局/总分/录像|客户端存在，结算服务端|胜者/余牌实录，积分未验证|
 |战绩|BattleList/Score/Record、茶馆UserBattle|查询/分页/分享|客户端存在|服务器战绩|
 |设置/音效|SettingLayer及各GameView设置|音乐/音效/退出|客户端存在|本地偏好|
