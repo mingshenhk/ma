@@ -9,3 +9,9 @@ __pycache__/
 .env
 !.env.example
 *.log
+data/
+output/
+.playwright-cli/
+.playwright/
+release/
+bin/

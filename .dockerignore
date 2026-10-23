@@ -1,0 +1,12 @@
+.git
+analysis
+work
+output
+release
+bin
+data
+**/node_modules
+frontend/dist
+.env
+.playwright-cli
+.playwright

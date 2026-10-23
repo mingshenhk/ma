@@ -1,3 +1,5 @@
+> 历史来源分析（2026-10-23）：保留原包和截图证据，文中缺口及阶段限制不代表当前实现。当前六款规则以 docs/rules/CLIENT_REVIEW_RULES_SIX_GAMES_2026-10-24.txt 为准，交付状态见 docs/PROGRESS.md。
+
 # 页面清单
 
 证据口径：C=可读客户端代码；R=配置/资源；B=实际运行原客户端；I=推断；U=缺失。未运行原客户端，所有 B 均为未验证。静态反编译可能有误，不能等同服务器源码。证据根目录为 `analysis/extracted/majiang-readable-handoff/work/decoded/`。下文 G=game/game，Z=plaza/plaza/src。原包仅内部参考，不进入产品。

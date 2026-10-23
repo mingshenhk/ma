@@ -1,13 +1,16 @@
-# 组件映射
+# 当前界面组件
 
-|原版|新组件|数据来源|
-|---|---|---|
-|ClientScene/GameListLayer|Lobby/TopBar/EntryRail/BottomBar|/api/catalog、/api/me|
-|BattleFind/NBattleCreate|JoinDialog/CreateDialog|服务端创建/加入|
-|TH_Main/MemberDlg/ManagerDlg|TeaHouse/MemberList/TeaSettings|茶馆API与角色检查|
-|GameView/HandCard/OutCard|Table/Seat/PlayingCard/MahjongTile|每玩家裁剪快照|
-|GameEnd/GameEndRecord|RoundResult/History|服务器真实记录|
-|Setting/ModifyInfo|Settings/Profile|本地偏好/玩家API|
-|RichNotify|Notice|系统公告|
+实现入口 frontend/src/main.tsx，样式 frontend/src/style.css。
 
-原版图集/动画资源的路径索引见UI_RESOURCE_REFERENCES.json；无授权，均不进入frontend/public。新组件完全独立实现。缺失游戏通过RuleStatus显示证据和待补项。
+| 组件/区域 | 用途 |
+| --- | --- |
+| App | 账号、大厅、弹层、房间与WS快照、配置和操作 |
+| Card | 麻将、扑克、斗十四点阵骨牌；牌背和选牌 |
+| Avatar | 原创字形头像与昵称 |
+| ClubCard | 圈内成员、角色、设置、牌桌及战绩 |
+| AdminView | 管理状态、各玩法在线、账号/房间/圈/记录/反馈 |
+| 游戏桌区域 | 2/4人座位、公共动作、牌堆、私牌与合法操作 |
+| 创建房间弹层 | 六款固定人数、底分/局数、玩法专属配置 |
+| 记录与规则弹层 | 真实结算、记分账、最近事件、完整六款规则 |
+
+界面为独立DOM/CSS实现，未复用原图集音效。响应式尺寸验证不等于实体手机验收。

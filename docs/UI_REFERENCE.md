@@ -1,3 +1,5 @@
+> 历史来源分析（2026-10-23）：保留原包和截图证据，文中缺口及阶段限制不代表当前实现。当前六款规则以 docs/rules/CLIENT_REVIEW_RULES_SIX_GAMES_2026-10-24.txt 为准，交付状态见 docs/PROGRESS.md。
+
 # UI结构参考
 
 证据：Z/views/ClientScene.lua、views/layer/plaza/GameListLayer.lua、battle/CreateConfigView.lua、各游戏GameViewLayer。图片不能可靠解码的部分未作外观结论。

@@ -1,0 +1,29 @@
+services:
+  game:
+    build: .
+    restart: unless-stopped
+    environment:
+      ADMIN_KEY: ${ADMIN_KEY:?Set ADMIN_KEY in .env}
+      COOKIE_SECURE: "true"
+    volumes:
+      - game-data:/data
+    expose:
+      - "8080"
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - game
+volumes:
+  game-data:
+  caddy-data:
+  caddy-config:
