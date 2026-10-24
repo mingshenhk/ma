@@ -648,7 +648,10 @@ function App() {
       </main>
     );
   return (
-    <main onPointerDown={unlockSound} className={room ? "app in-room" : "app"}>
+    <main
+      onPointerDown={unlockSound}
+      className={room ? "app in-room" : user ? "app lobby-app" : "app"}
+    >
       <div className="grain" />
       <div className="scenery mountain-one" />
       <div className="scenery mountain-two" />
@@ -800,6 +803,24 @@ function App() {
                 <b>›</b>
               </button>
             </aside>
+            <section className="lobby-scene" aria-label="川友棋牌大厅">
+              <div className="scene-lantern lantern-left" aria-hidden="true">✦</div>
+              <div className="scene-lantern lantern-right" aria-hidden="true">✦</div>
+              <div className="scene-window" aria-hidden="true">
+                <span>川</span><span>友</span><span>相</span><span>聚</span>
+              </div>
+              <div className="scene-table" aria-hidden="true">
+                <div className="scene-rim"><div className="scene-felt" /></div>
+                <div className="scene-tile tile-center">中</div>
+                <div className="scene-tile tile-right">發</div>
+                <div className="scene-tile tile-left">筒</div>
+                <div className="scene-tile tile-bottom">條</div>
+              </div>
+              <div className="scene-caption">
+                <span>♧</span>
+                <div><strong>川友茶席</strong><small>约上亲友 · 开桌切磋牌技</small></div>
+              </div>
+            </section>
             <section className="games-section">
               <div className="section-title">
                 <div>

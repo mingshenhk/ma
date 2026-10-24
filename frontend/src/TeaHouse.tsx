@@ -226,6 +226,8 @@ export default function TeaHouse(p: Props) {
   const [joinId, setJoinId] = useState("");
   const [notice, setNotice] = useState("");
   const [filter, setFilter] = useState("");
+  const [roomFilter, setRoomFilter] = useState("all");
+  const [expandedRoom, setExpandedRoom] = useState("");
   const [memberFilter, setMemberFilter] = useState("");
   const [edit, setEdit] = useState<Template | null>(null);
   const [settings, setSettings] = useState({
@@ -258,6 +260,8 @@ export default function TeaHouse(p: Props) {
     setEdit(null);
     setConfirm("");
     setFilter("");
+    setRoomFilter("all");
+    setExpandedRoom("");
     setMemberFilter("");
     if (selected) void p.work(() => load(selected));
   }, [selected]);
@@ -285,91 +289,123 @@ export default function TeaHouse(p: Props) {
           `${label}：${values.find((v) => v[0] === (c.options[key] ?? fallback))?.[1]}`,
       )
       .join(" / ");
+  const activeRooms = (detail?.rooms || []).filter(
+    (r: any) => !["finished", "closed"].includes(r.status),
+  );
+  const visibleRooms = activeRooms.filter((r: any) => {
+    if (filter && r.templateId !== filter) return false;
+    if (roomFilter === "playing")
+      return r.status === "playing" || r.status === "roundEnd";
+    if (roomFilter === "joinable")
+      return (
+        r.status === "waiting" &&
+        r.players < r.capacity &&
+        !r.seated &&
+        !club?.disabled?.[p.user.id]
+      );
+    return true;
+  });
   if (!selected)
     return (
       <section className="tea-home">
         <h2>茶馆</h2>
-        <p className="muted">选择茶馆进入桌台大厅，馆内按已保存的玩法开桌。</p>
-        <div className="tea-entry">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void p.work(async () => {
-                const c = await p.api("clubs", {
-                  op: "create",
-                  name,
-                  requireApproval: true,
-                });
-                await p.refresh();
-                setSelected(c.id);
-              });
-            }}
-          >
-            <label>
-              创建茶馆
-              <input
-                required
-                maxLength={24}
-                placeholder="茶馆名称"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </label>
-            <button className="primary">创建茶馆</button>
-          </form>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void p.work(async () => {
-                const c = await p.api("clubs", {
-                  op: "join",
-                  id: joinId.trim(),
-                });
-                await p.refresh();
-                if (c.pending)
-                  setNotice(
-                    "申请已提交，等待馆主或管理员审核。茶馆ID：" + c.id,
-                  );
-                else setSelected(c.id);
-              });
-            }}
-          >
-            <label>
-              加入茶馆
-              <input
-                required
-                placeholder="输入茶馆ID"
-                value={joinId}
-                onChange={(e) => setJoinId(e.target.value)}
-              />
-            </label>
-            <button className="secondary">申请加入</button>
-          </form>
+        <p className="muted">管理亲友茶馆、加入熟人牌局；进入后可按馆内玩法开桌。</p>
+        {notice && <p className="tea-notice" role="status">{notice}</p>}
+        <div className="tea-overview">
+          <section className="tea-overview-panel my-tea-panel">
+            <h3><span>我的茶馆</span><small>{p.clubs.length} 个</small></h3>
+            <div className="tea-overview-content">
+              <div className="tea-list">
+                {p.clubs.map((c) => (
+                  <button
+                    key={c.id}
+                    className="tea-entry-card"
+                    onClick={() => setSelected(c.id)}
+                  >
+                    <strong>{c.name}</strong>
+                    <span>茶馆ID　{c.id}</span>
+                    <small>
+                      {Object.keys(c.members).length} 名成员 · {c.owner === p.user.id
+                        ? "馆主"
+                        : c.managers?.[p.user.id]
+                          ? "管理员"
+                          : "成员"}
+                      {c.disabled?.[p.user.id] ? " · 已限制开桌/入桌" : ""}　进入 →
+                    </small>
+                  </button>
+                ))}
+                {!p.clubs.length && (
+                  <p className="tea-empty-state"><span>♧</span>暂未拥有或加入茶馆。</p>
+                )}
+              </div>
+              <form
+                className="tea-create-inline"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void p.work(async () => {
+                    const c = await p.api("clubs", {
+                      op: "create",
+                      name,
+                      requireApproval: true,
+                    });
+                    await p.refresh();
+                    setSelected(c.id);
+                  });
+                }}
+              >
+                <label>
+                  创建茶馆
+                  <input
+                    required
+                    maxLength={24}
+                    placeholder="输入茶馆名称"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </label>
+                <button className="primary">创建茶馆</button>
+              </form>
+            </div>
+            <footer>已加入：{p.clubs.length} 个</footer>
+          </section>
+          <section className="tea-overview-panel join-tea-panel">
+            <h3><span>加入茶馆</span><small>输入茶馆ID</small></h3>
+            <div className="tea-overview-content join-tea-content">
+              <div className="tea-join-prompt">
+                <span aria-hidden="true">⌂</span>
+                <strong>和熟悉的牌友一起开桌</strong>
+                <small>提交后按茶馆设置加入或等待审核</small>
+              </div>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void p.work(async () => {
+                    const c = await p.api("clubs", {
+                      op: "join",
+                      id: joinId.trim(),
+                    });
+                    await p.refresh();
+                    if (c.pending)
+                      setNotice("申请已提交，等待馆主或管理员审核。茶馆ID：" + c.id);
+                    else setSelected(c.id);
+                  });
+                }}
+              >
+                <label>
+                  茶馆ID
+                  <input
+                    required
+                    placeholder="输入茶馆ID"
+                    value={joinId}
+                    onChange={(e) => setJoinId(e.target.value)}
+                  />
+                </label>
+                <button className="secondary">申请加入</button>
+              </form>
+            </div>
+            <footer>加入后可查看馆内玩法和开放牌桌</footer>
+          </section>
         </div>
-        {notice && <p role="status">{notice}</p>}
-        <div className="tea-list">
-          {p.clubs.map((c) => (
-            <button
-              key={c.id}
-              className="tea-entry-card"
-              onClick={() => setSelected(c.id)}
-            >
-              <strong>{c.name}</strong>
-              <span>
-                ID {c.id} · {Object.keys(c.members).length}名成员
-              </span>
-              <small>
-                {c.owner === p.user.id
-                  ? "我的茶馆"
-                  : c.managers?.[p.user.id]
-                    ? "管理员"
-                    : "已加入"}
-                {c.disabled?.[p.user.id] ? " · 已限制开桌/入桌" : ""}　进入 →
-              </small>
-            </button>
-          ))}
-        </div>
-        {!p.clubs.length && <p className="muted">尚未加入茶馆。</p>}
       </section>
     );
   return (
@@ -421,7 +457,27 @@ export default function TeaHouse(p: Props) {
             ))}
           </nav>
           {tab === "大厅" && (
-            <>
+            <div className="tea-detail-layout">
+              <aside className="tea-info-panel">
+                <div className="tea-info-plaque">茶馆信息</div>
+                <dl>
+                  <div><dt>馆名</dt><dd>{club.name}</dd></div>
+                  <div><dt>ID</dt><dd>{club.id}</dd></div>
+                  <div><dt>馆主ID</dt><dd>{club.owner}</dd></div>
+                  <div><dt>成员</dt><dd>{Object.keys(club.members || {}).length} 人</dd></div>
+                  <div><dt>我的身份</dt><dd>{owner ? "馆主" : manager ? "管理员" : "成员"}</dd></div>
+                  <div><dt>加入方式</dt><dd>{club.requireApproval ? "需审核" : "直接加入"}</dd></div>
+                </dl>
+                <div className="tea-info-actions">
+                  <button onClick={() => setTab("战绩")}>查看战绩　→</button>
+                  <button onClick={() => setTab("玩法")}>馆内玩法　→</button>
+                </div>
+              </aside>
+              <section className="tea-room-panel">
+                <div className="tea-room-heading">
+                  <div><h3>茶馆牌桌</h3><small>浏览活动桌，或从馆内玩法创建新桌</small></div>
+                  <strong>{activeRooms.length} 张活动桌</strong>
+                </div>
               <div className="tea-toolbar">
                 <label>
                   玩法筛选
@@ -437,17 +493,18 @@ export default function TeaHouse(p: Props) {
                     ))}
                   </select>
                 </label>
-                <span>
-                  {
-                    detail.rooms.filter(
-                      (r: any) => !["finished", "closed"].includes(r.status),
-                    ).length
-                  }
-                  张活动桌
-                </span>
+                <div className="tea-room-filters" role="group" aria-label="牌桌筛选">
+                  {[["all", "全部"], ["playing", "游戏中"], ["joinable", "可加入"]].map(([key, label]) => (
+                    <button
+                      key={key}
+                      className={roomFilter === key ? "active" : ""}
+                      onClick={() => setRoomFilter(key)}
+                    >{label}</button>
+                  ))}
+                </div>
               </div>
               <div className="tea-tables">
-                {(club.templates || [])
+                {(roomFilter === "all" ? club.templates || [] : [])
                   .filter((t) => t.enabled && (!filter || filter === t.id))
                   .map((t) => (
                     <article className="tea-table empty" key={t.id}>
@@ -465,12 +522,7 @@ export default function TeaHouse(p: Props) {
                       </button>
                     </article>
                   ))}
-                {detail.rooms
-                  .filter(
-                    (r: any) =>
-                      !["finished", "closed"].includes(r.status) &&
-                      (!filter || r.templateId === filter),
-                  )
+                {visibleRooms
                   .map((r: any) => (
                     <article className="tea-table" key={r.id}>
                       <small>
@@ -489,6 +541,45 @@ export default function TeaHouse(p: Props) {
                       <strong>
                         {r.players} / {r.capacity} 人 · 第{r.round}局
                       </strong>
+                      <button
+                        className="tea-room-details-toggle"
+                        aria-expanded={expandedRoom === r.id}
+                        onClick={() =>
+                          setExpandedRoom((current) =>
+                            current === r.id ? "" : r.id,
+                          )
+                        }
+                      >
+                        牌桌详情 {expandedRoom === r.id ? "⌃" : "⌄"}
+                      </button>
+                      {expandedRoom === r.id && (
+                        <dl className="tea-room-details">
+                          <div>
+                            <dt>房间号</dt>
+                            <dd>{r.id}</dd>
+                          </div>
+                          <div>
+                            <dt>牌桌状态</dt>
+                            <dd>
+                              {r.status === "playing"
+                                ? "对局中"
+                                : r.status === "roundEnd"
+                                  ? "局间等待"
+                                  : "等待入座"}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>当前进度</dt>
+                            <dd>
+                              {r.players}/{r.capacity} 人 · 第{r.round}局
+                            </dd>
+                          </div>
+                          <div>
+                            <dt>房间玩法</dt>
+                            <dd>{configText(r.config)}</dd>
+                          </div>
+                        </dl>
+                      )}
                       <button
                         className="secondary"
                         disabled={
@@ -531,6 +622,9 @@ export default function TeaHouse(p: Props) {
                       )}
                     </article>
                   ))}
+                {!visibleRooms.length && (roomFilter !== "all" || !club.templates?.some((t) => t.enabled)) && (
+                  <p className="tea-empty-rooms">{roomFilter === "playing" ? "当前没有进行中的牌桌。" : roomFilter === "joinable" ? "当前没有可加入的牌桌。" : "暂无活动牌桌。"}</p>
+                )}
               </div>
               {!club.templates?.some((t) => t.enabled) && (
                 <p className="muted">
@@ -538,7 +632,8 @@ export default function TeaHouse(p: Props) {
                   {manager ? "请在“玩法”中添加并启用。" : "请联系馆主设置。"}
                 </p>
               )}
-            </>
+              </section>
+            </div>
           )}
           {tab === "玩法" && (
             <>
