@@ -1,6 +1,25 @@
 package game
 
-import "sort"
+import (
+	hz "haojiayuan/internal/rules/hongzhong"
+	mj "haojiayuan/internal/rules/mahjong"
+	nh "haojiayuan/internal/rules/nohongzhong"
+	sc "haojiayuan/internal/rules/sichuan"
+	"sort"
+)
+
+func mjPolicy(s *State) mj.Policy {
+	switch s.Config.Game {
+	case "hongzhong":
+		return hz.Policy()
+	case "nohongzhong":
+		return nh.Policy()
+	case "sichuan":
+		return sc.Policy()
+	default:
+		panic("non-mahjong game used mahjong engine")
+	}
+}
 
 const red = 0x35
 
@@ -18,10 +37,7 @@ type mjValue struct {
 
 func tiles(s *State) []int {
 	out := []int{}
-	n := 2
-	if s.Config.Game == "sichuan" {
-		n = 3
-	}
+	n := mjPolicy(s).Suits
 	for suit := 1; suit <= n; suit++ {
 		for v := 1; v <= 9; v++ {
 			out = append(out, suit*16+v)
@@ -35,16 +51,13 @@ func startMJ(s *State) error {
 			s.Wall = append(s.Wall, c)
 		}
 	}
-	if s.Config.Game == "hongzhong" {
+	if mjPolicy(s).Wild {
 		s.Wall = append(s.Wall, red, red, red, red)
 	}
 	if e := Shuffle(s.Wall); e != nil {
 		return e
 	}
-	n := 10
-	if s.Config.Game == "sichuan" {
-		n = 13
-	}
+	n := mjPolicy(s).InitialHand
 	for p := range s.Seats {
 		for j := 0; j < n; j++ {
 			c, _ := take(s, false)
@@ -57,24 +70,24 @@ func startMJ(s *State) error {
 	s.LastCard = c
 	s.LastSource = "initial"
 	s.Phase = "declare"
-	if s.Config.Game == "sichuan" {
+	if mjPolicy(s).MissingSuit {
 		s.Phase = "missing"
 	}
 	return nil
 }
 func mjShapes(s *State, hand []int, p int) []mjShape {
-	if len(hand)%3 != 2 && !(len(hand) == 10 && s.Config.Game != "sichuan") {
+	if len(hand)%3 != 2 && !(len(hand) == 10 && mjPolicy(s).AskPairs) {
 		return nil
 	}
 	extra := []mjShape{}
-	if len(hand) == 11 && s.Config.Game != "sichuan" && len(groupMelds(s.Seats[p])) == 0 {
+	if len(hand) == 11 && mjPolicy(s).AskPairs && len(groupMelds(s.Seats[p])) == 0 {
 		for _, c := range unique(hand) {
 			for _, sh := range mjShapes(s, remove(hand, c), p) {
 				if !sh.Seven {
 					continue
 				}
 				choices := []int{c}
-				if c == red && s.Config.Game == "hongzhong" {
+				if c == red && mjPolicy(s).Wild {
 					choices = tiles(s)
 				}
 				for _, logical := range choices {
@@ -101,7 +114,7 @@ func mjShapes(s *State, hand []int, p int) []mjShape {
 	counts := map[int]int{}
 	w := 0
 	for _, c := range hand {
-		if c == red && s.Config.Game == "hongzhong" {
+		if c == red && mjPolicy(s).Wild {
 			w++
 		} else {
 			counts[c]++
@@ -109,7 +122,7 @@ func mjShapes(s *State, hand []int, p int) []mjShape {
 	}
 	real := map[int]int{}
 	for _, c := range hand {
-		if c != red || s.Config.Game != "hongzhong" {
+		if c != red || !mjPolicy(s).Wild {
 			real[c]++
 		}
 	}
@@ -230,10 +243,7 @@ func mjShapes(s *State, hand []int, p int) []mjShape {
 			}
 		}
 	}
-	target := 5
-	if s.Config.Game == "sichuan" {
-		target = 7
-	}
+	target := mjPolicy(s).PairCount
 	if len(groupMelds(s.Seats[p])) == 0 && len(hand) == target*2 {
 		var pairs func(int, [][]int)
 		pairs = func(wild int, g [][]int) {
@@ -274,17 +284,14 @@ func mjScore(s *State, p, card int, source string, preview bool) mjValue {
 	if card != 0 {
 		h = append(h, card)
 	}
-	want := 11
-	if s.Config.Game == "sichuan" {
-		want = 14
-	}
+	want := mjPolicy(s).InitialHand + 1
 	if len(h)+3*len(groupMelds(seat)) != want {
 		return mjValue{}
 	}
-	if s.Config.Game == "hongzhong" && card == red && source != "self" && source != "initial" {
+	if mjPolicy(s).Wild && card == red && source != "self" && source != "initial" {
 		return mjValue{}
 	}
-	if s.Config.Game == "sichuan" {
+	if mjPolicy(s).MissingSuit {
 		for _, c := range h {
 			if c>>4 == seat.Missing {
 				return mjValue{}
@@ -338,46 +345,18 @@ func mjScore(s *State, p, card int, source string, preview bool) mjValue {
 			no19 = no19 && c&15 != 1 && c&15 != 9
 		}
 		clear := len(suits) == 1
-		f := 1
-		why := []string{"鸡胡"}
+		f, baseName := mjPolicy(s).Base(mj.Features{Pungs: pp, Clear: clear, Pairs: sh.Seven, Terminal: terminal, Jiang: jiang})
+		why := []string{baseName}
 		set := func(n int, t string) {
 			if n > f {
 				f = n
 				why = []string{t}
 			}
 		}
-		if pp && !sh.Seven {
-			set(2, "对对胡")
-		}
-		if clear {
-			set(3, "清一色")
-		}
-		if sh.Seven {
-			set(3, "五对/七对")
-		}
-		if clear && pp && !sh.Seven {
-			set(4, "清对对")
-		}
-		if clear && sh.Seven {
-			set(5, "清请/清七对")
-		}
-		if s.Config.Game != "sichuan" && terminal && !sh.Seven {
-			set(5, "带幺九")
-			if clear {
-				set(6, "清幺九")
-			}
-		}
-		if jiang && pp && !sh.Seven {
-			n := 6
-			if s.Config.Game == "sichuan" {
-				n = 4
-			}
-			set(n, "将对")
-		}
 		if !preview && p == s.Dealer && seat.Discards == 0 && seat.Draws == 0 && s.PublicActions == 0 {
 			set(6, "天胡")
 		}
-		if !preview && p != s.Dealer && seat.Draws <= 1 && s.Seats[s.Dealer].Discards == 1 && s.PublicActions == 0 && (s.Config.Game == "sichuan" || seat.Report > 0) {
+		if !preview && p != s.Dealer && seat.Draws <= 1 && s.Seats[s.Dealer].Discards == 1 && s.PublicActions == 0 && (mjPolicy(s).MissingSuit || seat.Report > 0) {
 			set(6, "地胡")
 		}
 		add := func(n int, t string) {
@@ -386,12 +365,12 @@ func mjScore(s *State, p, card int, source string, preview bool) mjValue {
 				why = append(why, t)
 			}
 		}
-		if s.Config.Game != "sichuan" && no19 {
+		if mjPolicy(s).ExtraFan && no19 {
 			add(1, "断幺九")
 		}
 		physical := map[int]int{}
 		for _, c := range h {
-			if c != red || s.Config.Game != "hongzhong" {
+			if c != red || !mjPolicy(s).Wild {
 				physical[c]++
 			}
 		}
@@ -409,7 +388,7 @@ func mjScore(s *State, p, card int, source string, preview bool) mjValue {
 		if Opt(s, "root", 1) == 1 {
 			add(min(3, roots), "根")
 		}
-		if s.Config.Game != "sichuan" && Opt(s, "ka", 1) == 1 {
+		if mjPolicy(s).ExtraFan && Opt(s, "ka", 1) == 1 {
 			if source == "self" || source == "initial" {
 				add(ka, "456卡")
 			} else if card&15 == 5 && count(h, card-1) > 0 && count(h, card+1) > 0 && ka > 0 {
@@ -456,7 +435,7 @@ func mjScore(s *State, p, card int, source string, preview bool) mjValue {
 				}
 			}
 		}
-		if !preview && source != "self" && source != "initial" && f == 1 && s.Config.Game != "sichuan" && source != "ask" && s.KongSeat < 0 {
+		if !preview && source != "self" && source != "initial" && f == 1 && mjPolicy(s).AskPairs && source != "ask" && s.KongSeat < 0 {
 			continue
 		}
 		if f < Opt(s, "minFan", 1) {
@@ -575,7 +554,7 @@ func legalMJ(s *State, p int) []Action {
 		if o.Source == "rob" || o.Source == "ask" || len(s.Wall) == 0 {
 			return out
 		}
-		if o.Card == red && s.Config.Game == "hongzhong" || s.Config.Game == "sichuan" && o.Card>>4 == seat.Missing {
+		if o.Card == red && mjPolicy(s).Wild || mjPolicy(s).MissingSuit && o.Card>>4 == seat.Missing {
 			return out
 		}
 		n := count(seat.Hand, o.Card)
@@ -596,7 +575,7 @@ func legalMJ(s *State, p int) []Action {
 		for _, v := range sh {
 			five = five || v.Seven
 		}
-		if five && s.Config.Game != "sichuan" {
+		if five && mjPolicy(s).AskPairs {
 			for _, c := range askCards(s, p) {
 				out = append(out, a("ask", "请胡", c))
 			}
@@ -605,7 +584,7 @@ func legalMJ(s *State, p int) []Action {
 		}
 	}
 	missing := false
-	if s.Config.Game == "sichuan" {
+	if mjPolicy(s).MissingSuit {
 		for _, c := range seat.Hand {
 			missing = missing || c>>4 == seat.Missing
 		}
@@ -617,11 +596,11 @@ func legalMJ(s *State, p int) []Action {
 		if missing && c>>4 != seat.Missing {
 			continue
 		}
-		if c == red && s.Config.Game == "hongzhong" && len(unique(seat.Hand)) > 1 {
+		if c == red && mjPolicy(s).Wild && len(unique(seat.Hand)) > 1 {
 			continue
 		}
 		out = append(out, a("discard", "出牌", c))
-		if s.Config.Game != "sichuan" && p == s.Dealer && seat.Discards == 0 && seat.Draws == 0 && seat.Report == 0 {
+		if mjPolicy(s).AskPairs && p == s.Dealer && seat.Discards == 0 && seat.Draws == 0 && seat.Report == 0 {
 			h := remove(seat.Hand, c)
 			if len(waitsMJ(s, p, h)) > 0 {
 				out = append(out, a("report", "报胡并出牌", c))
@@ -637,7 +616,7 @@ func legalMJ(s *State, p int) []Action {
 	}
 	if len(s.Wall) > 0 && seat.Report != 2 {
 		for _, c := range unique(seat.Hand) {
-			if c == red && s.Config.Game == "hongzhong" || missing && c>>4 == seat.Missing {
+			if c == red && mjPolicy(s).Wild || missing && c>>4 == seat.Missing {
 				continue
 			}
 			if count(seat.Hand, c) == 4 && reportKongOK(s, p, []int{c, c, c, c}, "concealed") {
@@ -698,7 +677,7 @@ func drawMJ(s *State, p int, tail bool) {
 	s.Phase = "discard"
 	s.LastCard = c
 	s.LastSource = "self"
-	if s.Config.Game == "hongzhong" && seat.Report > 0 {
+	if mjPolicy(s).Wild && seat.Report > 0 {
 		for c == red {
 			seat.Hand = remove(seat.Hand, c)
 			seat.Melds = append(seat.Melds, Meld{Kind: "red", Cards: []int{red}, From: p})
@@ -918,7 +897,7 @@ func winMJ(s *State, p, from, card int, source string) {
 	s.Wins = append(s.Wins, Win{p, from, v.Fan, total, v.Reasons, h})
 	s.Seats[p].Won = true
 	logEvent(s, p, "hu", []int{card}, describeScore(v.Fan))
-	if len(s.Seats) == 2 || len(s.Wins) >= 3 {
+	if len(s.Wins) >= mjPolicy(s).EndAfterWins {
 		finish(s, "胡牌结算")
 	}
 }
@@ -929,7 +908,7 @@ func flowMJ(s *State) {
 		if s.Seats[p].Won {
 			continue
 		}
-		if s.Config.Game == "sichuan" {
+		if mjPolicy(s).MissingSuit {
 			for _, c := range s.Seats[p].Hand {
 				if c>>4 == s.Seats[p].Missing {
 					flower[p] = true

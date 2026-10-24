@@ -2,90 +2,49 @@ package game
 
 import (
 	"fmt"
+	"haojiayuan/internal/rules/capture"
+	"haojiayuan/internal/rules/doushisi"
+	"haojiayuan/internal/rules/hongershi"
 	"sort"
 )
 
-type bone struct {
-	Code      int
-	Name      string
-	Pips, Red int
-}
-
-var bones = []bone{{0x1111, "地牌", 2, 4}, {0x1102, "丁丁", 3, 0}, {0x0202, "长二", 4, 0}, {0x1103, "和牌", 4, 1}, {0x0203, "拐子", 5, 0}, {0x1114, "幺四", 5, 10}, {0x0303, "长三", 6, 0}, {0x1105, "珠珠", 6, 1}, {0x0214, "二红", 6, 4}, {0x0205, "二五", 7, 0}, {0x1106, "幺六", 7, 1}, {0x0314, "三四", 7, 4}, {0x0206, "二六", 8, 0}, {0x0305, "三五", 8, 0}, {0x1414, "人牌", 8, 16}, {0x0306, "黑九", 9, 0}, {0x1405, "红九", 9, 4}, {0x0505, "梅子", 10, 0}, {0x1406, "四六", 10, 4}, {0x0506, "斧头", 11, 0}, {0x1606, "天牌", 12, 6}}
-
+// The controller shares turn orchestration; each game owns its deck and scoring policy.
 func isDS(s *State) bool { return s.Config.Game == "doushisi" }
 func ordinary(s *State) []int {
-	out := []int{}
 	if isDS(s) {
-		for _, b := range bones {
-			if b.Code != 0x1102 && b.Code != 0x0506 {
-				out = append(out, b.Code)
-			}
-		}
-	} else {
-		for suit := 0; suit < 4; suit++ {
-			for v := 1; v <= 13; v++ {
-				out = append(out, suit*16+v)
-			}
-		}
+		return doushisi.Ordinary()
 	}
-	return out
+	return hongershi.Ordinary()
 }
 func cpips(s *State, c int) int {
 	if isDS(s) {
-		for _, b := range bones {
-			if b.Code == c {
-				return b.Pips
-			}
-		}
-		return 0
+		return doushisi.Pips(c)
 	}
-	return c & 15
+	return hongershi.Pips(c)
 }
 func cred(s *State, c int) int {
 	if isDS(s) {
-		for _, b := range bones {
-			if b.Code == c {
-				return b.Red
-			}
-		}
-		return 0
+		return doushisi.Red(c)
 	}
-	v := c & 15
-	r := 0
-	if c>>4 == 1 || c>>4 == 2 {
-		r = v
-		if v > 10 {
-			r = 1
-		}
-	}
-	if v == 5 {
-		if r > 0 && Opt(s, "redFive", 0) == 1 {
-			r += 5
-		}
-		if r == 0 && Opt(s, "blackFive", 0) == 1 {
-			r += 5
-		}
-	}
-	return r
+	return hongershi.Red(c, s.Config.Options)
 }
 func colored(s *State, c int) bool {
 	if isDS(s) {
-		return cred(s, c) > 0
+		return doushisi.Colored(c)
 	}
-	return c>>4 == 1 || c>>4 == 2
+	return hongershi.Colored(c)
 }
 func bonus(s *State, c int) bool {
 	if isDS(s) {
-		return c == 0x1102 || c == 0x0506
+		return doushisi.Bonus(c)
 	}
-	return c == 0x4f
+	return hongershi.Bonus(c)
 }
 func sameKind(s *State, c, d int) bool {
 	if isDS(s) {
-		return c == d
+		return doushisi.SameKind(c, d)
 	}
-	return cpips(s, c) == cpips(s, d)
+	return hongershi.SameKind(c, d)
 }
 func groupCards(s *State, h []int, c int, n int) []int {
 	out := []int{}
@@ -144,18 +103,9 @@ func captureSize(s *State) int {
 func logical(s *State, p int) int { return len(s.Seats[p].Hand) + 2*len(groupMelds(s.Seats[p])) }
 func startCapture(s *State) error {
 	if isDS(s) {
-		for _, b := range bones {
-			for i := 0; i < 4; i++ {
-				s.Wall = append(s.Wall, b.Code)
-			}
-		}
+		s.Wall = doushisi.Deck()
 	} else {
-		for _, c := range ordinary(s) {
-			s.Wall = append(s.Wall, c)
-		}
-		for i := 0; i < Opt(s, "kings", 6); i++ {
-			s.Wall = append(s.Wall, 0x4f)
-		}
+		s.Wall = hongershi.Deck(Opt(s, "kings", 6))
 	}
 	if e := Shuffle(s.Wall); e != nil {
 		return e
@@ -207,32 +157,13 @@ func normalizeBonus(s *State, p int) {
 	}
 }
 func pairShape(s *State, h []int) bool {
-	if len(h) == 0 {
-		return true
+	if isDS(s) {
+		return doushisi.PairShape(h)
 	}
-	if len(h)%2 != 0 {
-		return false
-	}
-	c := h[0]
-	for i := 1; i < len(h); i++ {
-		d := h[i]
-		if cpips(s, c)+cpips(s, d) == 14 && (!isDS(s) || c != d) {
-			rest := append([]int{}, h[1:i]...)
-			rest = append(rest, h[i+1:]...)
-			if pairShape(s, rest) {
-				return true
-			}
-		}
-	}
-	return false
+	return hongershi.PairShape(h)
 }
 
-type captureValue struct {
-	OK           bool
-	R, F, Amount int
-	Reasons      []string
-	ColorOnly    bool
-}
+type captureValue = capture.Value
 
 func captureScore(s *State, p, card int, source string, preview bool) captureValue {
 	seat := s.Seats[p]
@@ -240,168 +171,20 @@ func captureScore(s *State, p, card int, source string, preview bool) captureVal
 	if card != 0 {
 		h = append(h, card)
 	}
-	if len(h)+2*len(groupMelds(seat)) != captureSize(s) || !pairShape(s, h) {
-		return captureValue{}
-	}
-	r := 0
-	allRed, allBlack := true, true
-	all := append([]int{}, h...)
-	f := 0
-	why := []string{}
+	ctx := capture.Context{Hand: h, Options: s.Config.Options, Base: s.Config.Base,
+		Report: seat.Report, Float: seat.Float, OtherFloat: s.Seats[1-p].Float,
+		Heavenly:    p == s.Dealer && seat.Discards == 0 && seat.Draws == 0 && s.PublicActions == 0,
+		Earthly:     p != s.Dealer && seat.Draws <= 1 && s.Seats[s.Dealer].Discards == 1 && s.PublicActions == 0,
+		CatchReport: s.Offer != nil && s.Offer.From != p && s.Seats[s.Offer.From].Report > 0,
+		SelfDraw:    source == "flipself" || source == "private" || source == "initial",
+		KongEvent:   s.KongSeat >= 0, Preview: preview}
 	for _, m := range seat.Melds {
-		if m.Kind == "bonus" {
-			if !isDS(s) {
-				f++
-				why = append(why, "王副露")
-			}
-			continue
-		}
-		all = append(all, m.Cards...)
-		mr := 0
-		for _, c := range m.Cards {
-			mr += cred(s, c)
-		}
-		if isDS(s) && m.Kind == "peng" {
-			r += max(10, mr)
-		} else {
-			r += mr
-		}
-		if !isDS(s) {
-			if m.Kind == "peng" {
-				f++
-				why = append(why, "碰")
-			}
-			if m.Kind == "kong" {
-				f += 2
-				why = append(why, "杠")
-			}
-		}
-	}
-	for _, c := range h {
-		r += cred(s, c)
-	}
-	for _, c := range all {
-		allRed = allRed && colored(s, c)
-		allBlack = allBlack && !colored(s, c)
-	}
-	copies := map[int]int{}
-	for _, c := range all {
-		copies[c]++
-		limit := 1
-		if isDS(s) {
-			limit = 4
-		}
-		if copies[c] > limit {
-			return captureValue{}
-		}
-	}
-	threshold := 20
-	if isDS(s) {
-		threshold = 30
-	}
-	if r < threshold && !allRed && !allBlack {
-		return captureValue{}
-	}
-	if seat.Report > 0 {
-		f += 3
-		if isDS(s) {
-			f -= 2
-		}
-		why = append(why, "报胡")
-	}
-	if !preview && s.Offer != nil && s.Offer.From != p && s.Seats[s.Offer.From].Report > 0 {
-		if isDS(s) { /* 斗十四无抓报加番 */
-		} else {
-			f += 6
-			why = append(why, "抓报胡")
-		}
-	}
-	if !preview {
-		if p == s.Dealer && seat.Discards == 0 && seat.Draws == 0 && s.PublicActions == 0 {
-			v := 3
-			if isDS(s) {
-				v = 2
-			}
-			f += v
-			why = append(why, "天胡")
-		} else if p != s.Dealer && seat.Draws <= 1 && s.Seats[s.Dealer].Discards == 1 && s.PublicActions == 0 {
-			v := 3
-			if isDS(s) {
-				v = 2
-			}
-			f += v
-			why = append(why, "地胡")
-		}
-	}
-	if !isDS(s) {
-		if allRed {
-			f += 3
-			why = append(why, "全红")
-		}
-		if allBlack {
-			f += 4
-			why = append(why, "全黑")
-		}
-		if !preview && (source == "flipself" || source == "private" || source == "initial") {
-			f++
-			why = append(why, "自摸")
-		}
-		if !preview && s.KongSeat >= 0 {
-			f++
-			why = append(why, "杠事件")
-		}
+		ctx.Melds = append(ctx.Melds, capture.Meld{Kind: m.Kind, Cards: m.Cards})
 	}
 	if isDS(s) {
-		names := map[int]bool{}
-		counts := map[int]int{}
-		for _, c := range all {
-			counts[c]++
-		}
-		for _, m := range groupMelds(seat) {
-			if m.Kind == "peng" {
-				names[m.Cards[0]] = true
-			}
-		}
-		five := []int{0x1606, 0x1111, 0x1414, 0x1103, 0x1114}
-		for c, n := range counts {
-			special := false
-			for _, v := range five {
-				special = special || v == c
-			}
-			if special && names[c] {
-				f++
-				if n == 4 {
-					f++
-				}
-			} else if names[c] && n == 4 {
-				f++
-			}
-		}
-		if f > 0 {
-			why = append(why, "拉牌/四张奖励")
-		}
+		return doushisi.Score(ctx)
 	}
-	amount := 0
-	if isDS(s) {
-		cap := Opt(s, "cap", 500)
-		drift := 1 << (seat.Float + s.Seats[1-p].Float)
-		if allRed || allBlack {
-			amount = cap
-			why = append(why, "全红/全黑封顶")
-		} else if Opt(s, "ladder", 0) == 1 {
-			amount = min(cap, (r+10*f)*s.Config.Base*drift)
-		} else {
-			amount = min(cap, r*(1<<min(20, f))*s.Config.Base*drift)
-		}
-	} else {
-		f = min(Opt(s, "cap", 4), f)
-		mult := (1 << f) + 1
-		if Opt(s, "ladder", 0) == 1 {
-			mult = f + 1
-		}
-		amount = mult * s.Config.Base
-	}
-	return captureValue{OK: true, R: r, F: f, Amount: amount, Reasons: why, ColorOnly: allRed || allBlack}
+	return hongershi.Score(ctx)
 }
 func captureListen(s *State, p int) bool {
 	for _, c := range ordinary(s) {

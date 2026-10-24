@@ -1,4 +1,4 @@
-// Package doushisi models the 21 evidenced tile kinds, not an invented full deck.
+// Package doushisi defines the 21 bone-tile kinds and the two-player rule policy.
 package doushisi
 
 import "errors"
@@ -32,22 +32,13 @@ func Analyze(cards []int) (Result, error) {
 	if len(cards) == 0 || len(cards) > 12 || len(cards)%2 != 0 {
 		return r, errors.New("余手须为2..12张偶数")
 	}
-	var n [13]int
 	for _, c := range cards {
 		t, ok := Find(c)
 		if !ok {
 			return r, errors.New("未知骨牌牌码")
 		}
-		n[t.Pips]++
 		r.RedPoints += t.Red
 	}
-	r.Pairs14 = true
-	for i := 2; i <= 12; i++ {
-		if i == 7 {
-			r.Pairs14 = r.Pairs14 && n[i]%2 == 0
-		} else {
-			r.Pairs14 = r.Pairs14 && n[i] == n[14-i]
-		}
-	}
+	r.Pairs14 = PairShape(cards)
 	return r, nil
 }

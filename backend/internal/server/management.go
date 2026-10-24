@@ -1,22 +1,40 @@
 package server
 
 import (
+	"haojiayuan/internal/game"
 	"net/http"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
+	"time"
 )
 
 func clubManager(c *Club, user string) bool {
 	return c.Members[user] && (c.Owner == user || c.Managers[user])
 }
 
+func visibleClub(c *Club, user string) *Club {
+	out := clone(c)
+	if !clubManager(c, user) {
+		out.Applications = nil
+	}
+	return out
+}
+func (s *Server) clubMemberBusy(c *Club, user string) bool {
+	for _, r := range s.rooms {
+		if r.ClubID == c.ID && r.Status != "finished" && r.Status != "closed" && seatOf(r, user) >= 0 {
+			return true
+		}
+	}
+	return false
+}
 func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 	if r.Method == "GET" {
 		list := []*Club{}
 		for _, c := range s.accounts.Clubs {
 			if c.Members[u.ID] {
-				list = append(list, c)
+				list = append(list, visibleClub(c, u.ID))
 			}
 		}
 		sort.Slice(list, func(i, j int) bool { return list[i].ID < list[j].ID })
@@ -26,33 +44,56 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 		return nil, apiError{405, "请求方法不支持"}
 	}
 	var input struct {
-		Op      string `json:"op"`
-		ID      string `json:"id"`
-		Name    string `json:"name"`
-		UserID  string `json:"userId"`
-		Enabled bool   `json:"enabled"`
+		Op              string       `json:"op"`
+		ID              string       `json:"id"`
+		Name            string       `json:"name"`
+		UserID          string       `json:"userId"`
+		Enabled         bool         `json:"enabled"`
+		RequireApproval *bool        `json:"requireApproval"`
+		AutoCreate      *bool        `json:"autoCreate"`
+		RoomID          string       `json:"roomId"`
+		Announcement    string       `json:"announcement"`
+		Template        ClubTemplate `json:"template"`
+		TemplateID      string       `json:"templateId"`
 	}
 	if err := decode(r, &input); err != nil {
 		return nil, err
 	}
 	before := clone(s.accounts)
 	c := s.accounts.Clubs[input.ID]
+	pending := false
 	if input.Op == "create" {
 		name := strings.TrimSpace(input.Name)
 		if len([]rune(name)) < 1 || len([]rune(name)) > 24 {
 			return nil, bad("名称需要1到24字")
 		}
-		c = &Club{ID: id(4), Name: name, Owner: u.ID, Members: map[string]bool{u.ID: true}, Managers: map[string]bool{}}
+		c = &Club{ID: id(4), Name: name, Owner: u.ID, Members: map[string]bool{u.ID: true}, Managers: map[string]bool{}, Applications: map[string]int64{}, Disabled: map[string]bool{}, Templates: []ClubTemplate{}}
+		if input.RequireApproval != nil {
+			c.RequireApproval = *input.RequireApproval
+		}
 		s.accounts.Clubs[c.ID] = c
 	} else {
 		if c == nil {
-			return nil, bad("亲友圈不存在")
+			return nil, bad("茶馆不存在")
 		}
 		if input.Op == "join" {
-			if c.JoinClosed && !c.Members[u.ID] {
-				return nil, forbidden()
+			if !c.Members[u.ID] {
+				if c.JoinClosed {
+					return nil, forbidden()
+				}
+				if c.RequireApproval {
+					if c.Applications == nil {
+						c.Applications = map[string]int64{}
+					}
+					if c.Applications[u.ID] == 0 {
+						c.Applications[u.ID] = time.Now().Unix()
+					}
+					pending = true
+				} else {
+					c.Members[u.ID] = true
+					delete(c.Applications, u.ID)
+				}
 			}
-			c.Members[u.ID] = true
 		} else {
 			if !c.Members[u.ID] {
 				return nil, forbidden()
@@ -66,7 +107,105 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 				if len([]rune(name)) < 1 || len([]rune(name)) > 24 {
 					return nil, bad("名称需要1到24字")
 				}
-				c.Name, c.JoinClosed = name, input.Enabled
+				if len([]rune(input.Announcement)) > 300 {
+					return nil, bad("公告最多300字")
+				}
+				if input.AutoCreate != nil && *input.AutoCreate {
+					enabled := false
+					for _, template := range c.Templates {
+						enabled = enabled || template.Enabled
+					}
+					if !enabled {
+						return nil, bad("请先添加并启用茶馆玩法")
+					}
+				}
+				c.Name, c.JoinClosed, c.Announcement = name, input.Enabled, strings.TrimSpace(input.Announcement)
+				if input.RequireApproval != nil {
+					c.RequireApproval = *input.RequireApproval
+				}
+				if input.AutoCreate != nil {
+					c.AutoCreate = *input.AutoCreate
+				}
+			case "dissolveRoom":
+				if !clubManager(c, u.ID) {
+					return nil, forbidden()
+				}
+				r := s.rooms[input.RoomID]
+				if r == nil || r.ClubID != c.ID {
+					return nil, bad("馆内房间不存在")
+				}
+				if r.Status != "closed" && r.Status != "finished" {
+					previous := clone(r)
+					r.Status, r.Deadline, r.VoteDeadline, r.Votes = "closed", 0, 0, nil
+					r.Version++
+					r.Updated = time.Now().Unix()
+					if err := s.repo.SaveRoom(r); err != nil {
+						s.rooms[r.ID] = previous
+						s.storageError(err)
+						return nil, apiError{503, "保存失败，操作未生效"}
+					}
+					s.broadcast(r)
+				}
+				return visibleClub(c, u.ID), nil
+			case "approve", "reject":
+				if !clubManager(c, u.ID) {
+					return nil, forbidden()
+				}
+				if c.Applications[input.UserID] == 0 {
+					return nil, bad("申请不存在或已处理")
+				}
+				delete(c.Applications, input.UserID)
+				if input.Op == "approve" {
+					c.Members[input.UserID] = true
+				}
+			case "template":
+				if !clubManager(c, u.ID) {
+					return nil, forbidden()
+				}
+				template := input.Template
+				template.Name = strings.TrimSpace(template.Name)
+				if len([]rune(template.Name)) < 1 || len([]rune(template.Name)) > 24 {
+					return nil, bad("玩法名称需要1到24字")
+				}
+				cfg, err := game.Normalize(template.Config)
+				if err != nil {
+					return nil, bad(err.Error())
+				}
+				template.Config = cfg
+				if template.ID == "" {
+					if len(c.Templates) >= 30 {
+						return nil, bad("最多设置30个玩法")
+					}
+					template.ID = id(4)
+					c.Templates = append(c.Templates, template)
+				} else {
+					found := false
+					for i, t := range c.Templates {
+						if t.ID == template.ID {
+							c.Templates[i] = template
+							found = true
+							break
+						}
+					}
+					if !found {
+						return nil, bad("玩法不存在")
+					}
+				}
+			case "deleteTemplate":
+				if !clubManager(c, u.ID) {
+					return nil, forbidden()
+				}
+				found := false
+				for i, t := range c.Templates {
+					if t.ID == input.TemplateID {
+						c.Templates = append(c.Templates[:i], c.Templates[i+1:]...)
+						found = true
+						break
+					}
+				}
+				if !found {
+					return nil, bad("玩法不存在")
+				}
 			case "manager":
 				if c.Owner != u.ID {
 					return nil, forbidden()
@@ -79,8 +218,27 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 				}
 				if input.Enabled {
 					c.Managers[input.UserID] = true
+					delete(c.Disabled, input.UserID)
 				} else {
 					delete(c.Managers, input.UserID)
+				}
+			case "disable":
+				if !clubManager(c, u.ID) || input.UserID == c.Owner || (c.Owner != u.ID && c.Managers[input.UserID]) {
+					return nil, forbidden()
+				}
+				if !c.Members[input.UserID] {
+					return nil, bad("成员不存在")
+				}
+				if c.Managers[input.UserID] {
+					return nil, bad("请先取消该成员的管理员身份")
+				}
+				if c.Disabled == nil {
+					c.Disabled = map[string]bool{}
+				}
+				if input.Enabled {
+					c.Disabled[input.UserID] = true
+				} else {
+					delete(c.Disabled, input.UserID)
 				}
 			case "leave", "remove":
 				target := u.ID
@@ -94,34 +252,98 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 					}
 				}
 				if target == c.Owner {
-					return nil, bad("圈主不能退出，请保留圈主管理账号")
+					return nil, bad("馆主不能退出，请使用解散茶馆")
 				}
 				if !c.Members[target] {
 					return nil, bad("成员不存在")
 				}
-				for _, room := range s.rooms {
-					if room.ClubID == c.ID && room.Status != "finished" && room.Status != "closed" && seatOf(room, target) >= 0 {
-						return nil, conflict("该成员仍在圈内房间，请先离桌或解散房间")
-					}
+				if s.clubMemberBusy(c, target) {
+					return nil, conflict("该成员仍在茶馆房间，请先离桌或解散房间")
 				}
 				delete(c.Members, target)
 				delete(c.Managers, target)
+				delete(c.Disabled, target)
+			case "delete":
+				if c.Owner != u.ID {
+					return nil, forbidden()
+				}
+				for _, room := range s.rooms {
+					if room.ClubID == c.ID && room.Status != "finished" && room.Status != "closed" {
+						return nil, conflict("请先结束茶馆内所有房间")
+					}
+				}
+				delete(s.accounts.Clubs, c.ID)
 			default:
-				return nil, bad("亲友圈操作不支持")
+				return nil, bad("茶馆操作不支持")
 			}
 		}
 	}
 	if err := s.saveAccounts(before); err != nil {
 		return nil, err
 	}
-	return c, nil
+	if pending {
+		return map[string]any{"id": c.ID, "pending": true}, nil
+	}
+	return visibleClub(c, u.ID), nil
 }
 
-func (s *Server) clubView(c *Club) any {
-	members, rooms, history := []any{}, []any{}, []any{}
+// Each enabled template keeps one completely empty waiting room. Occupied
+// waiting rooms do not count; restarting reads the persisted tables first.
+func (s *Server) ensureClubTables(now time.Time) {
+	for _, c := range s.accounts.Clubs {
+		if !c.AutoCreate {
+			continue
+		}
+		for _, template := range c.Templates {
+			if !template.Enabled {
+				continue
+			}
+			available := false
+			for _, r := range s.rooms {
+				if r.ClubID != c.ID || r.TemplateID != template.ID || r.Status != "waiting" {
+					continue
+				}
+				empty := true
+				for _, p := range r.Players {
+					empty = empty && p == nil
+				}
+				available = available || empty
+			}
+			if available {
+				continue
+			}
+			cfg, err := game.Normalize(template.Config)
+			if err != nil {
+				s.storageError(err)
+				continue
+			}
+			d, _ := game.Def(cfg.Game)
+			roomID := ""
+			for roomID == "" || s.rooms[roomID] != nil {
+				roomID = strconv.Itoa(100000 + game.Random(900000))
+			}
+			r := &Room{ID: roomID, ClubID: c.ID, TemplateID: template.ID, Config: cfg, Players: make([]*Player, d.Players), Status: "waiting", Version: 1, Created: now.Unix(), Updated: now.Unix()}
+			if err := s.repo.SaveRoom(r); err != nil {
+				s.storageError(err)
+				continue
+			}
+			s.rooms[r.ID] = r
+		}
+	}
+}
+
+func (s *Server) clubView(c *Club, user string) any {
+	members, rooms, history, applications := []any{}, []any{}, []any{}, []any{}
+	type stat struct {
+		Rounds  int `json:"rounds"`
+		Total   int `json:"total"`
+		BigWins int `json:"bigWins"`
+	}
+	stats := map[string]*stat{}
 	ids := []string{}
 	for uid := range c.Members {
 		ids = append(ids, uid)
+		stats[uid] = &stat{}
 	}
 	sort.Strings(ids)
 	for _, uid := range ids {
@@ -133,15 +355,58 @@ func (s *Server) clubView(c *Club) any {
 		if r.ClubID != c.ID {
 			continue
 		}
-		rooms = append(rooms, s.summary(r))
+		summary := s.summary(r).(map[string]any)
+		summary["seated"] = seatOf(r, user) >= 0
+		rooms = append(rooms, summary)
 		if len(r.History) > 0 {
 			history = append(history, map[string]any{"room": s.summary(r), "players": r.Players, "rounds": r.History, "updated": r.Updated})
+			totals := make([]int, len(r.Players))
+			for _, round := range r.History {
+				for i, score := range round.Scores {
+					if i >= len(r.Players) || r.Players[i] == nil {
+						continue
+					}
+					uid := r.Players[i].UserID
+					if stats[uid] == nil {
+						stats[uid] = &stat{}
+					}
+					stats[uid].Rounds++
+					stats[uid].Total += score
+					totals[i] += score
+				}
+			}
+			if r.Status == "finished" || r.Status == "closed" {
+				best := 0
+				for _, v := range totals {
+					if v > best {
+						best = v
+					}
+				}
+				for i, v := range totals {
+					if v == best && best > 0 && r.Players[i] != nil {
+						stats[r.Players[i].UserID].BigWins++
+					}
+				}
+			}
 		}
 	}
+	sort.Slice(rooms, func(i, j int) bool {
+		return rooms[i].(map[string]any)["id"].(string) < rooms[j].(map[string]any)["id"].(string)
+	})
 	sort.Slice(history, func(i, j int) bool {
 		return history[i].(map[string]any)["updated"].(int64) > history[j].(map[string]any)["updated"].(int64)
 	})
-	return map[string]any{"club": c, "members": members, "rooms": rooms, "history": history}
+	if clubManager(c, user) {
+		for uid, at := range c.Applications {
+			if u := s.accounts.Users[uid]; u != nil {
+				applications = append(applications, map[string]any{"user": publicUser(u), "at": at})
+			}
+		}
+	}
+	sort.Slice(applications, func(i, j int) bool {
+		return applications[i].(map[string]any)["at"].(int64) < applications[j].(map[string]any)["at"].(int64)
+	})
+	return map[string]any{"club": visibleClub(c, user), "members": members, "rooms": rooms, "history": history, "applications": applications, "stats": stats}
 }
 
 // Administration exposes account profiles and completed results, never session or live game secrets.

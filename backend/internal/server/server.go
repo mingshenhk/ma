@@ -37,13 +37,25 @@ type Session struct {
 	UserID  string `json:"userId"`
 	Expires int64  `json:"expires"`
 }
+type ClubTemplate struct {
+	ID      string      `json:"id"`
+	Name    string      `json:"name"`
+	Config  game.Config `json:"config"`
+	Enabled bool        `json:"enabled"`
+}
 type Club struct {
-	ID         string          `json:"id"`
-	Name       string          `json:"name"`
-	Owner      string          `json:"owner"`
-	Members    map[string]bool `json:"members"`
-	Managers   map[string]bool `json:"managers,omitempty"`
-	JoinClosed bool            `json:"joinClosed"`
+	ID              string           `json:"id"`
+	Name            string           `json:"name"`
+	Owner           string           `json:"owner"`
+	Members         map[string]bool  `json:"members"`
+	Managers        map[string]bool  `json:"managers,omitempty"`
+	JoinClosed      bool             `json:"joinClosed"`
+	RequireApproval bool             `json:"requireApproval"`
+	AutoCreate      bool             `json:"autoCreate"`
+	Announcement    string           `json:"announcement"`
+	Applications    map[string]int64 `json:"applications,omitempty"`
+	Disabled        map[string]bool  `json:"disabled,omitempty"`
+	Templates       []ClubTemplate   `json:"templates"`
 }
 type Report struct {
 	ID      string `json:"id"`
@@ -79,6 +91,7 @@ type Room struct {
 	ID           string          `json:"id"`
 	Owner        string          `json:"owner"`
 	ClubID       string          `json:"clubId,omitempty"`
+	TemplateID   string          `json:"templateId,omitempty"`
 	Config       game.Config     `json:"config"`
 	Players      []*Player       `json:"players"`
 	Status       string          `json:"status"`
@@ -127,14 +140,15 @@ type rate struct {
 	count int
 }
 type Command struct {
-	Op        string      `json:"op"`
-	RoomID    string      `json:"roomId"`
-	Version   int         `json:"version"`
-	RequestID string      `json:"requestId"`
-	Config    game.Config `json:"config"`
-	Action    game.Action `json:"action"`
-	ClubID    string      `json:"clubId"`
-	Value     int         `json:"value"`
+	Op         string      `json:"op"`
+	RoomID     string      `json:"roomId"`
+	Version    int         `json:"version"`
+	RequestID  string      `json:"requestId"`
+	Config     game.Config `json:"config"`
+	Action     game.Action `json:"action"`
+	ClubID     string      `json:"clubId"`
+	TemplateID string      `json:"templateId"`
+	Value      int         `json:"value"`
 }
 type apiError struct {
 	status  int
@@ -438,7 +452,7 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				err = forbidden()
 				break
 			}
-			result = s.clubView(c)
+			result = s.clubView(c, u.ID)
 		case "/api/profile":
 			if r.Method != "POST" {
 				err = apiError{405, "请求方法不支持"}
@@ -507,7 +521,7 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 }
 func (s *Server) isMember(club, user string) bool {
 	c := s.accounts.Clubs[club]
-	return c != nil && c.Members[user]
+	return c != nil && c.Members[user] && !c.Disabled[user]
 }
 func seatOf(r *Room, user string) int {
 	for i, p := range r.Players {
@@ -532,7 +546,7 @@ func (s *Server) summary(r *Room) any {
 			count++
 		}
 	}
-	return map[string]any{"id": r.ID, "config": r.Config, "status": r.Status, "players": count, "capacity": len(r.Players), "round": r.Round, "clubId": r.ClubID}
+	return map[string]any{"id": r.ID, "config": r.Config, "status": r.Status, "players": count, "capacity": len(r.Players), "round": r.Round, "clubId": r.ClubID, "templateId": r.TemplateID}
 }
 func (s *Server) command(u *User, c Command) (result any, err error) {
 	start := time.Now()
@@ -556,19 +570,39 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 		if active := s.activeRoom(u.ID); active != "" {
 			return nil, conflict("已有未结束房间：" + active)
 		}
+		if c.ClubID != "" {
+			club := s.accounts.Clubs[c.ClubID]
+			if !s.isMember(c.ClubID, u.ID) {
+				return nil, forbidden()
+			}
+			if c.TemplateID == "" {
+				return nil, bad("请从茶馆已启用的玩法开桌")
+			}
+			found := false
+			for _, template := range club.Templates {
+				if template.ID == c.TemplateID && template.Enabled {
+					c.Config = clone(template.Config)
+					found = true
+					break
+				}
+			}
+			if !found {
+				return nil, bad("茶馆玩法不存在或已停用")
+			}
+		} else if c.TemplateID != "" {
+			return nil, bad("玩法必须属于指定茶馆")
+		}
 		cfg, e := game.Normalize(c.Config)
 		if e != nil {
 			return nil, e
 		}
-		if c.ClubID != "" && !s.isMember(c.ClubID, u.ID) {
-			return nil, forbidden()
-		}
+
 		d, _ := game.Def(cfg.Game)
 		roomID := ""
 		for roomID == "" || s.rooms[roomID] != nil {
 			roomID = strconv.Itoa(100000 + game.Random(900000))
 		}
-		r := &Room{ID: roomID, Owner: u.ID, ClubID: c.ClubID, Config: cfg, Players: make([]*Player, d.Players), Status: "waiting", Version: 1, Created: time.Now().Unix(), Updated: time.Now().Unix(), Used: []string{u.ID + ":" + c.RequestID}}
+		r := &Room{ID: roomID, Owner: u.ID, ClubID: c.ClubID, TemplateID: c.TemplateID, Config: cfg, Players: make([]*Player, d.Players), Status: "waiting", Version: 1, Created: time.Now().Unix(), Updated: time.Now().Unix(), Used: []string{u.ID + ":" + c.RequestID}}
 		r.Players[0] = &Player{UserID: u.ID, Name: u.Name, Avatar: u.Avatar}
 		if e = s.repo.SaveRoom(r); e != nil {
 			s.storageError(e)
@@ -623,6 +657,9 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 			return nil, conflict("房间已满")
 		}
 		r.Players[slot] = &Player{UserID: u.ID, Name: u.Name, Avatar: u.Avatar}
+		if r.Owner == "" {
+			r.Owner = u.ID
+		}
 	case "bot":
 		if r.Owner != u.ID || r.Status != "waiting" {
 			err = forbidden()
@@ -839,6 +876,7 @@ func (s *Server) tick(now time.Time) {
 			}
 		}
 	}
+	s.ensureClubTables(now)
 }
 
 // Responses use ten seconds, other turns thirty by default. Scaling with the
