@@ -14,6 +14,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/netip"
 	"net/url"
 	"os"
 	"path/filepath"
@@ -108,10 +109,14 @@ type Room struct {
 	Used         []string        `json:"used,omitempty"`
 }
 type Options struct {
-	Repository   Repository
-	StaticDir    string
-	AdminKey     string
-	CookieSecure bool
+	Repository     Repository
+	StaticDir      string
+	AdminKey       string
+	CookieSecure   bool
+	MaxWSPerUser   int
+	MaxWSPerIP     int
+	MaxWSGlobal    int
+	TrustedProxies []netip.Prefix
 }
 type peer struct {
 	user, room string
@@ -120,7 +125,8 @@ type peer struct {
 	conn       *websocket.Conn
 }
 type Server struct {
-	mu                           sync.Mutex
+	mu                           sync.RWMutex
+	rateMu                       sync.Mutex
 	repo                         Repository
 	accounts                     Accounts
 	rooms                        map[string]*Room
@@ -130,6 +136,15 @@ type Server struct {
 	requests, commands, failures uint64
 	lastError                    string
 	limits                       map[string]rate
+	lastRatePurge                time.Time
+	lastSessionPurge             time.Time
+	publicRecordSlots            chan struct{}
+	passwordWork                 chan struct{}
+	maxWSPerUser, maxWSPerIP     int
+	maxWSGlobal                  int
+	trustedProxies               []netip.Prefix
+	wsGlobal                     int
+	wsByUser, wsByIP             map[string]int
 	started                      time.Time
 	lastClubHistoryPurge         time.Time
 	apiStats, commandStats       durationStats
@@ -175,7 +190,23 @@ func New(o Options) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	s := &Server{repo: o.Repository, accounts: a, rooms: map[string]*Room{}, peers: map[*peer]bool{}, static: o.StaticDir, admin: o.AdminKey, cookieSecure: o.CookieSecure, limits: map[string]rate{}}
+	if o.MaxWSPerUser <= 0 {
+		o.MaxWSPerUser = 4
+	}
+	if o.MaxWSPerIP <= 0 {
+		o.MaxWSPerIP = 32
+	}
+	if o.MaxWSGlobal <= 0 {
+		o.MaxWSGlobal = 1000
+	}
+	s := &Server{
+		repo: o.Repository, accounts: a, rooms: map[string]*Room{}, peers: map[*peer]bool{},
+		static: o.StaticDir, admin: o.AdminKey, cookieSecure: o.CookieSecure,
+		limits: map[string]rate{}, publicRecordSlots: make(chan struct{}, 16), passwordWork: make(chan struct{}, 4),
+		maxWSPerUser: o.MaxWSPerUser, maxWSPerIP: o.MaxWSPerIP, maxWSGlobal: o.MaxWSGlobal,
+		trustedProxies: append([]netip.Prefix(nil), o.TrustedProxies...),
+		wsByUser:       map[string]int{}, wsByIP: map[string]int{},
+	}
 	s.started = time.Now()
 	for _, r := range rooms {
 		legacyBot := false
@@ -212,7 +243,10 @@ func New(o Options) (*Server, error) {
 	return s, nil
 }
 func (s *Server) Run(ctx context.Context) {
-	t := time.NewTicker(300 * time.Millisecond)
+	// Room deadline handling and automatic-table maintenance do not need a
+	// sub-second poll. A one-second cadence reduces global-lock contention as
+	// the room count grows while keeping dissolve-vote expiry responsive.
+	t := time.NewTicker(time.Second)
 	defer t.Stop()
 	for {
 		select {
@@ -282,6 +316,7 @@ func sameOrigin(r *http.Request) bool {
 	return e == nil && u.Host == r.Host && (u.Scheme == "http" || u.Scheme == "https")
 }
 func (s *Server) user(r *http.Request) *User {
+	s.purgeExpiredSessions(time.Now())
 	c, e := r.Cookie("hjy_session")
 	if e != nil {
 		return nil
@@ -291,6 +326,18 @@ func (s *Server) user(r *http.Request) *User {
 		return nil
 	}
 	return s.accounts.Users[v.UserID]
+}
+func (s *Server) purgeExpiredSessions(now time.Time) {
+	if !s.lastSessionPurge.IsZero() && now.Sub(s.lastSessionPurge) < time.Hour {
+		return
+	}
+	cutoff := now.Unix()
+	for key, session := range s.accounts.Sessions {
+		if session.Expires <= cutoff || s.accounts.Users[session.UserID] == nil {
+			delete(s.accounts.Sessions, key)
+		}
+	}
+	s.lastSessionPurge = now
 }
 func publicUser(u *User) any {
 	return map[string]any{"id": u.ID, "username": u.Username, "name": u.Name, "avatar": u.Avatar}
@@ -396,33 +443,177 @@ func (s *Server) usernameTaken(key string) bool {
 	return false
 }
 func (s *Server) authRate(r *http.Request) bool {
-	k, _, e := net.SplitHostPort(r.RemoteAddr)
-	if e != nil {
-		k = r.RemoteAddr
+	return s.allowRate("auth:"+s.clientIP(r), 15)
+}
+
+func (s *Server) clientIP(r *http.Request) string {
+	const maxForwardedForBytes = 4096
+	const maxForwardedForHops = 32
+
+	host, _, err := net.SplitHostPort(r.RemoteAddr)
+	if err != nil {
+		host = strings.Trim(r.RemoteAddr, "[]")
 	}
-	v := s.limits[k]
-	if time.Since(v.at) > time.Minute {
-		v = rate{at: time.Now()}
+	remote, err := netip.ParseAddr(host)
+	if err != nil {
+		return "unknown"
+	}
+	remote = remote.Unmap()
+	if !s.isTrustedProxy(remote) {
+		return remote.String()
+	}
+	forwardedValues := r.Header.Values("X-Forwarded-For")
+	if len(forwardedValues) == 0 {
+		return remote.String()
+	}
+	forwardedBytes := 0
+	forwardedHops := 0
+	for _, value := range forwardedValues {
+		forwardedBytes += len(value) + 1
+		forwardedHops += strings.Count(value, ",") + 1
+		if forwardedBytes > maxForwardedForBytes || forwardedHops > maxForwardedForHops {
+			return remote.String()
+		}
+	}
+	addresses := make([]netip.Addr, 0, forwardedHops+1)
+	for _, value := range forwardedValues {
+		for _, item := range strings.Split(value, ",") {
+			if strings.TrimSpace(item) == "" {
+				return remote.String()
+			}
+			addr, parseErr := netip.ParseAddr(strings.TrimSpace(item))
+			if parseErr != nil {
+				return remote.String()
+			}
+			addresses = append(addresses, addr.Unmap())
+		}
+	}
+	if len(addresses) == 0 {
+		return remote.String()
+	}
+	addresses = append(addresses, remote)
+	for i := len(addresses) - 1; i >= 0; i-- {
+		if !s.isTrustedProxy(addresses[i]) {
+			return addresses[i].String()
+		}
+	}
+	return addresses[0].String()
+}
+
+func (s *Server) isTrustedProxy(ip netip.Addr) bool {
+	for _, prefix := range s.trustedProxies {
+		if prefix.IsValid() && prefix.Contains(ip) {
+			return true
+		}
+	}
+	return false
+}
+
+func (s *Server) allowRate(key string, max int) bool {
+	now := time.Now()
+	s.rateMu.Lock()
+	defer s.rateMu.Unlock()
+	if now.Sub(s.lastRatePurge) >= time.Minute {
+		for k, v := range s.limits {
+			if now.Sub(v.at) >= 2*time.Minute {
+				delete(s.limits, k)
+			}
+		}
+		s.lastRatePurge = now
+	}
+	v, exists := s.limits[key]
+	if !exists && len(s.limits) >= 8192 {
+		return false
+	}
+	if !exists || now.Sub(v.at) >= time.Minute {
+		v = rate{at: now}
 	}
 	v.count++
-	s.limits[k] = v
-	return v.count <= 15
+	s.limits[key] = v
+	return v.count <= max
 }
+
+func (s *Server) reserveWebSocket(userID, ip string) bool {
+	if s.wsGlobal >= s.maxWSGlobal || s.wsByUser[userID] >= s.maxWSPerUser || s.wsByIP[ip] >= s.maxWSPerIP {
+		return false
+	}
+	s.wsGlobal++
+	s.wsByUser[userID]++
+	s.wsByIP[ip]++
+	return true
+}
+
+func (s *Server) releaseWebSocket(userID, ip string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.wsGlobal--
+	s.wsByUser[userID]--
+	s.wsByIP[ip]--
+	if s.wsByUser[userID] <= 0 {
+		delete(s.wsByUser, userID)
+	}
+	if s.wsByIP[ip] <= 0 {
+		delete(s.wsByIP, ip)
+	}
+}
+
+func writeAPIResult(w http.ResponseWriter, result any, err error) {
+	if err != nil {
+		status := 400
+		var ae apiError
+		if errors.As(err, &ae) {
+			status = ae.status
+		}
+		failure := map[string]any{"error": err.Error()}
+		if result != nil {
+			failure["room"] = result
+		}
+		jsonOut(w, status, failure)
+		return
+	}
+	jsonOut(w, 200, result)
+}
+
 func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 	externalRecords := strings.HasPrefix(r.URL.Path, "/api/v1/teahouses/")
 	if externalRecords {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Cache-Control", "no-store")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
+		if r.Method != http.MethodGet {
+			writeAPIResult(w, nil, apiError{405, "请求方法不支持"})
+			return
+		}
+		if !s.allowRate("records:"+s.clientIP(r), 120) {
+			w.Header().Set("Retry-After", "60")
+			writeAPIResult(w, nil, apiError{429, "请求过于频繁，请稍后再试"})
+			return
+		}
+		select {
+		case s.publicRecordSlots <- struct{}{}:
+			defer func() { <-s.publicRecordSlots }()
+		default:
+			writeAPIResult(w, nil, apiError{503, "战绩查询繁忙，请稍后再试"})
+			return
+		}
+		result, err := s.externalClubRecords(r)
+		writeAPIResult(w, result, err)
+		return
 	} else if r.Method != "GET" && !sameOrigin(r) {
 		jsonOut(w, 403, map[string]string{"error": "来源校验失败"})
 		return
 	}
 	s.mu.Lock()
-	defer s.mu.Unlock()
+	lockHeld := true
+	defer func() {
+		if lockHeld {
+			s.mu.Unlock()
+		}
+	}()
 	var result any
 	var err error
 	u := s.user(r)
@@ -479,9 +670,30 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				err = conflict("用户名已被使用")
 				break
 			}
-			encoded, hashErr := passwordHash(input.Password)
+			s.mu.Unlock()
+			lockHeld = false
+			var encoded string
+			var hashErr error
+			select {
+			case s.passwordWork <- struct{}{}:
+				encoded, hashErr = passwordHash(input.Password)
+				<-s.passwordWork
+			default:
+				hashErr = apiError{429, "认证请求繁忙，请稍后再试"}
+			}
+			s.mu.Lock()
+			lockHeld = true
 			if hashErr != nil {
-				err = apiError{500, "账号创建失败，请稍后重试"}
+				var ae apiError
+				if errors.As(hashErr, &ae) {
+					err = hashErr
+				} else {
+					err = apiError{500, "账号创建失败，请稍后重试"}
+				}
+				break
+			}
+			if s.usernameTaken(key) {
+				err = conflict("用户名已被使用")
 				break
 			}
 			before := clone(s.accounts)
@@ -495,24 +707,51 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 			s.setSessionCookie(w, r, token)
 			result = map[string]any{"user": publicUser(u), "roomId": s.activeRoom(u.ID)}
 		} else {
-			if input.Username == "" || input.Password == "" {
+			if !validUsername(input.Username) || len([]rune(input.Password)) < 8 || len([]rune(input.Password)) > 64 {
 				err = apiError{401, "用户名或密码错误"}
 				break
 			}
 			key := strings.ToLower(input.Username)
+			var candidateID, candidateHash string
 			for _, candidate := range s.accounts.Users {
 				candidateKey := candidate.UsernameKey
 				if candidateKey == "" {
 					candidateKey = strings.ToLower(candidate.Username)
 				}
 				if candidateKey == key {
-					u = candidate
+					candidateID, candidateHash = candidate.ID, candidate.PasswordHash
 					break
 				}
 			}
-			if u == nil || !verifyPassword(u.PasswordHash, input.Password) {
-				// Spend a comparable amount of work for unknown usernames to reduce account enumeration by timing.
-				_, _ = passwordHash(input.Password)
+			s.mu.Unlock()
+			lockHeld = false
+			var verified bool
+			var passwordErr error
+			select {
+			case s.passwordWork <- struct{}{}:
+				if candidateID == "" {
+					// Spend a comparable amount of work for unknown usernames to reduce account enumeration by timing.
+					_, passwordErr = passwordHash(input.Password)
+				} else {
+					verified = verifyPassword(candidateHash, input.Password)
+				}
+				<-s.passwordWork
+			default:
+				passwordErr = apiError{429, "认证请求繁忙，请稍后再试"}
+			}
+			s.mu.Lock()
+			lockHeld = true
+			if passwordErr != nil {
+				var ae apiError
+				if errors.As(passwordErr, &ae) {
+					err = passwordErr
+				} else {
+					err = apiError{500, "登录失败，请稍后重试"}
+				}
+				break
+			}
+			u = s.accounts.Users[candidateID]
+			if u == nil || u.PasswordHash != candidateHash || !verified {
 				err = apiError{401, "用户名或密码错误"}
 				break
 			}
@@ -542,10 +781,6 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 		}
 		result = s.adminView()
 	default:
-		if strings.HasPrefix(r.URL.Path, "/api/v1/teahouses/") {
-			result, err = s.externalClubRecords(r)
-			break
-		}
 		if u == nil {
 			err = apiError{401, "请先登录"}
 			break
@@ -575,7 +810,11 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 			}
 			var cmd Command
 			if err = decode(r, &cmd); err == nil {
-				result, err = s.command(u, cmd)
+				if !s.allowRate("command-user:"+u.ID, 120) || !s.allowRate("command-ip:"+s.clientIP(r), 600) {
+					err = apiError{429, "操作过于频繁，请稍后再试"}
+				} else {
+					result, err = s.command(u, cmd)
+				}
 			}
 		case "/api/history":
 			var list []any
@@ -596,7 +835,7 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			c := s.accounts.Clubs[r.URL.Query().Get("id")]
-			if c == nil || !c.Members[u.ID] {
+			if c == nil || !s.isMember(c.ID, u.ID) {
 				err = forbidden()
 				break
 			}
@@ -652,20 +891,9 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 			err = apiError{404, "接口不存在"}
 		}
 	}
-	if err != nil {
-		status := 400
-		var ae apiError
-		if errors.As(err, &ae) {
-			status = ae.status
-		}
-		failure := map[string]any{"error": err.Error()}
-		if result != nil {
-			failure["room"] = result
-		}
-		jsonOut(w, status, failure)
-		return
-	}
-	jsonOut(w, 200, result)
+	s.mu.Unlock()
+	lockHeld = false
+	writeAPIResult(w, result, err)
 }
 func (s *Server) isMember(club, user string) bool {
 	c := s.accounts.Clubs[club]
@@ -1032,6 +1260,7 @@ func (s *Server) view(r *Room, user string) any {
 	return v
 }
 func (s *Server) broadcast(r *Room) {
+	frames := make(map[string][]byte)
 	for p := range s.peers {
 		if p.room != r.ID {
 			continue
@@ -1042,7 +1271,11 @@ func (s *Server) broadcast(r *Room) {
 			delete(s.peers, p)
 			continue
 		}
-		b, _ := json.Marshal(map[string]any{"type": "room", "room": s.view(r, p.user)})
+		b, ok := frames[p.user]
+		if !ok {
+			b, _ = json.Marshal(map[string]any{"type": "room", "room": s.view(r, p.user)})
+			frames[p.user] = b
+		}
 		select {
 		case p.ch <- b:
 		default:
@@ -1056,6 +1289,7 @@ func (s *Server) ws(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "origin rejected", 403)
 		return
 	}
+	ip := s.clientIP(r)
 	s.mu.Lock()
 	u := s.user(r)
 	room := s.rooms[r.URL.Query().Get("room")]
@@ -1065,14 +1299,21 @@ func (s *Server) ws(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	userID := u.ID
+	roomID := room.ID
+	if !s.reserveWebSocket(userID, ip) {
+		s.mu.Unlock()
+		http.Error(w, "connection limit exceeded", http.StatusTooManyRequests)
+		return
+	}
 	s.mu.Unlock()
+	defer s.releaseWebSocket(userID, ip)
 	conn, err := websocket.Accept(w, r, &websocket.AcceptOptions{CompressionMode: websocket.CompressionDisabled})
 	if err != nil {
 		return
 	}
 	conn.SetReadLimit(65536)
 	cookie, _ := r.Cookie("hjy_session")
-	p := &peer{user: userID, room: room.ID, session: hash(cookie.Value), ch: make(chan []byte, 16), conn: conn}
+	p := &peer{user: userID, room: roomID, session: hash(cookie.Value), ch: make(chan []byte, 16), conn: conn}
 	ctx, cancel := context.WithCancel(r.Context())
 	defer cancel()
 	defer conn.CloseNow()
@@ -1129,6 +1370,8 @@ func (s *Server) ws(w http.ResponseWriter, r *http.Request) {
 		var cmdErr error
 		if current == nil {
 			cmdErr = forbidden()
+		} else if !s.allowRate("command-user:"+current.ID, 120) || !s.allowRate("command-ip:"+ip, 600) {
+			cmdErr = apiError{429, "操作过于频繁，请稍后再试"}
 		} else {
 			response, cmdErr = s.command(current, cmd)
 		}

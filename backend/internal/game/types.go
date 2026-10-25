@@ -2,6 +2,7 @@ package game
 
 import (
 	"crypto/rand"
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -194,12 +195,42 @@ type State struct {
 }
 
 func Shuffle(a []int) error {
+	if len(a) < 2 {
+		return nil
+	}
+	// Batch secure random bytes so dealing does not make one crypto/rand.Int
+	// request and big.Int allocation for every card. Rejection sampling keeps
+	// Fisher-Yates unbiased while retaining crypto/rand's CSPRNG.
+	const batchSize = 4096
+	var pool [batchSize]byte
+	poolLen := len(a) - 1
+	if poolLen > batchSize/8 {
+		poolLen = batchSize / 8
+	}
+	poolLen *= 8
+	buf := pool[:poolLen]
+	if _, err := rand.Read(buf); err != nil {
+		return err
+	}
+	position := 0
 	for i := len(a) - 1; i > 0; i-- {
-		n, e := rand.Int(rand.Reader, big.NewInt(int64(i+1)))
-		if e != nil {
-			return e
+		bound := uint64(i) + 1
+		threshold := -bound % bound
+		var value uint64
+		for {
+			if position+8 > len(buf) {
+				if _, err := rand.Read(buf); err != nil {
+					return err
+				}
+				position = 0
+			}
+			value = binary.LittleEndian.Uint64(buf[position : position+8])
+			position += 8
+			if value >= threshold {
+				break
+			}
 		}
-		j := int(n.Int64())
+		j := int(value % bound)
 		a[i], a[j] = a[j], a[i]
 	}
 	return nil

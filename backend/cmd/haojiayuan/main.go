@@ -5,8 +5,10 @@ import (
 	"haojiayuan/internal/server"
 	"log"
 	"net/http"
+	"net/netip"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 )
@@ -17,8 +19,27 @@ func env(k, d string) string {
 	}
 	return d
 }
+func trustedProxies(raw string) ([]netip.Prefix, error) {
+	var prefixes []netip.Prefix
+	for _, item := range strings.Split(raw, ",") {
+		item = strings.TrimSpace(item)
+		if item == "" {
+			continue
+		}
+		prefix, err := netip.ParsePrefix(item)
+		if err != nil {
+			return nil, err
+		}
+		prefixes = append(prefixes, prefix.Masked())
+	}
+	return prefixes, nil
+}
 func main() {
-	app, err := server.New(server.Options{Repository: server.JSONRepository{Dir: env("DATA_DIR", "./data")}, StaticDir: env("STATIC_DIR", "../frontend/dist"), AdminKey: os.Getenv("ADMIN_KEY"), CookieSecure: os.Getenv("COOKIE_SECURE") == "true"})
+	proxies, err := trustedProxies(os.Getenv("TRUSTED_PROXIES"))
+	if err != nil {
+		log.Fatalf("invalid TRUSTED_PROXIES: %v", err)
+	}
+	app, err := server.New(server.Options{Repository: server.JSONRepository{Dir: env("DATA_DIR", "./data")}, StaticDir: env("STATIC_DIR", "../frontend/dist"), AdminKey: os.Getenv("ADMIN_KEY"), CookieSecure: os.Getenv("COOKIE_SECURE") == "true", TrustedProxies: proxies})
 	if err != nil {
 		log.Fatal(err)
 	}

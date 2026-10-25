@@ -23,6 +23,26 @@ func recentClubRounds(rounds []Round, now time.Time) []Round {
 	return out
 }
 
+func snapshotClubRounds(rounds []Round, now time.Time, dayStart, dayEnd int64) []Round {
+	cutoff, current := now.Add(-clubHistoryRetention).Unix(), now.Unix()
+	out := make([]Round, 0, len(rounds))
+	for _, round := range rounds {
+		if round.At < cutoff || round.At > current || (dayStart != 0 && (round.At < dayStart || round.At >= dayEnd)) {
+			continue
+		}
+		copy := round
+		copy.Scores = append([]int(nil), round.Scores...)
+		copy.Wins = append([]game.Win(nil), round.Wins...)
+		for i := range copy.Wins {
+			copy.Wins[i].Reasons = append([]string(nil), round.Wins[i].Reasons...)
+			copy.Wins[i].Hand = append([]int(nil), round.Wins[i].Hand...)
+		}
+		copy.Ledger = append([]game.Transfer(nil), round.Ledger...)
+		out = append(out, copy)
+	}
+	return out
+}
+
 func (s *Server) pruneExpiredClubHistory(now time.Time) error {
 	for _, room := range s.rooms {
 		if room.ClubID == "" {
@@ -43,7 +63,7 @@ func (s *Server) pruneExpiredClubHistory(now time.Time) error {
 }
 
 func clubManager(c *Club, user string) bool {
-	return c.Members[user] && (c.Owner == user || c.Managers[user])
+	return c.Members[user] && !c.Disabled[user] && (c.Owner == user || c.Managers[user])
 }
 
 func visibleClub(c *Club, user string) *Club {
@@ -65,7 +85,7 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 	if r.Method == "GET" {
 		list := []*Club{}
 		for _, c := range s.accounts.Clubs {
-			if c.Members[u.ID] {
+			if s.isMember(c.ID, u.ID) {
 				list = append(list, visibleClub(c, u.ID))
 			}
 		}
@@ -322,6 +342,26 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 // Each enabled template keeps one completely empty waiting room. Occupied
 // waiting rooms do not count; restarting reads the persisted tables first.
 func (s *Server) ensureClubTables(now time.Time) {
+	type tableKey struct {
+		clubID     string
+		templateID string
+	}
+	emptyWaiting := make(map[tableKey]struct{})
+	for _, room := range s.rooms {
+		if room.Status != "waiting" {
+			continue
+		}
+		empty := true
+		for _, player := range room.Players {
+			if player != nil {
+				empty = false
+				break
+			}
+		}
+		if empty {
+			emptyWaiting[tableKey{clubID: room.ClubID, templateID: room.TemplateID}] = struct{}{}
+		}
+	}
 	for _, c := range s.accounts.Clubs {
 		if !c.AutoCreate {
 			continue
@@ -330,18 +370,8 @@ func (s *Server) ensureClubTables(now time.Time) {
 			if !template.Enabled {
 				continue
 			}
-			available := false
-			for _, r := range s.rooms {
-				if r.ClubID != c.ID || r.TemplateID != template.ID || r.Status != "waiting" {
-					continue
-				}
-				empty := true
-				for _, p := range r.Players {
-					empty = empty && p == nil
-				}
-				available = available || empty
-			}
-			if available {
+			key := tableKey{clubID: c.ID, templateID: template.ID}
+			if _, available := emptyWaiting[key]; available {
 				continue
 			}
 			cfg, err := game.Normalize(template.Config)
@@ -360,6 +390,7 @@ func (s *Server) ensureClubTables(now time.Time) {
 				continue
 			}
 			s.rooms[r.ID] = r
+			emptyWaiting[key] = struct{}{}
 		}
 	}
 }
@@ -485,10 +516,6 @@ func (s *Server) externalClubRecords(r *http.Request) (any, error) {
 	if len(parts) != 5 || parts[0] != "api" || parts[1] != "v1" || parts[2] != "teahouses" || parts[4] != "records" || parts[3] == "" {
 		return nil, apiError{404, "接口不存在"}
 	}
-	club := s.accounts.Clubs[parts[3]]
-	if club == nil {
-		return nil, apiError{404, "茶馆不存在"}
-	}
 	limit, offset := 50, 0
 	if raw := r.URL.Query().Get("limit"); raw != "" {
 		parsed, err := strconv.Atoi(raw)
@@ -527,65 +554,85 @@ func (s *Server) externalClubRecords(r *http.Request) (any, error) {
 		}
 		dayStart, dayEnd = selectedDay.Unix(), selectedDay.AddDate(0, 0, 1).Unix()
 	}
-	type record struct {
-		value   map[string]any
+	type roomCandidate struct {
+		room    *Room
 		updated int64
-		roomID  string
 	}
-	all := []record{}
-	for _, room := range s.rooms {
-		if room.ClubID != club.ID || (gameFilter != "" && room.Config.Game != gameFilter) {
-			continue
-		}
-		if memberFilter != "" {
-			found := false
-			for _, player := range room.Players {
-				found = found || (player != nil && player.UserID == memberFilter)
-			}
-			if !found {
+	type roomSnapshot struct {
+		room    *Room
+		players []*Player
+		history []Round
+		updated int64
+	}
+	clubID, clubName := "", ""
+	candidates := make([]roomCandidate, 0)
+	cutoff, current := now.Add(-clubHistoryRetention).Unix(), now.Unix()
+	s.mu.RLock()
+	club := s.accounts.Clubs[parts[3]]
+	if club != nil {
+		clubID, clubName = club.ID, club.Name
+		for _, room := range s.rooms {
+			if room.ClubID != club.ID || (gameFilter != "" && room.Config.Game != gameFilter) {
 				continue
 			}
-		}
-		rounds := recentClubRounds(room.History, now)
-		if dayStart != 0 {
-			dayRounds := make([]Round, 0, len(rounds))
-			for _, round := range rounds {
-				if round.At >= dayStart && round.At < dayEnd {
-					dayRounds = append(dayRounds, round)
+			if memberFilter != "" {
+				found := false
+				for _, player := range room.Players {
+					found = found || (player != nil && player.UserID == memberFilter)
+				}
+				if !found {
+					continue
 				}
 			}
-			rounds = dayRounds
-		}
-		if len(rounds) == 0 {
-			continue
-		}
-		latest := int64(0)
-		for _, round := range rounds {
-			if round.At > latest {
-				latest = round.At
+			latest := int64(0)
+			for _, round := range room.History {
+				if round.At < cutoff || round.At > current || (dayStart != 0 && (round.At < dayStart || round.At >= dayEnd)) {
+					continue
+				}
+				if round.At > latest {
+					latest = round.At
+				}
+			}
+			if latest != 0 {
+				candidates = append(candidates, roomCandidate{room: room, updated: latest})
 			}
 		}
-		all = append(all, record{map[string]any{"room": s.summary(room), "players": room.Players, "rounds": rounds, "updated": latest}, latest, room.ID})
 	}
-	sort.Slice(all, func(i, j int) bool {
-		if all[i].updated == all[j].updated {
-			return all[i].roomID > all[j].roomID
+	if clubID == "" {
+		s.mu.RUnlock()
+		return nil, apiError{404, "茶馆不存在"}
+	}
+	sort.Slice(candidates, func(i, j int) bool {
+		if candidates[i].updated == candidates[j].updated {
+			return candidates[i].room.ID > candidates[j].room.ID
 		}
-		return all[i].updated > all[j].updated
+		return candidates[i].updated > candidates[j].updated
 	})
-	total := len(all)
-	if offset >= total {
-		all = []record{}
-	} else {
-		end := offset + limit
-		if end > total {
-			end = total
+	total := len(candidates)
+	start, end := offset, offset+limit
+	if start > total {
+		start = total
+	}
+	if end > total {
+		end = total
+	}
+	rooms := make([]roomSnapshot, 0, end-start)
+	for _, candidate := range candidates[start:end] {
+		room := candidate.room
+		players := make([]*Player, len(room.Players))
+		for i, player := range room.Players {
+			if player != nil {
+				copy := *player
+				players[i] = &copy
+			}
 		}
-		all = all[offset:end]
+		roomCopy := &Room{ID: room.ID, Config: clone(room.Config), Status: room.Status, Round: room.Round, ClubID: room.ClubID, TemplateID: room.TemplateID, Players: players}
+		rooms = append(rooms, roomSnapshot{room: roomCopy, players: players, history: snapshotClubRounds(room.History, now, dayStart, dayEnd), updated: candidate.updated})
 	}
-	results := make([]map[string]any, 0, len(all))
-	for _, item := range all {
-		results = append(results, item.value)
+	s.mu.RUnlock()
+	results := make([]map[string]any, 0, len(rooms))
+	for _, snapshot := range rooms {
+		results = append(results, map[string]any{"room": s.summary(snapshot.room), "players": snapshot.players, "rounds": snapshot.history, "updated": snapshot.updated})
 	}
-	return map[string]any{"teaHouse": map[string]any{"id": club.ID, "name": club.Name}, "retentionDays": 7, "generatedAt": now.Unix(), "total": total, "limit": limit, "offset": offset, "records": results}, nil
+	return map[string]any{"teaHouse": map[string]any{"id": clubID, "name": clubName}, "retentionDays": 7, "generatedAt": now.Unix(), "total": total, "limit": limit, "offset": offset, "records": results}, nil
 }

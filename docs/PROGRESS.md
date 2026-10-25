@@ -19,4 +19,8 @@
 
 2026-10-25 认证与操作补充：注册/登录表单仅要求用户名和密码；麻将手牌双击出牌，跑得快、红二十、斗十四支持多选后显式出牌。Go 测试、`go vet`、前端生产构建及差异空白检查通过；本轮未新增浏览器端到端验证。详见 TEST_REPORT.md。
 
-2026-10-25 茶馆战绩：馆内「战绩」页展示全馆最近7天各房间的已结算小局，可按成员查看；外部只读 API 可分页并按玩法/成员筛选。后续按用户要求移除了外部 API 密钥，改为无需登录的公开 GET，并新增 `date=today` / `date=YYYY-MM-DD` 与 `memberId` 组合筛选。当前修改已更新实现、现有回归用例和 API 契约；这次修改尚未运行测试、前端构建或微信小程序验收。接口契约见 EXTERNAL_TEAHOUSE_RECORDS_API.md。
+2026-10-25 茶馆战绩：馆内「战绩」页展示全馆最近7天各房间的已结算小局，可按成员查看；外部只读 API 可分页并按玩法/成员筛选。后续按用户要求移除了外部 API 密钥，改为无需登录的公开 GET，并新增 `date=today` / `date=YYYY-MM-DD` 与 `memberId` 组合筛选。改为公开免密后的首次记录尚未测试；后续安全与资源边界复核及测试结果见下方追加记录。接口契约见 EXTERNAL_TEAHOUSE_RECORDS_API.md。
+
+2026-10-25 茶馆战绩接口安全与资源边界复核（后续结果）：按用户要求继续保持公开免密、无隐私筛选；增加公开读取的 IP 限流与并发上限，限制转发头长度/跳数并仅信任显式配置的代理，限制 WebSocket 单用户/IP/全局连接数与消息大小，限制密码哈希并发、定期清理过期会话，并缩短战绩查询持锁范围。Compose 中应用端口仅留在内部网络，Caddy 使用固定来源地址进入可信代理名单。`go test ./...`、`go test -race ./...`、`go vet ./...`、`git diff --check` 和带临时必填变量的 `docker compose config --quiet` 均通过；这只验证代码测试及 Compose 配置解析，不代表 Docker 镜像/容器、TLS、公网或微信集成已经验收。具体命令和限制见 TEST_REPORT.md、KNOWN_ISSUES.md。
+
+2026-10-25 Docker 与调度性能检查：静态检查 Dockerfile/Compose；加入洗牌随机源批量读取与无偏采样、自动补桌一次索引及同用户 WebSocket 广播序列化复用；将房间维护扫描周期从300ms调至1秒，投票到期和自动补桌可能增加最多约1秒响应；公开战绩响应禁用缓存。确认微信小程序明确属于外部开发范围，API 只在每局结算后提供可查询战绩，不推送进行中牌局。Compose 语法检查通过；Docker build 已尝试但连接 Docker Engine 失败，未进入构建阶段，最终镜像尚未扫描。WSL Ubuntu 26.04 / Go 1.26.0 下 `go test ./...`、`go test -race ./...`、`go vet ./...` 均通过；没有性能基准，因此没有发牌/广播耗时数据。牌局命令和同步落盘仍在单写锁内，慢磁盘延迟尚未消除。详见 TEST_REPORT.md、KNOWN_ISSUES.md、EXTERNAL_TEAHOUSE_RECORDS_API.md。

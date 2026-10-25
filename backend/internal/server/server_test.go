@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"net/http/httptest"
+	"net/netip"
 	"os"
 	"runtime"
 	"sort"
@@ -246,6 +247,149 @@ func TestHTTPWebsocketPrivacyReplayRestart(t *testing.T) {
 }
 func mustJSON(v any) []byte { b, _ := json.Marshal(v); return b }
 
+func TestWebSocketConnectionLimitsReleaseOnDisconnect(t *testing.T) {
+	token := "ws-limit-token"
+	s, err := New(Options{Repository: JSONRepository{Dir: t.TempDir()}, MaxWSPerUser: 1, MaxWSPerIP: 2, MaxWSGlobal: 2})
+	if err != nil {
+		t.Fatal(err)
+	}
+	user := &User{ID: "ws-user", Name: "WS user"}
+	s.accounts.Users[user.ID] = user
+	s.accounts.Sessions[hash(token)] = Session{UserID: user.ID, Expires: time.Now().Add(time.Hour).Unix()}
+	created, err := s.command(user, Command{Op: "create", RequestID: "ws-limit-room", Config: game.Config{Game: "sichuan"}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	rid := created.(map[string]any)["id"].(string)
+	h := httptest.NewServer(s.Handler())
+	defer h.Close()
+	url := "ws" + strings.TrimPrefix(h.URL, "http") + "/ws?room=" + rid
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	options := &websocket.DialOptions{HTTPHeader: http.Header{"Cookie": []string{"hjy_session=" + token}}}
+	first, _, err := websocket.Dial(ctx, url, options)
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, resp, err := websocket.Dial(ctx, url, options)
+	if resp != nil && resp.Body != nil {
+		resp.Body.Close()
+	}
+	if second != nil {
+		second.CloseNow()
+	}
+	if err == nil || resp == nil || resp.StatusCode != http.StatusTooManyRequests {
+		first.CloseNow()
+		t.Fatalf("per-user connection limit was not enforced: response=%v err=%v", resp, err)
+	}
+	first.CloseNow()
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		s.mu.RLock()
+		remaining := s.wsGlobal
+		s.mu.RUnlock()
+		if remaining == 0 {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	s.mu.RLock()
+	remaining := s.wsGlobal
+	s.mu.RUnlock()
+	if remaining != 0 {
+		t.Fatal("websocket connection slot was not released after disconnect")
+	}
+	reconnected, _, err := websocket.Dial(ctx, url, options)
+	if err != nil {
+		t.Fatalf("connection slot remained stuck after disconnect: %v", err)
+	}
+	reconnected.CloseNow()
+}
+
+func TestClientIPOnlyTrustsConfiguredProxyChain(t *testing.T) {
+	proxy, err := netip.ParsePrefix("10.0.0.0/8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := &Server{trustedProxies: []netip.Prefix{proxy}}
+
+	spoofed := httptest.NewRequest(http.MethodGet, "/", nil)
+	spoofed.RemoteAddr = "198.51.100.20:4567"
+	spoofed.Header.Set("X-Forwarded-For", "203.0.113.99")
+	if got := s.clientIP(spoofed); got != "198.51.100.20" {
+		t.Fatalf("untrusted peer spoofed client IP: got %q", got)
+	}
+
+	proxied := httptest.NewRequest(http.MethodGet, "/", nil)
+	proxied.RemoteAddr = "10.0.0.2:4567"
+	proxied.Header.Add("X-Forwarded-For", "198.51.100.99, 203.0.113.8")
+	proxied.Header.Add("X-Forwarded-For", "10.0.0.3")
+	if got := s.clientIP(proxied); got != "203.0.113.8" {
+		t.Fatalf("trusted proxy chain resolved to %q, want closest untrusted client 203.0.113.8", got)
+	}
+
+	malformed := httptest.NewRequest(http.MethodGet, "/", nil)
+	malformed.RemoteAddr = "10.0.0.2:4567"
+	malformed.Header.Set("X-Forwarded-For", "attacker-controlled")
+	if got := s.clientIP(malformed); got != "10.0.0.2" {
+		t.Fatalf("malformed forwarded header should fall back to proxy peer, got %q", got)
+	}
+}
+
+func TestClientIPBoundsForwardedHeaders(t *testing.T) {
+	proxy, err := netip.ParsePrefix("10.0.0.0/8")
+	if err != nil {
+		t.Fatal(err)
+	}
+	s := &Server{trustedProxies: []netip.Prefix{proxy}}
+
+	tooLong := httptest.NewRequest(http.MethodGet, "/", nil)
+	tooLong.RemoteAddr = "10.0.0.2:4567"
+	tooLong.Header.Set("X-Forwarded-For", strings.Repeat("1", 4097))
+	if got := s.clientIP(tooLong); got != "10.0.0.2" {
+		t.Fatalf("oversized forwarded header should fall back to proxy peer, got %q", got)
+	}
+
+	tooManyHops := httptest.NewRequest(http.MethodGet, "/", nil)
+	tooManyHops.RemoteAddr = "10.0.0.2:4567"
+	tooManyHops.Header.Set("X-Forwarded-For", strings.TrimSuffix(strings.Repeat("203.0.113.1,", 33), ","))
+	if got := s.clientIP(tooManyHops); got != "10.0.0.2" {
+		t.Fatalf("oversized proxy chain should fall back to proxy peer, got %q", got)
+	}
+}
+
+func TestRateLimiterFailsClosedAtCapacityAndPurgesExpiredBuckets(t *testing.T) {
+	s := &Server{limits: make(map[string]rate, 8192)}
+	now := time.Now()
+	for i := 0; i < 8192; i++ {
+		s.limits[fmt.Sprintf("ip:%d", i)] = rate{at: now, count: 1}
+	}
+	if s.allowRate("ip:fresh", 120) {
+		t.Fatal("a fresh client should be rejected while the bounded limiter is full")
+	}
+	if len(s.limits) != 8192 {
+		t.Fatalf("rate limiter grew beyond its bound: %d", len(s.limits))
+	}
+	if _, ok := s.limits["ip:0"]; !ok {
+		t.Fatal("active rate-limit bucket was evicted at capacity")
+	}
+	if !s.allowRate("ip:0", 120) {
+		t.Fatal("existing client bucket should continue to work at capacity")
+	}
+
+	for key, bucket := range s.limits {
+		bucket.at = now.Add(-3 * time.Minute)
+		s.limits[key] = bucket
+	}
+	s.lastRatePurge = now.Add(-time.Minute)
+	if !s.allowRate("ip:after-purge", 120) {
+		t.Fatal("fresh client should be admitted after expired buckets are pruned")
+	}
+	if len(s.limits) != 1 {
+		t.Fatalf("expected expired buckets pruned before admitting new client, got %d", len(s.limits))
+	}
+}
+
 type failingRepo struct {
 	JSONRepository
 	fail bool
@@ -366,7 +510,7 @@ func TestConnectionFanout(t *testing.T) {
 	}
 	for _, n := range []int{100, 300, 500} {
 		t.Run(fmt.Sprint(n), func(t *testing.T) {
-			s, e := New(Options{Repository: JSONRepository{Dir: t.TempDir()}})
+			s, e := New(Options{Repository: JSONRepository{Dir: t.TempDir()}, MaxWSPerUser: n, MaxWSPerIP: n, MaxWSGlobal: n})
 			if e != nil {
 				t.Fatal(e)
 			}

@@ -5,10 +5,13 @@ services:
     environment:
       ADMIN_KEY: ${ADMIN_KEY:?Set ADMIN_KEY in .env}
       COOKIE_SECURE: "true"
+      TRUSTED_PROXIES: 172.30.0.2/32
     volumes:
       - game-data:/data
     expose:
       - "8080"
+    networks:
+      - backend
   proxy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -23,7 +26,15 @@ services:
       - caddy-config:/config
     depends_on:
       - game
+    networks:
+      backend:
+        ipv4_address: 172.30.0.2
 volumes:
   game-data:
   caddy-data:
   caddy-config:
+networks:
+  backend:
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24

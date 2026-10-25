@@ -159,6 +159,24 @@ func TestTeaHouseApprovalTemplatesAndPlayingRestrictions(t *testing.T) {
 	change(owner, "disable", ids[applicant], true, 200)
 	request(t, applicant, "POST", h.URL+"/api/command", map[string]any{"op": "join", "requestId": "disabled-join", "roomId": room["id"]}, 403)
 	change(owner, "disable", ids[member], true, 200)
+	clubsReq, err := http.NewRequest(http.MethodGet, h.URL+"/api/clubs", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	clubsResp, err := member.Do(clubsReq)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var visibleClubs []map[string]any
+	if err := json.NewDecoder(clubsResp.Body).Decode(&visibleClubs); err != nil {
+		clubsResp.Body.Close()
+		t.Fatal(err)
+	}
+	clubsResp.Body.Close()
+	if clubsResp.StatusCode != http.StatusOK || len(visibleClubs) != 0 {
+		t.Fatalf("disabled member still sees tea-house list: status=%d clubs=%+v", clubsResp.StatusCode, visibleClubs)
+	}
+	request(t, member, "GET", h.URL+"/api/club?id="+cid, nil, 403)
 	request(t, member, "POST", h.URL+"/api/command", map[string]any{"op": "join", "requestId": "seated-reconnect", "roomId": room["id"]}, 200)
 	setTemplate(tid, true, 5)
 	request(t, applicant, "POST", h.URL+"/api/command", map[string]any{"op": "create", "requestId": "disabled-create", "clubId": cid, "templateId": tid}, 403)
@@ -267,6 +285,9 @@ func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
 			t.Fatal(err)
 		}
 		defer resp.Body.Close()
+		if resp.Header.Get("Cache-Control") != "no-store" {
+			t.Fatalf("external records response should not be cached: %q", resp.Header.Get("Cache-Control"))
+		}
 		data := map[string]any{}
 		_ = json.NewDecoder(resp.Body).Decode(&data)
 		if resp.StatusCode != want {
@@ -300,6 +321,21 @@ func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
 		}
 	}
 	getExternal(endpoint+"?date=2026-02-30", 400)
+	for i := 0; i < 115; i++ {
+		getExternal(endpoint, 200)
+	}
+	limitedReq, err := http.NewRequest(http.MethodGet, endpoint, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	limitedResp, err := http.DefaultClient.Do(limitedReq)
+	if err != nil {
+		t.Fatal(err)
+	}
+	limitedResp.Body.Close()
+	if limitedResp.StatusCode != http.StatusTooManyRequests || limitedResp.Header.Get("Access-Control-Allow-Origin") != "*" || limitedResp.Header.Get("Retry-After") != "60" {
+		t.Fatalf("public API rate limit response invalid: status=%d cors=%q retry=%q", limitedResp.StatusCode, limitedResp.Header.Get("Access-Control-Allow-Origin"), limitedResp.Header.Get("Retry-After"))
+	}
 
 	preflight, err := http.NewRequest(http.MethodOptions, endpoint, nil)
 	if err != nil {
