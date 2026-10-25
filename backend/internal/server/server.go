@@ -48,18 +48,20 @@ type ClubTemplate struct {
 	Enabled bool        `json:"enabled"`
 }
 type Club struct {
-	ID              string           `json:"id"`
-	Name            string           `json:"name"`
-	Owner           string           `json:"owner"`
-	Members         map[string]bool  `json:"members"`
-	Managers        map[string]bool  `json:"managers,omitempty"`
-	JoinClosed      bool             `json:"joinClosed"`
-	RequireApproval bool             `json:"requireApproval"`
-	AutoCreate      bool             `json:"autoCreate"`
-	Announcement    string           `json:"announcement"`
-	Applications    map[string]int64 `json:"applications,omitempty"`
-	Disabled        map[string]bool  `json:"disabled,omitempty"`
-	Templates       []ClubTemplate   `json:"templates"`
+	ID                       string           `json:"id"`
+	Name                     string           `json:"name"`
+	Owner                    string           `json:"owner"`
+	Members                  map[string]bool  `json:"members"`
+	Managers                 map[string]bool  `json:"managers,omitempty"`
+	JoinClosed               bool             `json:"joinClosed"`
+	RequireApproval          bool             `json:"requireApproval"`
+	AutoCreate               bool             `json:"autoCreate"`
+	Announcement             string           `json:"announcement"`
+	Applications             map[string]int64 `json:"applications,omitempty"`
+	Disabled                 map[string]bool  `json:"disabled,omitempty"`
+	Templates                []ClubTemplate   `json:"templates"`
+	ExternalRecordsTokenHash string           `json:"externalRecordsTokenHash,omitempty"`
+	ExternalRecordsEnabled   bool             `json:"externalRecordsEnabled,omitempty"`
 }
 type Report struct {
 	ID      string `json:"id"`
@@ -108,10 +110,10 @@ type Room struct {
 	Used         []string        `json:"used,omitempty"`
 }
 type Options struct {
-	Repository    Repository
-	StaticDir     string
-	AdminKey      string
-	CookieSecure  bool
+	Repository   Repository
+	StaticDir    string
+	AdminKey     string
+	CookieSecure bool
 }
 type peer struct {
 	user, room string
@@ -131,6 +133,7 @@ type Server struct {
 	lastError                    string
 	limits                       map[string]rate
 	started                      time.Time
+	lastClubHistoryPurge         time.Time
 	apiStats, commandStats       durationStats
 }
 type rate struct {
@@ -204,6 +207,10 @@ func New(o Options) (*Server, error) {
 		}
 		s.rooms[r.ID] = r
 	}
+	if err := s.pruneExpiredClubHistory(time.Now()); err != nil {
+		return nil, err
+	}
+	s.lastClubHistoryPurge = time.Now()
 	return s, nil
 }
 func (s *Server) Run(ctx context.Context) {
@@ -404,7 +411,16 @@ func (s *Server) authRate(r *http.Request) bool {
 	return v.count <= 15
 }
 func (s *Server) api(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" && !sameOrigin(r) {
+	externalRecords := strings.HasPrefix(r.URL.Path, "/api/v1/teahouses/")
+	if externalRecords {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+	} else if r.Method != "GET" && !sameOrigin(r) {
 		jsonOut(w, 403, map[string]string{"error": "来源校验失败"})
 		return
 	}
@@ -529,6 +545,10 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 		}
 		result = s.adminView()
 	default:
+		if strings.HasPrefix(r.URL.Path, "/api/v1/teahouses/") {
+			result, err = s.externalClubRecords(r)
+			break
+		}
 		if u == nil {
 			err = apiError{401, "请先登录"}
 			break
@@ -940,7 +960,21 @@ func (s *Server) tick(now time.Time) {
 			}
 		}
 	}
+	if now.Sub(s.lastClubHistoryPurge) >= time.Hour {
+		if err := s.pruneExpiredClubHistory(now); err != nil {
+			s.storageError(err)
+		}
+		s.lastClubHistoryPurge = now
+	}
 	s.ensureClubTables(now)
+}
+
+func newClubRecordsToken() (string, error) {
+	raw := make([]byte, 32)
+	if _, err := rand.Read(raw); err != nil {
+		return "", err
+	}
+	return "hjy_" + hex.EncodeToString(raw), nil
 }
 
 // view deliberately builds an allow-listed projection. Never serialize State to a client.

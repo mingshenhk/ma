@@ -193,8 +193,9 @@ func TestTeaHouseCompletedResultsAndStatistics(t *testing.T) {
 	request(t, b, "POST", h.URL+"/api/clubs", map[string]any{"op": "join", "id": cid}, 200)
 	// Fixture completed rounds isolate aggregation from the separately tested game lifecycle.
 	s.mu.Lock()
-	s.rooms["123456"] = &Room{ID: "123456", ClubID: cid, Config: game.Config{Game: "hongzhong", Base: 1, Rounds: 8}, Status: "finished", Players: []*Player{{UserID: uid, Name: "甲"}, {UserID: other, Name: "乙"}}, History: []Round{{Number: 1, Scores: []int{8, -8}}, {Number: 2, Scores: []int{-2, 2}}}, Updated: 20}
-	s.rooms["654321"] = &Room{ID: "654321", ClubID: cid, Config: game.Config{Game: "hongzhong", Base: 1, Rounds: 8}, Status: "roundEnd", Players: []*Player{{UserID: uid, Name: "甲"}, {UserID: other, Name: "乙"}}, History: []Round{{Number: 1, Scores: []int{4, -4}}}, Updated: 30}
+	now := time.Now().Unix()
+	s.rooms["123456"] = &Room{ID: "123456", ClubID: cid, Config: game.Config{Game: "hongzhong", Base: 1, Rounds: 8}, Status: "finished", Players: []*Player{{UserID: uid, Name: "甲"}, {UserID: other, Name: "乙"}}, History: []Round{{Number: 1, Scores: []int{8, -8}, At: now}, {Number: 2, Scores: []int{-2, 2}, At: now}}, Updated: 20}
+	s.rooms["654321"] = &Room{ID: "654321", ClubID: cid, Config: game.Config{Game: "hongzhong", Base: 1, Rounds: 8}, Status: "roundEnd", Players: []*Player{{UserID: uid, Name: "甲"}, {UserID: other, Name: "乙"}}, History: []Round{{Number: 1, Scores: []int{4, -4}, At: now}}, Updated: 30}
 	s.mu.Unlock()
 	v := request(t, b, "GET", h.URL+"/api/club?id="+cid, nil, 200)
 	stats := v["stats"].(map[string]any)
@@ -210,6 +211,102 @@ func TestTeaHouseCompletedResultsAndStatistics(t *testing.T) {
 	if strings.Contains(string(bts), `"state"`) || strings.Contains(string(bts), `"wall"`) {
 		t.Fatal("tea-house history exposed live hands")
 	}
+}
+
+func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
+	repo := JSONRepository{Dir: t.TempDir()}
+	s, err := New(Options{Repository: repo})
+	if err != nil {
+		t.Fatal(err)
+	}
+	h := httptest.NewServer(s.Handler())
+	defer h.Close()
+	owner, member := client(), client()
+	ownerID := register(t, owner, h.URL, "接口馆主")["user"].(map[string]any)["id"].(string)
+	memberID := register(t, member, h.URL, "接口成员")["user"].(map[string]any)["id"].(string)
+	cid := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "接口战绩馆"}, 200)["id"].(string)
+	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "join", "id": cid}, 200)
+	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "issueRecordsToken", "id": cid}, 403)
+	issued := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "issueRecordsToken", "id": cid}, 200)
+	token := issued["token"].(string)
+	clubJSON, _ := json.Marshal(issued["club"])
+	if strings.Contains(string(clubJSON), token) || strings.Contains(string(clubJSON), "externalRecordsTokenHash") {
+		t.Fatal("club view exposed the external records secret or hash")
+	}
+	view := request(t, member, "GET", h.URL+"/api/club?id="+cid, nil, 200)
+	if view["club"].(map[string]any)["externalRecordsEnabled"] != true {
+		t.Fatal("club view did not report that the external API is enabled")
+	}
+
+	now := time.Now()
+	players := []*Player{{UserID: ownerID, Name: "馆主"}, {UserID: memberID, Name: "成员"}}
+	rooms := []*Room{
+		{ID: "210001", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{5, -5}, At: now.Unix()}}, Updated: now.Unix()},
+		{ID: "210002", ClubID: cid, Config: game.Config{Game: "runfast"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{3, -3}, At: now.Add(-time.Hour).Unix()}}, Updated: now.Add(-time.Hour).Unix()},
+		{ID: "210003", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{9, -9}, At: now.Add(-8 * 24 * time.Hour).Unix()}}, Updated: now.Add(-8 * 24 * time.Hour).Unix()},
+	}
+	for _, room := range rooms {
+		if err := repo.SaveRoom(room); err != nil {
+			t.Fatal(err)
+		}
+		s.rooms[room.ID] = room
+	}
+	if err := s.pruneExpiredClubHistory(now); err != nil {
+		t.Fatal(err)
+	}
+	if len(s.rooms["210003"].History) != 0 || len(s.rooms["210001"].History) != 1 {
+		t.Fatal("pruning did not remove only expired tea-house rounds")
+	}
+
+	endpoint := h.URL + "/api/v1/teahouses/" + cid + "/records"
+	getExternal := func(url, bearer string, want int) map[string]any {
+		t.Helper()
+		req, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if bearer != "" {
+			req.Header.Set("Authorization", "Bearer "+bearer)
+		}
+		resp, err := http.DefaultClient.Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		defer resp.Body.Close()
+		data := map[string]any{}
+		_ = json.NewDecoder(resp.Body).Decode(&data)
+		if resp.StatusCode != want {
+			t.Fatalf("external records status %d want %d: %+v", resp.StatusCode, want, data)
+		}
+		return data
+	}
+	getExternal(endpoint, "", 401)
+	data := getExternal(endpoint+"?limit=1&memberId="+memberID, token, 200)
+	if number(data, "total") != 2 || number(data, "retentionDays") != 7 || len(data["records"].([]any)) != 1 {
+		t.Fatalf("unexpected paginated records response: %+v", data)
+	}
+	filtered := getExternal(endpoint+"?game=runfast", token, 200)
+	if number(filtered, "total") != 1 {
+		t.Fatalf("game filter returned unexpected total: %+v", filtered)
+	}
+
+	preflight, err := http.NewRequest(http.MethodOptions, endpoint, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	preflight.Header.Set("Origin", "https://mini.example")
+	preflight.Header.Set("Access-Control-Request-Headers", "authorization")
+	resp, err := http.DefaultClient.Do(preflight)
+	if err != nil {
+		t.Fatal(err)
+	}
+	resp.Body.Close()
+	if resp.StatusCode != http.StatusNoContent || resp.Header.Get("Access-Control-Allow-Origin") != "*" {
+		t.Fatalf("CORS preflight failed: %d", resp.StatusCode)
+	}
+
+	request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "revokeRecordsToken", "id": cid}, 200)
+	getExternal(endpoint, token, 401)
 }
 
 func TestTeaHouseAutomaticTablesAndManagerDissolution(t *testing.T) {
@@ -278,7 +375,7 @@ func TestTeaHouseAutomaticTablesAndManagerDissolution(t *testing.T) {
 	// Closing an active room retains completed rounds and never settles the unfinished round.
 	r := s.rooms[rid]
 	r.Status = "playing"
-	r.History = []Round{{Number: 1, Scores: []int{4, -4}}}
+	r.History = []Round{{Number: 1, Scores: []int{4, -4}, At: time.Now().Unix()}}
 	r.Players[0].Total = 4
 	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "dissolveRoom", "id": cid, "roomId": rid}, 403)
 	otherClub := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "另一馆"}, 200)["id"].(string)

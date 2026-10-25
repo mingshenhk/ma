@@ -1,6 +1,7 @@
 package server
 
 import (
+	"crypto/subtle"
 	"haojiayuan/internal/game"
 	"net/http"
 	"runtime"
@@ -10,12 +11,46 @@ import (
 	"time"
 )
 
+const clubHistoryRetention = 7 * 24 * time.Hour
+
+func recentClubRounds(rounds []Round, now time.Time) []Round {
+	cutoff := now.Add(-clubHistoryRetention).Unix()
+	out := make([]Round, 0, len(rounds))
+	for _, round := range rounds {
+		if round.At >= cutoff && round.At <= now.Unix() {
+			out = append(out, round)
+		}
+	}
+	return out
+}
+
+func (s *Server) pruneExpiredClubHistory(now time.Time) error {
+	for _, room := range s.rooms {
+		if room.ClubID == "" {
+			continue
+		}
+		recent := recentClubRounds(room.History, now)
+		if len(recent) == len(room.History) {
+			continue
+		}
+		previous := clone(room)
+		room.History = recent
+		if err := s.repo.SaveRoom(room); err != nil {
+			s.rooms[room.ID] = previous
+			return err
+		}
+	}
+	return nil
+}
+
 func clubManager(c *Club, user string) bool {
 	return c.Members[user] && (c.Owner == user || c.Managers[user])
 }
 
 func visibleClub(c *Club, user string) *Club {
 	out := clone(c)
+	out.ExternalRecordsEnabled = c.ExternalRecordsTokenHash != ""
+	out.ExternalRecordsTokenHash = ""
 	if !clubManager(c, user) {
 		out.Applications = nil
 	}
@@ -62,6 +97,7 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 	before := clone(s.accounts)
 	c := s.accounts.Clubs[input.ID]
 	pending := false
+	issuedToken := ""
 	if input.Op == "create" {
 		name := strings.TrimSpace(input.Name)
 		if len([]rune(name)) < 1 || len([]rune(name)) > 24 {
@@ -99,6 +135,21 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 				return nil, forbidden()
 			}
 			switch input.Op {
+			case "issueRecordsToken":
+				if !clubManager(c, u.ID) {
+					return nil, forbidden()
+				}
+				token, tokenErr := newClubRecordsToken()
+				if tokenErr != nil {
+					return nil, apiError{500, "接口密钥生成失败"}
+				}
+				issuedToken = token
+				c.ExternalRecordsTokenHash = hash(issuedToken)
+			case "revokeRecordsToken":
+				if !clubManager(c, u.ID) {
+					return nil, forbidden()
+				}
+				c.ExternalRecordsTokenHash = ""
 			case "settings":
 				if !clubManager(c, u.ID) {
 					return nil, forbidden()
@@ -284,6 +335,9 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 	if pending {
 		return map[string]any{"id": c.ID, "pending": true}, nil
 	}
+	if issuedToken != "" {
+		return map[string]any{"club": visibleClub(c, u.ID), "token": issuedToken}, nil
+	}
 	return visibleClub(c, u.ID), nil
 }
 
@@ -358,10 +412,11 @@ func (s *Server) clubView(c *Club, user string) any {
 		summary := s.summary(r).(map[string]any)
 		summary["seated"] = seatOf(r, user) >= 0
 		rooms = append(rooms, summary)
-		if len(r.History) > 0 {
-			history = append(history, map[string]any{"room": s.summary(r), "players": r.Players, "rounds": r.History, "updated": r.Updated})
+		recentRounds := recentClubRounds(r.History, time.Now())
+		if len(recentRounds) > 0 {
+			history = append(history, map[string]any{"room": s.summary(r), "players": r.Players, "rounds": recentRounds, "updated": r.Updated})
 			totals := make([]int, len(r.Players))
-			for _, round := range r.History {
+			for _, round := range recentRounds {
 				for i, score := range round.Scores {
 					if i >= len(r.Players) || r.Players[i] == nil {
 						continue
@@ -418,12 +473,16 @@ func (s *Server) adminView() any {
 	}
 	for _, r := range s.rooms {
 		rooms = append(rooms, map[string]any{"room": s.summary(r), "owner": r.Owner, "players": r.Players, "updated": r.Updated})
-		if len(r.History) > 0 {
-			records = append(records, map[string]any{"room": s.summary(r), "players": r.Players, "rounds": r.History, "updated": r.Updated})
+		recent := r.History
+		if r.ClubID != "" {
+			recent = recentClubRounds(r.History, time.Now())
+		}
+		if len(recent) > 0 {
+			records = append(records, map[string]any{"room": s.summary(r), "players": r.Players, "rounds": recent, "updated": r.Updated})
 		}
 	}
 	for _, c := range s.accounts.Clubs {
-		clubs = append(clubs, c)
+		clubs = append(clubs, visibleClub(c, ""))
 	}
 	for p := range s.peers {
 		if r := s.rooms[p.room]; r != nil {
@@ -438,4 +497,88 @@ func (s *Server) adminView() any {
 		counts[key] = len(users)
 	}
 	return map[string]any{"users": len(users), "rooms": len(rooms), "connections": len(s.peers), "requests": s.requests, "commands": s.commands, "storageErrors": s.failures, "lastStorageError": s.lastError, "reports": s.accounts.Reports, "userList": users, "roomList": rooms, "clubList": clubs, "records": records, "onlineByGame": counts, "service": map[string]any{"storage": "json-single-writer", "go": runtime.Version(), "goroutines": runtime.NumGoroutine()}}
+}
+
+func (s *Server) externalClubRecords(r *http.Request) (any, error) {
+	if r.Method != http.MethodGet {
+		return nil, apiError{405, "请求方法不支持"}
+	}
+	parts := strings.Split(strings.Trim(r.URL.Path, "/"), "/")
+	if len(parts) != 5 || parts[0] != "api" || parts[1] != "v1" || parts[2] != "teahouses" || parts[4] != "records" || parts[3] == "" {
+		return nil, apiError{404, "接口不存在"}
+	}
+	club := s.accounts.Clubs[parts[3]]
+	auth := strings.Fields(r.Header.Get("Authorization"))
+	if club == nil || club.ExternalRecordsTokenHash == "" || len(auth) != 2 || !strings.EqualFold(auth[0], "Bearer") || subtle.ConstantTimeCompare([]byte(club.ExternalRecordsTokenHash), []byte(hash(auth[1]))) != 1 {
+		return nil, apiError{401, "接口密钥无效"}
+	}
+	limit, offset := 50, 0
+	if raw := r.URL.Query().Get("limit"); raw != "" {
+		parsed, err := strconv.Atoi(raw)
+		if err != nil || parsed < 1 || parsed > 100 {
+			return nil, bad("limit需为1到100")
+		}
+		limit = parsed
+	}
+	if raw := r.URL.Query().Get("offset"); raw != "" {
+		parsed, err := strconv.Atoi(raw)
+		if err != nil || parsed < 0 || parsed > 10000 {
+			return nil, bad("offset需为0到10000")
+		}
+		offset = parsed
+	}
+	gameFilter, memberFilter := r.URL.Query().Get("game"), r.URL.Query().Get("memberId")
+	now := time.Now()
+	type record struct {
+		value   map[string]any
+		updated int64
+		roomID  string
+	}
+	all := []record{}
+	for _, room := range s.rooms {
+		if room.ClubID != club.ID || (gameFilter != "" && room.Config.Game != gameFilter) {
+			continue
+		}
+		if memberFilter != "" {
+			found := false
+			for _, player := range room.Players {
+				found = found || (player != nil && player.UserID == memberFilter)
+			}
+			if !found {
+				continue
+			}
+		}
+		rounds := recentClubRounds(room.History, now)
+		if len(rounds) == 0 {
+			continue
+		}
+		latest := int64(0)
+		for _, round := range rounds {
+			if round.At > latest {
+				latest = round.At
+			}
+		}
+		all = append(all, record{map[string]any{"room": s.summary(room), "players": room.Players, "rounds": rounds, "updated": latest}, latest, room.ID})
+	}
+	sort.Slice(all, func(i, j int) bool {
+		if all[i].updated == all[j].updated {
+			return all[i].roomID > all[j].roomID
+		}
+		return all[i].updated > all[j].updated
+	})
+	total := len(all)
+	if offset >= total {
+		all = []record{}
+	} else {
+		end := offset + limit
+		if end > total {
+			end = total
+		}
+		all = all[offset:end]
+	}
+	results := make([]map[string]any, 0, len(all))
+	for _, item := range all {
+		results = append(results, item.value)
+	}
+	return map[string]any{"teaHouse": map[string]any{"id": club.ID, "name": club.Name}, "retentionDays": 7, "generatedAt": now.Unix(), "total": total, "limit": limit, "offset": offset, "records": results}, nil
 }

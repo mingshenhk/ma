@@ -62,3 +62,9 @@ Docker镜像构建与运行、Linux实际运行、Caddy公网HTTPS、域名、�
 - 前端执行 `npm run build`，TypeScript 检查及 Vite 构建通过（29 个模块；JS 247.37 KB，gzip 77.41 KB；CSS 69.36 KB，gzip 16.09 KB）。
 - `git diff --check` 通过。
 - 本轮功能检查覆盖用户名/密码注册登录，以及麻将双击出牌、纸牌类游戏多选后显式出牌的实现。Codex 内置浏览器成功加载本地首页并读取到六款游戏大厅；尚未在浏览器中操作注册表单或牌桌。Playwright 端到端验收未完成：Windows Playwright 无法启动 Chrome，WSL 侧也无法访问宿主机 127.0.0.1:18080；构建与单元测试不替代完整浏览器验收。
+
+## 2026-10-25 茶馆战绩页与外部 API
+
+- WSL Ubuntu 26.04 / Go 1.26.0：`go test ./...` 通过；`go vet ./...` 通过。新增 `TestTeaHouseExternalRecordsAPIAndSevenDayRetention` 覆盖管理员权限、密钥与哈希不泄露、7天筛选和清理、缺失密钥拒绝、分页、成员/玩法筛选、CORS 预检及撤销密钥。
+- 前端在隔离临时目录安装依赖后执行 `npm run build`，TypeScript 检查与 Vite 构建通过（29 模块；JS 248.39 KB，gzip 77.77 KB；CSS 69.36 KB，gzip 16.09 KB）。隔离安装用于避开工作区活跃 esbuild 进程造成的 `npm ci` 文件锁；未改动工作区依赖目录。
+- `git diff --check` 通过。未执行浏览器端到端测试，也未接入微信小程序或真实 HTTPS 域名；构建和后端测试不代表这些集成验收已通过。

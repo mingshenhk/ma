@@ -20,6 +20,7 @@ type Club = {
   autoCreate?: boolean;
   announcement?: string;
   templates?: Template[];
+  externalRecordsEnabled?: boolean;
 };
 type Props = {
   user: User;
@@ -229,6 +230,7 @@ export default function TeaHouse(p: Props) {
   const [roomFilter, setRoomFilter] = useState("all");
   const [expandedRoom, setExpandedRoom] = useState("");
   const [memberFilter, setMemberFilter] = useState("");
+  const [externalToken, setExternalToken] = useState("");
   const [edit, setEdit] = useState<Template | null>(null);
   const [settings, setSettings] = useState({
     name: "",
@@ -263,6 +265,7 @@ export default function TeaHouse(p: Props) {
     setRoomFilter("all");
     setExpandedRoom("");
     setMemberFilter("");
+    setExternalToken("");
     if (selected) void p.work(() => load(selected));
   }, [selected]);
   async function mutate(body: any) {
@@ -277,6 +280,19 @@ export default function TeaHouse(p: Props) {
   }
   function act(body: any) {
     void p.work(() => mutate(body));
+  }
+  function manageExternalRecords(op: "issueRecordsToken" | "revokeRecordsToken") {
+    void p.work(async () => {
+      if (op === "issueRecordsToken") {
+        const result = await p.api<{ token: string }>("clubs", { id: selected, op });
+        setExternalToken(result.token);
+      } else {
+        await p.api("clubs", { id: selected, op });
+        setExternalToken("");
+      }
+      await p.refresh();
+      await load();
+    });
   }
   const defName = (key: string) =>
     p.defs.find((d) => d.key === key)?.name || key;
@@ -977,6 +993,7 @@ export default function TeaHouse(p: Props) {
           )}
           {tab === "战绩" && (
             <>
+              <p className="muted">显示本茶馆最近7天已结算的小局；过期战绩会自动清除。</p>
               <label>
                 查成员战绩
                 <select
@@ -1039,6 +1056,40 @@ export default function TeaHouse(p: Props) {
           )}
           {tab === "设置" && manager && (
             <>
+              <div className="tea-editor">
+                <h3>外部战绩接口</h3>
+                <p>
+                  {club?.externalRecordsEnabled
+                    ? "只读接口已启用。生成新密钥会立即替换旧密钥。"
+                    : "生成只读密钥后，外部服务可读取本茶馆最近7天战绩。"}
+                </p>
+                <p className="muted">
+                  接口地址：{window.location.origin}/api/v1/teahouses/{selected}/records
+                </p>
+                <button
+                  className="primary"
+                  onClick={() => manageExternalRecords("issueRecordsToken")}
+                >
+                  {club?.externalRecordsEnabled ? "轮换接口密钥" : "生成接口密钥"}
+                </button>{" "}
+                {club?.externalRecordsEnabled && (
+                  <button
+                    className="danger"
+                    onClick={() => manageExternalRecords("revokeRecordsToken")}
+                  >
+                    撤销接口密钥
+                  </button>
+                )}
+                {externalToken && (
+                  <label>
+                    新密钥（仅显示本次）
+                    <textarea readOnly value={externalToken} rows={2} />
+                  </label>
+                )}
+                <small className="muted">
+                  外部服务通过 Authorization: Bearer &lt;密钥&gt; 调用。请只经 HTTPS 传输并妥善保存密钥；微信小程序由接入方开发，需自行配置合法请求域名。
+                </small>
+              </div>
               <form
                 className="tea-editor"
                 onSubmit={(e) => {
