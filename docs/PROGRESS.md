@@ -15,7 +15,7 @@
 
 茶馆仍缺原版消息、邀请、财富操作、大赢家设置、细分权限和完整逐步回放；当前统计中的大赢家次数不等于原版大赢家设置。对照及优先事项见 ORIGINAL_PARITY.md、NEXT_STEPS.md，不能将当前版本称为完整或大部分复刻。
 
-当前六款正式规则以 rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt 为准。规则来源旧稿保留证据历史。实际测试、浏览器和发布包验证见 TEST_REPORT.md；公网、真机、Docker/Linux实际运行及多实例生产能力尚未验收。
+当前六款正式规则以 rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt 为准。规则来源旧稿保留证据历史。实际测试、浏览器和发布包验证见 TEST_REPORT.md；Docker镜像构建及单容器/Linux amd64运行已于2026-10-25补验，公网、真机和多实例生产能力尚未验收。
 
 2026-10-25 认证与操作补充：注册/登录表单仅要求用户名和密码；麻将手牌双击出牌，跑得快、红二十、斗十四支持多选后显式出牌。Go 测试、`go vet`、前端生产构建及差异空白检查通过；本轮未新增浏览器端到端验证。详见 TEST_REPORT.md。
 
@@ -25,4 +25,6 @@
 
 2026-10-25 Docker 与调度性能检查：静态检查 Dockerfile/Compose；加入洗牌随机源批量读取与无偏采样、自动补桌一次索引及同用户 WebSocket 广播序列化复用；将房间维护扫描周期从300ms调至1秒，投票到期和自动补桌可能增加最多约1秒响应；公开战绩响应禁用缓存。确认微信小程序明确属于外部开发范围，API 只在每局结算后提供可查询战绩，不推送进行中牌局。Compose 语法检查通过；Docker build 已尝试但连接 Docker Engine 失败，未进入构建阶段，最终镜像尚未扫描。WSL Ubuntu 26.04 / Go 1.26.0 下 `go test ./...`、`go test -race ./...`、`go vet ./...` 均通过；没有性能基准，因此没有发牌/广播耗时数据。牌局命令和同步落盘仍在单写锁内，慢磁盘延迟尚未消除。详见 TEST_REPORT.md、KNOWN_ISSUES.md、EXTERNAL_TEAHOUSE_RECORDS_API.md。
 
-2026-10-25 六款规则正式化与全量检查：按用户指示，六款玩法均作为本项目正式规则，界面和当前规则副本不再标记为实验/提案；唯一规则正文见 `rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt`。原服一致性仍单独按证据记录。后端安全复核覆盖私牌视图、房间成员与版本校验、WebSocket 房间/会话约束、密码学随机洗牌与唯一 ID、公开茶馆战绩日期/成员/7天范围。WSL Ubuntu 26.04 / Go 1.26.0 下 `go test -count=1 ./...`、`go test -race -count=1 ./...`、`go vet ./...` 通过；隔离目录前端 `npm ci` 与 `npm run build` 通过；规则主文和网页全文字节一致，四川规则副本一致，`git diff --check` 通过。Docker Engine 不可用，未构建/扫描镜像；没有公网渗透、性能基准、真机或原服逐项对局验收。详见 TEST_REPORT.md。
+2026-10-25 六款规则正式化与全量检查：按用户指示，六款玩法均作为本项目正式规则，界面和当前规则副本不再标记为实验/提案；唯一规则正文见 `rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt`。原服一致性仍单独按证据记录。后端安全复核覆盖私牌视图、房间成员与版本校验、WebSocket 房间/会话约束、密码学随机洗牌与唯一 ID、公开茶馆战绩日期/成员/7天范围。WSL Ubuntu 26.04 / Go 1.26.0 下 `go test -count=1 ./...`、`go test -race -count=1 ./...`、`go vet ./...` 通过；隔离目录前端 `npm ci` 与 `npm run build` 通过；规则主文和网页全文字节一致，四川规则副本一致，`git diff --check` 通过。该轮 Docker Engine 不可用，后续已在下方 Docker 复查中补验镜像；没有公网渗透、性能基准、真机或原服逐项对局验收。详见 TEST_REPORT.md。
+
+2026-10-25 Docker 复查：Docker Engine 恢复后，前端/Go 多阶段镜像构建通过，Dockerfile内 Go 测试通过；Alpine运行镜像约10 MB、非root UID 10001，单容器 `/readyz`、首页和 Docker HEALTHCHECK 均通过。Docker Scout 扫描23个包，无 critical/high/medium/low；仍列一条未分类 musl CVE-2026-107891。Alpine 3.24.3 发布说明将其列为 musl 修复，但 Scout 对包版本1.2.6-r3仍按r6门槛报告；具体包补丁内容未独立核验，因此保留为未解决扫描告警，不记为零漏洞。完整 Caddy/TLS 公网栈和服务器压测未验收。详见 TEST_REPORT.md 与 KNOWN_ISSUES.md。

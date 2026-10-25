@@ -54,7 +54,7 @@
 
 ## 尚未验收
 
-Docker镜像构建与运行、Linux实际运行、Caddy公网HTTPS、域名、实体手机、长时间真实对局和多实例部署均未验收。规则采样和回归不能证明所有动作组合或地方规则均无遗漏。
+Caddy公网HTTPS、真实域名、实体手机、长时间真实对局和多实例部署均未验收。Docker镜像构建与单容器运行已于2026-10-25补验；没有覆盖完整公网部署。规则采样和回归不能证明所有动作组合或地方规则均无遗漏。
 
 ## 2026-10-25 账号与出牌交互补充
 
@@ -100,3 +100,11 @@ Docker镜像构建与运行、Linux实际运行、Caddy公网HTTPS、域名、�
 - 对照源码检查私牌视图与结束局可见状态、房间成员/版本验证、WebSocket 会话及房间归属检查、服务端模板输入、加密安全随机牌序与唯一 ID；检查公开战绩日期/成员筛选、7天候选范围、只读方法和缓存策略。未发现客户端可指定下一张牌的请求路径；这是源码检查和自动测试范围内的结论，不代表已经进行公网渗透测试或证明不存在其他漏洞。公开茶馆战绩仍按用户要求无需密钥且不做隐私控制。
 - 主规则正文与网页全文 SHA256 一致：`6528c70dffc57cdf83677cb33c6a57400d23fc4df2944d13dd25165eee854c54`。四川麻将文档和网页副本 SHA256 一致：`a62e366c6f60b305a7ef52452f2cb61a4bd68951974dd9523cc46cd5834701bd`。`git diff --check` 通过。
 - Docker Engine 未能连接，Docker 构建未进入 Dockerfile 阶段，因此没有可扫描的镜像；公网部署、渗透测试、发牌/广播基准、真机和原服逐项行为一致性均未在本轮验收。正式规则表示本项目采用并执行这些玩法，不表示已证明和原服务器完全一致。
+
+## 2026-10-25 Docker 镜像实际构建、扫描与运行复查
+
+- Docker Engine 已连接。执行 `docker compose config --quiet`（临时使用占位必填变量，未写入配置文件）通过，Compose 服务解析为 `game` 与 `proxy`；本轮未启动 Caddy 公网代理栈。
+- `docker build --pull --progress=plain -t haojiayuan:codex-docker-recheck-20261025 .` 构建通过。前端 `npm ci` / `npm run build` 成功，安装时 npm audit 显示 0 vulnerabilities；Dockerfile 内 `go test ./...` 与 `CGO_ENABLED=0 go build` 通过。最终运行层使用 Alpine 3.24.3、UID/GID 10001、仅暴露容器端口8080；镜像大小 10,265,411 bytes（约10 MB），平台 linux/amd64。最终复建命中已成功验证过的构建缓存。
+- 单容器真实运行检查通过：`/readyz` 返回 HTTP 200，Docker Health 状态为 `healthy`；进程身份为 `uid=10001(app)`，首页返回 HTTP 200。未测实际公网 TLS、反代、备份恢复或压力容量。
+- Docker Scout CLI 1.24.0 对该镜像索引23个包：0 critical、0 high、0 medium、0 low，另报1条未分类 `musl 1.2.6-r3` / CVE-2026-107891（Scout 的固定版本判断为 `1.2.6-r6`）。Alpine 官方发布说明将该 CVE 列为 Alpine 3.24.3 的 musl 安全修复；镜像中的包版本仍是 `1.2.6-r3`。这表明发行版安全状态与 Scout 包版本阈值存在差异，但未独立核验该二进制包的具体补丁内容，因此保留为未解决的扫描告警，不能记为“扫描零漏洞”；扫描器更新或后续包版本更新后需复扫。发行版说明见 [Alpine 3.24.3 发布说明](https://www.alpinelinux.org/posts/Alpine-3.21.9-3.22.7-3.23.7-3.24.3-released.html)。
+- 复查前的 Alpine 3.22 镜像曾被 Scout 报告 BusyBox CVE-2025-60876，故运行层升级到 Alpine 3.24.3；当前镜像不再报告该项。Docker Scout CLI 输出提示本机版本1.24.0，已有1.27.0更新提示，后续安全复扫应升级扫描器后再确认。

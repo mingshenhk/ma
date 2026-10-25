@@ -12,7 +12,7 @@ RUN go mod download
 COPY backend/ ./
 RUN go test ./... && CGO_ENABLED=0 go build -trimpath -o /haojiayuan ./cmd/haojiayuan
 
-FROM alpine:3.22
+FROM alpine:3.24.3
 RUN addgroup -g 10001 app && adduser -D -u 10001 -G app app && mkdir /data && chown app:app /data
 COPY --from=backend /haojiayuan /app/haojiayuan
 COPY --from=frontend /src/frontend/dist /app/public
