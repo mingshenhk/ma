@@ -226,24 +226,21 @@ func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
 	memberID := register(t, member, h.URL, "接口成员")["user"].(map[string]any)["id"].(string)
 	cid := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "接口战绩馆"}, 200)["id"].(string)
 	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "join", "id": cid}, 200)
-	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "issueRecordsToken", "id": cid}, 403)
-	issued := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "issueRecordsToken", "id": cid}, 200)
-	token := issued["token"].(string)
-	clubJSON, _ := json.Marshal(issued["club"])
-	if strings.Contains(string(clubJSON), token) || strings.Contains(string(clubJSON), "externalRecordsTokenHash") {
-		t.Fatal("club view exposed the external records secret or hash")
-	}
 	view := request(t, member, "GET", h.URL+"/api/club?id="+cid, nil, 200)
-	if view["club"].(map[string]any)["externalRecordsEnabled"] != true {
-		t.Fatal("club view did not report that the external API is enabled")
+	clubJSON, _ := json.Marshal(view["club"])
+	if strings.Contains(string(clubJSON), "externalRecordsTokenHash") || strings.Contains(string(clubJSON), "externalRecordsEnabled") {
+		t.Fatal("club view contains removed external API credential fields")
 	}
 
 	now := time.Now()
+	chinaNow := now.In(time.FixedZone("Asia/Shanghai", 8*60*60))
+	todayStart := time.Date(chinaNow.Year(), chinaNow.Month(), chinaNow.Day(), 0, 0, 0, 0, chinaNow.Location())
 	players := []*Player{{UserID: ownerID, Name: "馆主"}, {UserID: memberID, Name: "成员"}}
 	rooms := []*Room{
-		{ID: "210001", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{5, -5}, At: now.Unix()}}, Updated: now.Unix()},
-		{ID: "210002", ClubID: cid, Config: game.Config{Game: "runfast"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{3, -3}, At: now.Add(-time.Hour).Unix()}}, Updated: now.Add(-time.Hour).Unix()},
-		{ID: "210003", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{9, -9}, At: now.Add(-8 * 24 * time.Hour).Unix()}}, Updated: now.Add(-8 * 24 * time.Hour).Unix()},
+		{ID: "210001", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{5, -5}, At: now.Add(-time.Minute).Unix()}}, Updated: now.Add(-time.Minute).Unix()},
+		{ID: "210002", ClubID: cid, Config: game.Config{Game: "runfast"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{3, -3}, At: now.Add(-2 * time.Minute).Unix()}}, Updated: now.Add(-2 * time.Minute).Unix()},
+		{ID: "210003", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{7, -7}, At: todayStart.Add(-time.Hour).Unix()}}, Updated: todayStart.Add(-time.Hour).Unix()},
+		{ID: "210004", ClubID: cid, Config: game.Config{Game: "hongzhong"}, Status: "finished", Players: players, History: []Round{{Number: 1, Scores: []int{9, -9}, At: now.Add(-8 * 24 * time.Hour).Unix()}}, Updated: now.Add(-8 * 24 * time.Hour).Unix()},
 	}
 	for _, room := range rooms {
 		if err := repo.SaveRoom(room); err != nil {
@@ -254,19 +251,16 @@ func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
 	if err := s.pruneExpiredClubHistory(now); err != nil {
 		t.Fatal(err)
 	}
-	if len(s.rooms["210003"].History) != 0 || len(s.rooms["210001"].History) != 1 {
+	if len(s.rooms["210004"].History) != 0 || len(s.rooms["210001"].History) != 1 {
 		t.Fatal("pruning did not remove only expired tea-house rounds")
 	}
 
 	endpoint := h.URL + "/api/v1/teahouses/" + cid + "/records"
-	getExternal := func(url, bearer string, want int) map[string]any {
+	getExternal := func(url string, want int) map[string]any {
 		t.Helper()
 		req, err := http.NewRequest(http.MethodGet, url, nil)
 		if err != nil {
 			t.Fatal(err)
-		}
-		if bearer != "" {
-			req.Header.Set("Authorization", "Bearer "+bearer)
 		}
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
@@ -280,22 +274,38 @@ func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
 		}
 		return data
 	}
-	getExternal(endpoint, "", 401)
-	data := getExternal(endpoint+"?limit=1&memberId="+memberID, token, 200)
-	if number(data, "total") != 2 || number(data, "retentionDays") != 7 || len(data["records"].([]any)) != 1 {
+	data := getExternal(endpoint+"?limit=1&memberId="+memberID, 200)
+	if number(data, "total") != 3 || number(data, "retentionDays") != 7 || len(data["records"].([]any)) != 1 {
 		t.Fatalf("unexpected paginated records response: %+v", data)
 	}
-	filtered := getExternal(endpoint+"?game=runfast", token, 200)
+	filtered := getExternal(endpoint+"?game=runfast", 200)
 	if number(filtered, "total") != 1 {
 		t.Fatalf("game filter returned unexpected total: %+v", filtered)
 	}
+	day := chinaNow.Format("2006-01-02")
+	today := getExternal(endpoint+"?date=today", 200)
+	if number(today, "total") != 2 {
+		t.Fatalf("today filter returned unexpected total: %+v", today)
+	}
+	memberToday := getExternal(endpoint+"?date="+day+"&memberId="+memberID, 200)
+	if number(memberToday, "total") != 2 {
+		t.Fatalf("member and date filters returned unexpected total: %+v", memberToday)
+	}
+	for _, item := range memberToday["records"].([]any) {
+		for _, round := range item.(map[string]any)["rounds"].([]any) {
+			at := time.Unix(int64(round.(map[string]any)["at"].(float64)), 0).In(chinaNow.Location())
+			if at.Format("2006-01-02") != day {
+				t.Fatalf("date filter returned a round from another China calendar date: %+v", round)
+			}
+		}
+	}
+	getExternal(endpoint+"?date=2026-02-30", 400)
 
 	preflight, err := http.NewRequest(http.MethodOptions, endpoint, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 	preflight.Header.Set("Origin", "https://mini.example")
-	preflight.Header.Set("Access-Control-Request-Headers", "authorization")
 	resp, err := http.DefaultClient.Do(preflight)
 	if err != nil {
 		t.Fatal(err)
@@ -305,8 +315,6 @@ func TestTeaHouseExternalRecordsAPIAndSevenDayRetention(t *testing.T) {
 		t.Fatalf("CORS preflight failed: %d", resp.StatusCode)
 	}
 
-	request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "revokeRecordsToken", "id": cid}, 200)
-	getExternal(endpoint, token, 401)
 }
 
 func TestTeaHouseAutomaticTablesAndManagerDissolution(t *testing.T) {

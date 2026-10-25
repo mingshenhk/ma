@@ -11,4 +11,4 @@
 
 发布包使用 start.cmd 启动；源码构建、环境变量和生产限制见 README.md 与 DEPLOYMENT.md。
 
-2026-10-25 茶馆战绩外部接入后续：由客户/接入方配置小程序的 HTTPS 合法请求域名并实现小程序页面；发布前需部署 HTTPS 后做一次真实外部客户端调用和权限/密钥轮换验收。当前 API 合同见 EXTERNAL_TEAHOUSE_RECORDS_API.md。
+2026-10-25 茶馆战绩外部接入后续：API 已按用户要求开放为无需密钥的只读 GET，支持当天全馆记录和指定成员当天记录。由客户/接入方配置小程序的 HTTPS 合法请求域名并实现小程序页面；部署后仍需进行真实外部客户端调用验收。当前 API 合同见 EXTERNAL_TEAHOUSE_RECORDS_API.md。

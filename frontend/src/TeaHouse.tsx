@@ -20,7 +20,6 @@ type Club = {
   autoCreate?: boolean;
   announcement?: string;
   templates?: Template[];
-  externalRecordsEnabled?: boolean;
 };
 type Props = {
   user: User;
@@ -230,7 +229,6 @@ export default function TeaHouse(p: Props) {
   const [roomFilter, setRoomFilter] = useState("all");
   const [expandedRoom, setExpandedRoom] = useState("");
   const [memberFilter, setMemberFilter] = useState("");
-  const [externalToken, setExternalToken] = useState("");
   const [edit, setEdit] = useState<Template | null>(null);
   const [settings, setSettings] = useState({
     name: "",
@@ -265,7 +263,6 @@ export default function TeaHouse(p: Props) {
     setRoomFilter("all");
     setExpandedRoom("");
     setMemberFilter("");
-    setExternalToken("");
     if (selected) void p.work(() => load(selected));
   }, [selected]);
   async function mutate(body: any) {
@@ -280,19 +277,6 @@ export default function TeaHouse(p: Props) {
   }
   function act(body: any) {
     void p.work(() => mutate(body));
-  }
-  function manageExternalRecords(op: "issueRecordsToken" | "revokeRecordsToken") {
-    void p.work(async () => {
-      if (op === "issueRecordsToken") {
-        const result = await p.api<{ token: string }>("clubs", { id: selected, op });
-        setExternalToken(result.token);
-      } else {
-        await p.api("clubs", { id: selected, op });
-        setExternalToken("");
-      }
-      await p.refresh();
-      await load();
-    });
   }
   const defName = (key: string) =>
     p.defs.find((d) => d.key === key)?.name || key;
@@ -1054,122 +1038,104 @@ export default function TeaHouse(p: Props) {
               )}
             </>
           )}
-          {tab === "设置" && manager && (
+          {tab === "设置" && club && (
             <>
               <div className="tea-editor">
                 <h3>外部战绩接口</h3>
                 <p>
-                  {club?.externalRecordsEnabled
-                    ? "只读接口已启用。生成新密钥会立即替换旧密钥。"
-                    : "生成只读密钥后，外部服务可读取本茶馆最近7天战绩。"}
+                  公开只读接口，无需登录或密钥。数据仅包含最近7天已结算的茶馆对局。
                 </p>
                 <p className="muted">
                   接口地址：{window.location.origin}/api/v1/teahouses/{selected}/records
                 </p>
-                <button
-                  className="primary"
-                  onClick={() => manageExternalRecords("issueRecordsToken")}
-                >
-                  {club?.externalRecordsEnabled ? "轮换接口密钥" : "生成接口密钥"}
-                </button>{" "}
-                {club?.externalRecordsEnabled && (
-                  <button
-                    className="danger"
-                    onClick={() => manageExternalRecords("revokeRecordsToken")}
-                  >
-                    撤销接口密钥
-                  </button>
-                )}
-                {externalToken && (
-                  <label>
-                    新密钥（仅显示本次）
-                    <textarea readOnly value={externalToken} rows={2} />
-                  </label>
-                )}
                 <small className="muted">
-                  外部服务通过 Authorization: Bearer &lt;密钥&gt; 调用。请只经 HTTPS 传输并妥善保存密钥；微信小程序由接入方开发，需自行配置合法请求域名。
+                  全馆当天战绩：?date=today；指定成员当天战绩：?date=today&amp;memberId=成员ID；也可将 today 换成 YYYY-MM-DD。微信小程序由接入方开发，并配置其 HTTPS 合法请求域名。
                 </small>
               </div>
-              <form
-                className="tea-editor"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  act({ op: "settings", ...settings });
-                }}
-              >
-                <label>
-                  茶馆名称
-                  <input
-                    required
-                    maxLength={24}
-                    value={settings.name}
-                    onChange={(e) =>
-                      setSettings({ ...settings, name: e.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  公告
-                  <textarea
-                    maxLength={300}
-                    value={settings.announcement}
-                    onChange={(e) =>
-                      setSettings({ ...settings, announcement: e.target.value })
-                    }
-                  />
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={settings.requireApproval}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        requireApproval: e.target.checked,
-                      })
-                    }
-                  />{" "}
-                  加入需管理员审核
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={settings.enabled}
-                    onChange={(e) =>
-                      setSettings({ ...settings, enabled: e.target.checked })
-                    }
-                  />{" "}
-                  暂停接受新成员
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={settings.autoCreate}
-                    onChange={(e) =>
-                      setSettings({ ...settings, autoCreate: e.target.checked })
-                    }
-                  />{" "}
-                  无空桌时自动开房
-                </label>
-                <p className="muted">
-                  每个启用玩法保留一张无人空桌，首位入座者为房主。关闭后已建房间保留；刷新大厅查看空桌。
-                </p>
-                <button className="primary">保存设置</button>
-              </form>
-              {owner && (
-                <div className="tea-editor">
-                  <p>解散前请关闭自动开房，并结束馆内所有房间。</p>
-                  <button
-                    className="danger"
-                    onClick={() =>
-                      confirm === "delete"
-                        ? act({ op: "delete" })
-                        : setConfirm("delete")
-                    }
+              {manager && (
+                <>
+                  <form
+                    className="tea-editor"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      act({ op: "settings", ...settings });
+                    }}
                   >
-                    {confirm === "delete" ? "确认解散茶馆" : "解散茶馆"}
-                  </button>
-                </div>
+                    <label>
+                      茶馆名称
+                      <input
+                        required
+                        maxLength={24}
+                        value={settings.name}
+                        onChange={(e) =>
+                          setSettings({ ...settings, name: e.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      公告
+                      <textarea
+                        maxLength={300}
+                        value={settings.announcement}
+                        onChange={(e) =>
+                          setSettings({ ...settings, announcement: e.target.value })
+                        }
+                      />
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.requireApproval}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            requireApproval: e.target.checked,
+                          })
+                        }
+                      />{" "}
+                      加入需管理员审核
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.enabled}
+                        onChange={(e) =>
+                          setSettings({ ...settings, enabled: e.target.checked })
+                        }
+                      />{" "}
+                      暂停接受新成员
+                    </label>
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={settings.autoCreate}
+                        onChange={(e) =>
+                          setSettings({ ...settings, autoCreate: e.target.checked })
+                        }
+                      />{" "}
+                      无空桌时自动开房
+                    </label>
+                    <p className="muted">
+                      每个启用玩法保留一张无人空桌，首位入座者为房主。关闭后已建房间保留；刷新大厅查看空桌。
+                    </p>
+                    <button className="primary">保存设置</button>
+                  </form>
+                  {owner && (
+                    <div className="tea-editor">
+                      <p>解散前请关闭自动开房，并结束馆内所有房间。</p>
+                      <button
+                        className="danger"
+                        onClick={() =>
+                          confirm === "delete"
+                            ? act({ op: "delete" })
+                            : setConfirm("delete")
+                        }
+                      >
+                        {confirm === "delete" ? "确认解散茶馆" : "解散茶馆"}
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </>
           )}

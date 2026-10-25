@@ -1,7 +1,6 @@
 package server
 
 import (
-	"crypto/subtle"
 	"haojiayuan/internal/game"
 	"net/http"
 	"runtime"
@@ -49,8 +48,6 @@ func clubManager(c *Club, user string) bool {
 
 func visibleClub(c *Club, user string) *Club {
 	out := clone(c)
-	out.ExternalRecordsEnabled = c.ExternalRecordsTokenHash != ""
-	out.ExternalRecordsTokenHash = ""
 	if !clubManager(c, user) {
 		out.Applications = nil
 	}
@@ -97,7 +94,6 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 	before := clone(s.accounts)
 	c := s.accounts.Clubs[input.ID]
 	pending := false
-	issuedToken := ""
 	if input.Op == "create" {
 		name := strings.TrimSpace(input.Name)
 		if len([]rune(name)) < 1 || len([]rune(name)) > 24 {
@@ -135,21 +131,6 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 				return nil, forbidden()
 			}
 			switch input.Op {
-			case "issueRecordsToken":
-				if !clubManager(c, u.ID) {
-					return nil, forbidden()
-				}
-				token, tokenErr := newClubRecordsToken()
-				if tokenErr != nil {
-					return nil, apiError{500, "接口密钥生成失败"}
-				}
-				issuedToken = token
-				c.ExternalRecordsTokenHash = hash(issuedToken)
-			case "revokeRecordsToken":
-				if !clubManager(c, u.ID) {
-					return nil, forbidden()
-				}
-				c.ExternalRecordsTokenHash = ""
 			case "settings":
 				if !clubManager(c, u.ID) {
 					return nil, forbidden()
@@ -335,9 +316,6 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 	if pending {
 		return map[string]any{"id": c.ID, "pending": true}, nil
 	}
-	if issuedToken != "" {
-		return map[string]any{"club": visibleClub(c, u.ID), "token": issuedToken}, nil
-	}
 	return visibleClub(c, u.ID), nil
 }
 
@@ -508,9 +486,8 @@ func (s *Server) externalClubRecords(r *http.Request) (any, error) {
 		return nil, apiError{404, "接口不存在"}
 	}
 	club := s.accounts.Clubs[parts[3]]
-	auth := strings.Fields(r.Header.Get("Authorization"))
-	if club == nil || club.ExternalRecordsTokenHash == "" || len(auth) != 2 || !strings.EqualFold(auth[0], "Bearer") || subtle.ConstantTimeCompare([]byte(club.ExternalRecordsTokenHash), []byte(hash(auth[1]))) != 1 {
-		return nil, apiError{401, "接口密钥无效"}
+	if club == nil {
+		return nil, apiError{404, "茶馆不存在"}
 	}
 	limit, offset := 50, 0
 	if raw := r.URL.Query().Get("limit"); raw != "" {
@@ -527,8 +504,29 @@ func (s *Server) externalClubRecords(r *http.Request) (any, error) {
 		}
 		offset = parsed
 	}
-	gameFilter, memberFilter := r.URL.Query().Get("game"), r.URL.Query().Get("memberId")
 	now := time.Now()
+	gameFilter, memberFilter := r.URL.Query().Get("game"), r.URL.Query().Get("memberId")
+	dateFilter := r.URL.Query().Get("date")
+	dayStart, dayEnd := int64(0), int64(0)
+	if dateFilter != "" {
+		chinaTime := now.In(time.FixedZone("Asia/Shanghai", 8*60*60))
+		var selectedDay time.Time
+		if dateFilter == "today" {
+			selectedDay = chinaTime
+		} else {
+			parsed, err := time.ParseInLocation("2006-01-02", dateFilter, chinaTime.Location())
+			if err != nil || parsed.Format("2006-01-02") != dateFilter {
+				return nil, bad("date需为today或YYYY-MM-DD")
+			}
+			selectedDay = parsed
+		}
+		selectedDay = time.Date(selectedDay.Year(), selectedDay.Month(), selectedDay.Day(), 0, 0, 0, 0, selectedDay.Location())
+		today := time.Date(chinaTime.Year(), chinaTime.Month(), chinaTime.Day(), 0, 0, 0, 0, chinaTime.Location())
+		if selectedDay.After(today) {
+			return nil, bad("date不能晚于今天")
+		}
+		dayStart, dayEnd = selectedDay.Unix(), selectedDay.AddDate(0, 0, 1).Unix()
+	}
 	type record struct {
 		value   map[string]any
 		updated int64
@@ -549,6 +547,15 @@ func (s *Server) externalClubRecords(r *http.Request) (any, error) {
 			}
 		}
 		rounds := recentClubRounds(room.History, now)
+		if dayStart != 0 {
+			dayRounds := make([]Round, 0, len(rounds))
+			for _, round := range rounds {
+				if round.At >= dayStart && round.At < dayEnd {
+					dayRounds = append(dayRounds, round)
+				}
+			}
+			rounds = dayRounds
+		}
 		if len(rounds) == 0 {
 			continue
 		}

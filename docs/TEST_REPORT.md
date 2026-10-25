@@ -68,3 +68,9 @@ Docker镜像构建与运行、Linux实际运行、Caddy公网HTTPS、域名、�
 - WSL Ubuntu 26.04 / Go 1.26.0：`go test ./...` 通过；`go vet ./...` 通过。新增 `TestTeaHouseExternalRecordsAPIAndSevenDayRetention` 覆盖管理员权限、密钥与哈希不泄露、7天筛选和清理、缺失密钥拒绝、分页、成员/玩法筛选、CORS 预检及撤销密钥。
 - 前端在隔离临时目录安装依赖后执行 `npm run build`，TypeScript 检查与 Vite 构建通过（29 模块；JS 248.39 KB，gzip 77.77 KB；CSS 69.36 KB，gzip 16.09 KB）。隔离安装用于避开工作区活跃 esbuild 进程造成的 `npm ci` 文件锁；未改动工作区依赖目录。
 - `git diff --check` 通过。未执行浏览器端到端测试，也未接入微信小程序或真实 HTTPS 域名；构建和后端测试不代表这些集成验收已通过。
+
+## 2026-10-25 茶馆战绩公开接口与日期筛选
+
+- 已移除茶馆战绩 API 的密钥签发、撤销、持久化字段与 Bearer 校验；接口现在为公开只读 GET。
+- 已扩展接口契约与现有回归用例，覆盖 `date=today`、`date=YYYY-MM-DD`、与 `memberId` 组合筛选及日期格式错误响应。
+- 本次修改尚未运行 Go 测试/`go vet`、前端构建或微信/公网集成验收；回归用例已更新但结果未验证。不得将历史测试章节的通过结果视为本次修改的验收结果。

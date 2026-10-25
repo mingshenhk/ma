@@ -48,20 +48,18 @@ type ClubTemplate struct {
 	Enabled bool        `json:"enabled"`
 }
 type Club struct {
-	ID                       string           `json:"id"`
-	Name                     string           `json:"name"`
-	Owner                    string           `json:"owner"`
-	Members                  map[string]bool  `json:"members"`
-	Managers                 map[string]bool  `json:"managers,omitempty"`
-	JoinClosed               bool             `json:"joinClosed"`
-	RequireApproval          bool             `json:"requireApproval"`
-	AutoCreate               bool             `json:"autoCreate"`
-	Announcement             string           `json:"announcement"`
-	Applications             map[string]int64 `json:"applications,omitempty"`
-	Disabled                 map[string]bool  `json:"disabled,omitempty"`
-	Templates                []ClubTemplate   `json:"templates"`
-	ExternalRecordsTokenHash string           `json:"externalRecordsTokenHash,omitempty"`
-	ExternalRecordsEnabled   bool             `json:"externalRecordsEnabled,omitempty"`
+	ID              string           `json:"id"`
+	Name            string           `json:"name"`
+	Owner           string           `json:"owner"`
+	Members         map[string]bool  `json:"members"`
+	Managers        map[string]bool  `json:"managers,omitempty"`
+	JoinClosed      bool             `json:"joinClosed"`
+	RequireApproval bool             `json:"requireApproval"`
+	AutoCreate      bool             `json:"autoCreate"`
+	Announcement    string           `json:"announcement"`
+	Applications    map[string]int64 `json:"applications,omitempty"`
+	Disabled        map[string]bool  `json:"disabled,omitempty"`
+	Templates       []ClubTemplate   `json:"templates"`
 }
 type Report struct {
 	ID      string `json:"id"`
@@ -415,7 +413,6 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 	if externalRecords {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Authorization")
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
@@ -967,14 +964,6 @@ func (s *Server) tick(now time.Time) {
 		s.lastClubHistoryPurge = now
 	}
 	s.ensureClubTables(now)
-}
-
-func newClubRecordsToken() (string, error) {
-	raw := make([]byte, 32)
-	if _, err := rand.Read(raw); err != nil {
-		return "", err
-	}
-	return "hjy_" + hex.EncodeToString(raw), nil
 }
 
 // view deliberately builds an allow-listed projection. Never serialize State to a client.
