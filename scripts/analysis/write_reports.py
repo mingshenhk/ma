@@ -111,7 +111,7 @@ save('analysis/TECHNOLOGY_REPORT.md','''# 技术识别与环境报告
 ''')
 screens=[
 ('启动/热更新','ClientScene.lua、shell加载器','动态游戏下载/版本','部分存在','本地PWA启动'),
-('登录/注册/重置','views/layer/logon/Logon*.lua、Register*.lua','账号/手机/站点选择','客户端完整，服务端缺失','游客会话'),
+('登录/注册/重置','views/layer/logon/Logon*.lua、Register*.lua','账号/手机/站点选择','客户端完整，服务端缺失','用户名/密码登录注册；无重置'),
 ('大厅/游戏菜单','views/layer/plaza/GameListLayer.lua','右侧滚动游戏，左侧加房/创房、底栏、公告','客户端完整','五游戏入口'),
 ('头像/个人资料','views/layer/modifyuserinfo/ModifyInfo*.lua','昵称/头像/密码','客户端完整','昵称/原创头像'),
 ('创建房间','views/layer/battle/NBattleCreateLayer.lua、CreateConfigView.lua','SubGameListView、控件组、在线optionInfo','部分存在','证据配置/待验证提示'),
@@ -220,7 +220,7 @@ save('docs/IMPLEMENTATION_PLAN.md','''# 实施计划与技术选择
 
 1. Go服务端，统一v1 JSON WebSocket命令、requestId去重、seq与version冲突检查、快照重连、服务器私密手牌裁剪、心跳/超时。四人跑得快作为标注待验证的无积分测试局；不开放不确定的完整玩法。
 2. TypeScript + React + Vite。DOM牌面先实现低开销触控布局，无原图资源，暂不引入通用游戏框架；按需独立游戏组件，必要动画再评估Pixi。用户建议的Go保留，非原生APK。
-3. 账号使用随机游客恢复凭证及安全会话Cookie；后端角色；持久化Repository支持本地原子JSON快照，迁移接口独立。首期单写节点，禁止多个进程共享JSON文件。
+3. 账号仅使用用户名和密码注册/登录及安全会话Cookie；当前没有密码重置/找回。后端角色；持久化Repository支持本地原子JSON快照，迁移接口独立。首期单写节点，禁止多个进程共享JSON文件。
 4. 茶馆/成员/角色/房间/对局/举报与后台。每个操作服务端校验；记录真实结果，不生成假积分。无支付/提现/原版私服调用。
 5. 五个规则模块分别导出状态与已确认算法；红二十拒绝开始。麻将胡形与斗十四14点组合可测试，但不宣称完整裁决。
 6. Linux Docker/Caddy部署脚本及健康检查，TLS/PWA；PostgreSQL/Redis升级方案和SQL schema，未接通的部分明确待做，不能仅放Compose声称已使用。

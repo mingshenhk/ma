@@ -24,7 +24,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/build.ps1
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run.ps1
 ```
 
-启动脚本首次生成 `data/admin-key.txt`。在页面设置的管理入口填写该密钥可查看后台状态。账号恢复码由页面首次创建账号时显示，请自行保管。发布包不包含任何测试账号、会话、密钥或私有原包。
+启动脚本首次生成 `data/admin-key.txt`。在页面设置的管理入口填写该密钥可查看后台状态。玩家使用用户名和密码注册、登录；当前没有密码重置或找回功能。发布包不包含任何测试账号、会话、密钥或私有原包。
 
 ## Linux 与 Docker
 

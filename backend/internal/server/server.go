@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"crypto/hmac"
 	"crypto/rand"
 	"crypto/sha256"
 	"crypto/subtle"
@@ -21,6 +22,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode"
 
 	"github.com/coder/websocket"
 	"haojiayuan/internal/game"
@@ -28,9 +30,11 @@ import (
 
 type User struct {
 	ID           string `json:"id"`
+	Username     string `json:"username"`
+	UsernameKey  string `json:"usernameKey"`
+	PasswordHash string `json:"passwordHash"`
 	Name         string `json:"name"`
 	Avatar       int    `json:"avatar"`
-	RecoveryHash string `json:"recoveryHash"`
 	Created      int64  `json:"created"`
 }
 type Session struct {
@@ -270,7 +274,9 @@ func (s *Server) user(r *http.Request) *User {
 	}
 	return s.accounts.Users[v.UserID]
 }
-func publicUser(u *User) any { return map[string]any{"id": u.ID, "name": u.Name, "avatar": u.Avatar} }
+func publicUser(u *User) any {
+	return map[string]any{"id": u.ID, "username": u.Username, "name": u.Name, "avatar": u.Avatar}
+}
 func (s *Server) saveAccounts(before Accounts) error {
 	if e := s.repo.SaveAccounts(s.accounts); e != nil {
 		s.accounts = before
@@ -284,10 +290,92 @@ func (s *Server) storageError(e error) {
 	s.lastError = e.Error()
 	log.Printf("storage: %v", e)
 }
-func (s *Server) issue(w http.ResponseWriter, r *http.Request, u *User) {
+func (s *Server) issue(u *User) string {
 	token := id(32)
 	s.accounts.Sessions[hash(token)] = Session{u.ID, time.Now().Add(30 * 24 * time.Hour).Unix()}
+	return token
+}
+func (s *Server) setSessionCookie(w http.ResponseWriter, r *http.Request, token string) {
 	http.SetCookie(w, &http.Cookie{Name: "hjy_session", Value: token, Path: "/", HttpOnly: true, Secure: s.cookieSecure || r.TLS != nil, SameSite: http.SameSiteLaxMode, MaxAge: 30 * 24 * 3600})
+}
+
+const passwordRounds = 120000
+
+func pbkdf2SHA256(password, salt []byte, rounds, length int) []byte {
+	result := make([]byte, 0, length)
+	for block := uint32(1); len(result) < length; block++ {
+		mac := hmac.New(sha256.New, password)
+		_, _ = mac.Write(salt)
+		_, _ = mac.Write([]byte{byte(block >> 24), byte(block >> 16), byte(block >> 8), byte(block)})
+		u := mac.Sum(nil)
+		mixed := append([]byte(nil), u...)
+		for i := 1; i < rounds; i++ {
+			mac = hmac.New(sha256.New, password)
+			_, _ = mac.Write(u)
+			u = mac.Sum(nil)
+			for j := range mixed {
+				mixed[j] ^= u[j]
+			}
+		}
+		result = append(result, mixed...)
+	}
+	return result[:length]
+}
+
+func passwordHash(password string) (string, error) {
+	salt := make([]byte, 16)
+	if _, err := rand.Read(salt); err != nil {
+		return "", err
+	}
+	derived := pbkdf2SHA256([]byte(password), salt, passwordRounds, 32)
+	return fmt.Sprintf("pbkdf2-sha256$%d$%s$%s", passwordRounds, hex.EncodeToString(salt), hex.EncodeToString(derived)), nil
+}
+
+func verifyPassword(encoded, password string) bool {
+	parts := strings.Split(encoded, "$")
+	if len(parts) != 4 || parts[0] != "pbkdf2-sha256" {
+		return false
+	}
+	rounds, err := strconv.Atoi(parts[1])
+	if err != nil || rounds < 100000 || rounds > 1000000 {
+		return false
+	}
+	salt, err := hex.DecodeString(parts[2])
+	if err != nil || len(salt) < 16 || len(salt) > 64 {
+		return false
+	}
+	expected, err := hex.DecodeString(parts[3])
+	if err != nil || len(expected) != 32 {
+		return false
+	}
+	actual := pbkdf2SHA256([]byte(password), salt, rounds, len(expected))
+	return subtle.ConstantTimeCompare(actual, expected) == 1
+}
+
+func validUsername(username string) bool {
+	runes := []rune(username)
+	if len(runes) < 3 || len(runes) > 24 {
+		return false
+	}
+	for _, r := range runes {
+		if !unicode.IsLetter(r) && !unicode.IsDigit(r) && r != '_' && r != '-' {
+			return false
+		}
+	}
+	return true
+}
+
+func (s *Server) usernameTaken(key string) bool {
+	for _, user := range s.accounts.Users {
+		userKey := user.UsernameKey
+		if userKey == "" {
+			userKey = strings.ToLower(user.Username)
+		}
+		if userKey == key {
+			return true
+		}
+	}
+	return false
 }
 func (s *Server) authRate(r *http.Request) bool {
 	k, _, e := net.SplitHostPort(r.RemoteAddr)
@@ -322,32 +410,7 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				result = map[string]any{"user": publicUser(u), "roomId": s.activeRoom(u.ID)}
 			}
 		case "POST":
-			if u != nil {
-				result = map[string]any{"user": publicUser(u), "roomId": s.activeRoom(u.ID)}
-				break
-			}
-			if !s.authRate(r) {
-				err = apiError{429, "操作频繁，请一分钟后重试"}
-				break
-			}
-			var input struct {
-				Name string `json:"name"`
-			}
-			if err = decode(r, &input); err != nil {
-				break
-			}
-			input.Name = strings.TrimSpace(input.Name)
-			if len([]rune(input.Name)) < 1 || len([]rune(input.Name)) > 16 {
-				err = bad("昵称需要1到16个字")
-				break
-			}
-			before := clone(s.accounts)
-			code := id(16)
-			u = &User{ID: id(6), Name: input.Name, Avatar: game.Random(8), RecoveryHash: hash(code), Created: time.Now().Unix()}
-			s.accounts.Users[u.ID] = u
-			s.issue(w, r, u)
-			err = s.saveAccounts(before)
-			result = map[string]any{"user": publicUser(u), "recoveryCode": code}
+			err = apiError{405, "请使用用户名和密码注册或登录"}
 		case "DELETE":
 			before := clone(s.accounts)
 			if c, e := r.Cookie("hjy_session"); e == nil {
@@ -359,7 +422,7 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 		default:
 			err = apiError{405, "请求方法不支持"}
 		}
-	case "/api/recover":
+	case "/api/register", "/api/login":
 		if r.Method != "POST" {
 			err = apiError{405, "请求方法不支持"}
 			break
@@ -369,21 +432,76 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		var input struct {
-			ID   string `json:"id"`
-			Code string `json:"code"`
+			Username string `json:"username"`
+			Password string `json:"password"`
 		}
 		if err = decode(r, &input); err != nil {
 			break
 		}
-		u = s.accounts.Users[input.ID]
-		if u == nil || subtle.ConstantTimeCompare([]byte(u.RecoveryHash), []byte(hash(input.Code))) != 1 {
-			err = apiError{401, "账号或恢复码错误"}
-			break
+		input.Username = strings.TrimSpace(input.Username)
+		if r.URL.Path == "/api/register" {
+			if !validUsername(input.Username) {
+				err = bad("用户名需为3到24位字母、数字、中文、下划线或连字符")
+				break
+			}
+			if len([]rune(input.Password)) < 8 || len([]rune(input.Password)) > 64 {
+				err = bad("密码需为8到64个字符")
+				break
+			}
+			key := strings.ToLower(input.Username)
+			if s.usernameTaken(key) {
+				err = conflict("用户名已被使用")
+				break
+			}
+			encoded, hashErr := passwordHash(input.Password)
+			if hashErr != nil {
+				err = apiError{500, "账号创建失败，请稍后重试"}
+				break
+			}
+			before := clone(s.accounts)
+			u = &User{ID: id(6), Username: input.Username, UsernameKey: key, PasswordHash: encoded, Name: input.Username, Avatar: game.Random(8), Created: time.Now().Unix()}
+			s.accounts.Users[u.ID] = u
+			token := s.issue(u)
+			err = s.saveAccounts(before)
+			if err != nil {
+				break
+			}
+			s.setSessionCookie(w, r, token)
+			result = map[string]any{"user": publicUser(u), "roomId": s.activeRoom(u.ID)}
+		} else {
+			if input.Username == "" || input.Password == "" {
+				err = apiError{401, "用户名或密码错误"}
+				break
+			}
+			key := strings.ToLower(input.Username)
+			for _, candidate := range s.accounts.Users {
+				candidateKey := candidate.UsernameKey
+				if candidateKey == "" {
+					candidateKey = strings.ToLower(candidate.Username)
+				}
+				if candidateKey == key {
+					u = candidate
+					break
+				}
+			}
+			if u == nil || !verifyPassword(u.PasswordHash, input.Password) {
+				// Spend a comparable amount of work for unknown usernames to reduce account enumeration by timing.
+				_, _ = passwordHash(input.Password)
+				err = apiError{401, "用户名或密码错误"}
+				break
+			}
+			before := clone(s.accounts)
+			token := s.issue(u)
+			err = s.saveAccounts(before)
+			if err != nil {
+				break
+			}
+			s.setSessionCookie(w, r, token)
+			result = map[string]any{"user": publicUser(u), "roomId": s.activeRoom(u.ID)}
 		}
-		before := clone(s.accounts)
-		s.issue(w, r, u)
-		err = s.saveAccounts(before)
-		result = map[string]any{"user": publicUser(u), "roomId": s.activeRoom(u.ID)}
+	case "/api/recover":
+		err = apiError{404, "接口不存在"}
+		break
 	case "/api/games":
 		result = game.Definitions
 	case "/api/admin":

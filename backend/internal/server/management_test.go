@@ -22,7 +22,7 @@ func TestClubPermissionsPersistenceAndAdminPrivacy(t *testing.T) {
 	owner, manager, member, outsider := client(), client(), client(), client()
 	ids := map[*http.Client]string{}
 	for i, c := range []*http.Client{owner, manager, member, outsider} {
-		v := request(t, c, "POST", h.URL+"/api/session", map[string]any{"name": []string{"圈主", "管理", "成员", "外部"}[i]}, 200)
+		v := register(t, c, h.URL, []string{"圈主账号", "管理账号", "成员账号", "外部账号"}[i])
 		ids[c] = v["user"].(map[string]any)["id"].(string)
 	}
 	club := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "亲友测试"}, 200)
@@ -81,7 +81,7 @@ func TestClubPermissionsPersistenceAndAdminPrivacy(t *testing.T) {
 	}
 	for _, v := range []any{data, view} {
 		b, _ := json.Marshal(v)
-		for _, secret := range []string{"recoveryHash", "sessions", "\"wall\"", "\"state\""} {
+		for _, secret := range []string{"passwordHash", "usernameKey", "recoveryHash", "sessions", "\"wall\"", "\"state\""} {
 			if strings.Contains(string(b), secret) {
 				t.Fatalf("management leaks %s", secret)
 			}
@@ -107,7 +107,7 @@ func TestTeaHouseApprovalTemplatesAndPlayingRestrictions(t *testing.T) {
 	owner, member, applicant := client(), client(), client()
 	ids := map[*http.Client]string{}
 	for i, c := range []*http.Client{owner, member, applicant} {
-		v := request(t, c, "POST", h.URL+"/api/session", map[string]any{"name": []string{"馆主", "成员", "申请人"}[i]}, 200)
+		v := register(t, c, h.URL, []string{"馆主账号", "成员账号", "申请账号"}[i])
 		ids[c] = v["user"].(map[string]any)["id"].(string)
 	}
 	club := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "审核茶馆", "requireApproval": true}, 200)
@@ -187,8 +187,8 @@ func TestTeaHouseCompletedResultsAndStatistics(t *testing.T) {
 	h := httptest.NewServer(s.Handler())
 	defer h.Close()
 	a, b := client(), client()
-	uid := request(t, a, "POST", h.URL+"/api/session", map[string]any{"name": "甲"}, 200)["user"].(map[string]any)["id"].(string)
-	other := request(t, b, "POST", h.URL+"/api/session", map[string]any{"name": "乙"}, 200)["user"].(map[string]any)["id"].(string)
+	uid := register(t, a, h.URL, "甲账号")["user"].(map[string]any)["id"].(string)
+	other := register(t, b, h.URL, "乙账号")["user"].(map[string]any)["id"].(string)
 	cid := request(t, a, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "统计馆"}, 200)["id"].(string)
 	request(t, b, "POST", h.URL+"/api/clubs", map[string]any{"op": "join", "id": cid}, 200)
 	// Fixture completed rounds isolate aggregation from the separately tested game lifecycle.
@@ -221,8 +221,8 @@ func TestTeaHouseAutomaticTablesAndManagerDissolution(t *testing.T) {
 	h := httptest.NewServer(s.Handler())
 	defer h.Close()
 	owner, member := client(), client()
-	request(t, owner, "POST", h.URL+"/api/session", map[string]any{"name": "馆主"}, 200)
-	uid := request(t, member, "POST", h.URL+"/api/session", map[string]any{"name": "成员"}, 200)["user"].(map[string]any)["id"].(string)
+	register(t, owner, h.URL, "馆主账号")
+	uid := register(t, member, h.URL, "成员账号")["user"].(map[string]any)["id"].(string)
 	cid := request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "create", "name": "自动馆"}, 200)["id"].(string)
 	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "join", "id": cid}, 200)
 	settings := map[string]any{"op": "settings", "id": cid, "name": "自动馆", "autoCreate": true}

@@ -3,7 +3,7 @@ import { createRoot } from "react-dom/client";
 import "./style.css";
 import TeaHouse from "./TeaHouse";
 
-type User = { id: string; name: string; avatar: number };
+type User = { id: string; username?: string; name: string; avatar: number };
 type Config = {
   game: string;
   base: number;
@@ -93,6 +93,15 @@ type Club = {
   managers?: Record<string, boolean>;
   joinClosed: boolean;
 };
+const ruleFiles: Record<string, string> = {
+  hongzhong: "hongzhong",
+  nohongzhong: "nohongzhong",
+  hongershi: "hongershi",
+  runfast: "paodekuai",
+  doushisi: "doushisi",
+  sichuan: "sichuan",
+};
+const ruleFileName = (gameKey: string) => ruleFiles[gameKey] ?? gameKey;
 const avatars = ["松", "竹", "梅", "兰", "荷", "菊", "鹿", "鹤"];
 const gameIcons: Record<string, string> = {
   hongzhong: "中",
@@ -176,12 +185,14 @@ function Card({
   small = false,
   selected = false,
   onClick,
+  onDoubleClick,
 }: {
   value: number;
   game: string;
   small?: boolean;
   selected?: boolean;
   onClick?: () => void;
+  onDoubleClick?: () => void;
 }) {
   let content: React.ReactNode;
   let red = false;
@@ -265,6 +276,7 @@ function Card({
       type="button"
       aria-label={cardName(value, game)}
       onClick={onClick}
+      onDoubleClick={onDoubleClick}
       className={
         "card " +
         (small ? "small " : "") +
@@ -406,7 +418,8 @@ function App() {
     [history, setHistory] = useState<any[]>([]),
     [clubs, setClubs] = useState<Club[]>([]),
     [rules, setRules] = useState("正在读取规则…"),
-    [recovery, setRecovery] = useState(""),
+    [ruleGame, setRuleGame] = useState<string | null>(null),
+    [authMode, setAuthMode] = useState<"login" | "register">("login"),
     [form, setForm] = useState<Record<string, string>>({}),
     [list, setList] = useState<any[]>([]),
     [admin, setAdmin] = useState<any>(null),
@@ -422,7 +435,9 @@ function App() {
     soundRef = useRef(sound),
     audioRef = useRef<AudioContext | null>(null),
     offset = useRef(0),
-    gameList = useRef<HTMLDivElement | null>(null);
+    gameList = useRef<HTMLDivElement | null>(null),
+    ruleRequestId = useRef(0),
+    ruleDetailOrigin = useRef("");
   roomRef.current = room;
   soundRef.current = sound;
   const flash = (s: string) => {
@@ -543,8 +558,17 @@ function App() {
       ws.current = null;
     };
   }, [room?.id, user?.id]);
-  const field = (key: string, placeholder: string, type = "text") => (
+  const field = (
+    key: string,
+    placeholder: string,
+    type = "text",
+    attrs: Omit<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      "aria-label" | "onChange" | "placeholder" | "type" | "value"
+    > = {},
+  ) => (
     <input
+      {...attrs}
       aria-label={placeholder}
       type={type}
       placeholder={placeholder}
@@ -592,13 +616,47 @@ function App() {
       if (p === "history") setHistory((await api("history")) || []);
       if (p === "clubs" || p === "create") setClubs((await api("clubs")) || []);
       if (p === "join") setList((await api("rooms")) || []);
-      if (p === "rules") {
-        const r = await fetch("/rules.txt");
-        setRules(await r.text());
-      }
     } catch (e) {
       flash((e as Error).message);
     }
+  }
+  async function openRules(gameKey: string) {
+    const isKnownGame = defs.some((game) => game.key === gameKey);
+    const isMatchingCreatePanel = panel === "create" && config.game === gameKey;
+    const isMatchingRoom = room?.config.game === gameKey;
+    if (!isKnownGame || (!isMatchingCreatePanel && !isMatchingRoom)) return;
+
+    ruleDetailOrigin.current = panel;
+    const requestId = ++ruleRequestId.current;
+    setPanel("rules");
+    setError("");
+    setRuleGame(gameKey);
+    setRules("正在读取本游戏规则…");
+    try {
+      const response = await fetch(
+        `/rules/${encodeURIComponent(ruleFileName(gameKey))}.txt`,
+      );
+      if (!response.ok) throw new Error("暂时无法读取这款游戏的规则。");
+      const text = await response.text();
+      if (requestId === ruleRequestId.current) setRules(text);
+    } catch (e) {
+      if (requestId === ruleRequestId.current) {
+        setRules("规则加载失败，请稍后重试。");
+        flash((e as Error).message);
+      }
+    }
+  }
+  function backFromRules() {
+    ++ruleRequestId.current;
+    const origin = ruleDetailOrigin.current;
+    setRuleGame(null);
+    setPanel(origin);
+  }
+  function closeRules() {
+    ++ruleRequestId.current;
+    const origin = ruleDetailOrigin.current;
+    setRuleGame(null);
+    setPanel(origin);
   }
   const def = defs.find((d) => d.key === config.game),
     roomDef = defs.find((d) => d.key === room?.config.game),
@@ -608,11 +666,26 @@ function App() {
     (i) => room?.state?.seats[room.me]?.hand[i] || 0,
   );
   const actions = room?.legal || [];
+  const isMahjong = ["hongzhong", "nohongzhong", "sichuan"].includes(
+    room?.config.game || "",
+  );
+  const isCardGame = ["runfast", "hongershi", "doushisi"].includes(
+    room?.config.game || "",
+  );
   const direct = actions.filter((a) => !a.cards?.length);
   const cardActions = actions.filter(
     (a) =>
       a.cards?.length &&
       (!selected.length || sameCards(a.cards, selectedCards)),
+  );
+  const selectedPlayAction =
+    isCardGame && selected.length
+      ? actions.find(
+          (a) => a.kind === "play" && sameCards(a.cards || [], selectedCards),
+        )
+      : undefined;
+  const visibleCardActions = cardActions.filter((a) =>
+    isCardGame ? a.kind !== "play" : isMahjong ? a.kind !== "discard" : true,
   );
   const colorClass = (n: number) =>
     n > 0 ? "positive" : n < 0 ? "negative" : "";
@@ -703,13 +776,6 @@ function App() {
           )}
           <button
             className="icon-button"
-            title="玩法规则"
-            onClick={() => void openPanel("rules")}
-          >
-            规
-          </button>
-          <button
-            className="icon-button"
             title="设置"
             onClick={() => setPanel("settings")}
           >
@@ -738,29 +804,47 @@ function App() {
             onSubmit={(e) => {
               e.preventDefault();
               void work(async () => {
-                const v = await api("session", { name: form.name });
+                const v = await api(authMode, {
+                  username: form.username?.trim(),
+                  password: form.password,
+                });
                 setUser(v.user);
-                if (v.recoveryCode) {
-                  setRecovery(v.recoveryCode);
-                  setPanel("recoveryCode");
+                setForm((f) => ({ ...f, password: "" }));
+                if (v.roomId) {
+                  accept(await api("room?id=" + v.roomId));
+                  setPanel("");
                 }
                 const invite = new URLSearchParams(location.search).get("room");
-                if (invite) setForm((f) => ({ ...f, join: invite }));
+                if (!v.roomId && invite) {
+                  setForm((f) => ({ ...f, join: invite }));
+                  setPanel("join");
+                }
               });
             }}
           >
-            <span className="eyebrow dark">欢迎回家</span>
-            <h2>取个名字，入座吧</h2>
-            {field("name", "请输入昵称（1–16字）")}
+            <span className="eyebrow dark">{authMode === "login" ? "欢迎回来" : "创建家园账号"}</span>
+            <h2>{authMode === "login" ? "登录浩家园" : "注册浩家园"}</h2>
+            {field("username", "用户名（3–24位）", "text", {
+              autoComplete: authMode === "login" ? "username" : "username",
+              minLength: 3,
+              maxLength: 24,
+              required: true,
+            })}
+            {field("password", "密码（至少8位）", "password", {
+              autoComplete: authMode === "login" ? "current-password" : "new-password",
+              minLength: authMode === "register" ? 8 : undefined,
+              maxLength: 64,
+              required: true,
+            })}
             <button disabled={busy} className="primary" type="submit">
-              进入家园 <span>→</span>
+              {authMode === "login" ? "登录" : "注册并登录"} <span>→</span>
             </button>
             <button
               className="text-link"
               type="button"
-              onClick={() => setPanel("recover")}
+              onClick={() => setAuthMode((mode) => mode === "login" ? "register" : "login")}
             >
-              已有账号？使用恢复码登录
+              {authMode === "login" ? "还没有账号？立即注册" : "已有账号？返回登录"}
             </button>
             <p className="fine">
               内部试玩 · 仅使用娱乐积分
@@ -839,23 +923,9 @@ function App() {
               </button>
               <div className="games-list" ref={gameList}>
                 {defs.map((d, i) => (
-                  <button
+                  <article
                     key={d.key}
                     className={"game-tile tile-" + d.key}
-                    onClick={() => {
-                      setConfig({
-                        game: d.key,
-                        base: 1,
-                        rounds:
-                          d.key === "runfast"
-                            ? 10
-                            : d.key === "hongershi"
-                              ? 4
-                              : 8,
-                        options: {},
-                      });
-                      void openPanel("create");
-                    }}
                   >
                     <div className="game-meta">
                       <span>{d.players} 人</span>
@@ -875,13 +945,33 @@ function App() {
                     </div>
                     <h3>{d.name}</h3>
                     <p>{d.description}</p>
-                    <div className="game-enter">
-                      {d.key === "sichuan"
-                        ? "四川血战 · 暂定版"
-                        : "邀请好友开局"}
-                      <b>→</b>
+                    <div className="game-actions">
+                      <button
+                        type="button"
+                        className="game-enter game-start"
+                        aria-label={`创建${d.name}房间`}
+                        onClick={() => {
+                          setConfig({
+                            game: d.key,
+                            base: 1,
+                            rounds:
+                              d.key === "runfast"
+                                ? 10
+                                : d.key === "hongershi"
+                                  ? 4
+                                  : 8,
+                            options: {},
+                          });
+                          void openPanel("create");
+                        }}
+                      >
+                        <span>
+                          {d.key === "sichuan" ? "四川血战·暂定" : "创建房间"}
+                        </span>
+                        <b>→</b>
+                      </button>
                     </div>
-                  </button>
+                  </article>
                 ))}
               </div>
               <button
@@ -913,7 +1003,6 @@ function App() {
               >
                 ♙ 个人
               </button>
-              <button onClick={() => void openPanel("rules")}>▤ 规则</button>
               <button onClick={() => setPanel("settings")}>⚙ 设置</button>
               <button
                 className="nav-tea"
@@ -1209,7 +1298,7 @@ function App() {
                       {a.label}
                     </button>
                   ))}
-                  {cardActions.slice(0, 12).map((a, i) => (
+                  {visibleCardActions.slice(0, 12).map((a, i) => (
                     <button
                       disabled={busy}
                       className={a.kind === "hu" ? "win-button" : "primary"}
@@ -1224,19 +1313,19 @@ function App() {
                       </small>
                     </button>
                   ))}
-                  {cardActions.length > 12 && (
+                  {visibleCardActions.length > 12 && (
                     <select
                       aria-label="更多合法组合"
                       value=""
                       onChange={(e) => {
                         if (e.target.value)
-                          act(cardActions[Number(e.target.value)]);
+                          act(visibleCardActions[Number(e.target.value)]);
                       }}
                     >
                       <option value="">
-                        其余 {cardActions.length - 12} 个组合
+                        其余 {visibleCardActions.length - 12} 个组合
                       </option>
-                      {cardActions.slice(12).map((a, i) => (
+                      {visibleCardActions.slice(12).map((a, i) => (
                         <option value={i + 12} key={i}>
                           {a.label} [
                           {a.cards
@@ -1246,6 +1335,15 @@ function App() {
                         </option>
                       ))}
                     </select>
+                  )}
+                  {isCardGame && selected.length > 0 && (
+                    <button
+                      disabled={busy || !selectedPlayAction}
+                      className="primary"
+                      onClick={() => selectedPlayAction && act(selectedPlayAction)}
+                    >
+                      {selectedPlayAction?.label || "出牌"}
+                    </button>
                   )}
                   {selected.length > 0 && !cardActions.length && (
                     <span>所选牌不符合当前可出牌型</span>
@@ -1279,12 +1377,32 @@ function App() {
                       selected={selected.includes(i)}
                       onClick={
                         room.status === "playing"
-                          ? () =>
-                              setSelected((s) =>
-                                s.includes(i)
-                                  ? s.filter((v) => v !== i)
-                                  : [...s, i],
-                              )
+                          ? () => {
+                              if (isMahjong) setSelected([i]);
+                              else
+                                setSelected((s) =>
+                                  s.includes(i)
+                                    ? s.filter((v) => v !== i)
+                                    : [...s, i],
+                                );
+                            }
+                          : undefined
+                      }
+                      onDoubleClick={
+                        isMahjong && room.status === "playing"
+                          ? () => {
+                              const discard = actions.find(
+                                (a) =>
+                                  a.kind === "discard" &&
+                                  sameCards(a.cards || [], [c]),
+                              );
+                              if (discard) {
+                                setSelected([]);
+                                act(discard);
+                              } else {
+                                flash("现在不能打出这张牌");
+                              }
+                            }
                           : undefined
                       }
                     />
@@ -1343,7 +1461,10 @@ function App() {
         </section>
       )}
       {panel && (
-        <div className="modal-backdrop" onClick={() => setPanel("")}>
+        <div
+          className="modal-backdrop"
+          onClick={() => (panel === "rules" ? closeRules() : setPanel(""))}
+        >
           <section
             className={"modal modal-" + panel}
             role="dialog"
@@ -1354,7 +1475,7 @@ function App() {
             <button
               className="close-modal"
               title="关闭"
-              onClick={() => setPanel("")}
+              onClick={() => (panel === "rules" ? closeRules() : setPanel(""))}
             >
               ×
             </button>
@@ -1364,26 +1485,32 @@ function App() {
                 <h2>开一桌，等好友</h2>
                 <div className="game-picker">
                   {defs.map((d) => (
-                    <button
-                      className={d.key === config.game ? "chosen" : ""}
-                      onClick={() =>
-                        setConfig({
-                          game: d.key,
-                          base: 1,
-                          rounds:
-                            d.key === "runfast"
-                              ? 10
-                              : d.key === "hongershi"
-                                ? 4
-                                : 8,
-                          options: {},
-                        })
-                      }
-                      key={d.key}
-                    >
-                      {d.name}
-                      <small>{d.players}人</small>
-                    </button>
+                    <div className="game-picker-item" key={d.key}>
+                      <button
+                        type="button"
+                        className={
+                          "game-picker-select" +
+                          (d.key === config.game ? " chosen" : "")
+                        }
+                        aria-pressed={d.key === config.game}
+                        onClick={() =>
+                          setConfig({
+                            game: d.key,
+                            base: 1,
+                            rounds:
+                              d.key === "runfast"
+                                ? 10
+                                : d.key === "hongershi"
+                                  ? 4
+                                  : 8,
+                            options: {},
+                          })
+                        }
+                      >
+                        <span>{d.name}</span>
+                        <small>{d.players}人</small>
+                      </button>
+                    </div>
                   ))}
                 </div>
                 <div className="rule-note">
@@ -1391,6 +1518,16 @@ function App() {
                   {config.game === "sichuan"
                     ? "· 四川血战暂定版，后续可按客户反馈调整。"
                     : "· 当前采用客户审阅规则稿。"}
+                </div>
+                <div className="selected-game-rules">
+                  <span>已选择：{def?.name}（{def?.players}人）</span>
+                  <button
+                    type="button"
+                    onClick={() => void openRules(config.game)}
+                    aria-label={`查看${def?.name}详细规则`}
+                  >
+                    查看本游戏详细规则
+                  </button>
                 </div>
                 <div className="options-grid">
                   <label className="option">
@@ -1723,80 +1860,31 @@ function App() {
                   保存资料
                 </button>
                 <p className="fine">
-                  恢复码仅在首次创建时展示。请妥善保存账号ID和恢复码。
+                  使用用户名和密码登录。用户名用于登录，昵称可在资料中单独修改。
                 </p>
               </>
-            )}
-            {panel === "recoveryCode" && user && (
-              <>
-                <h2>请保存账号凭证</h2>
-                <p>在另一台设备恢复账号时，需要以下ID与恢复码。</p>
-                <div className="credential">
-                  ID：{user.id}
-                  <br />
-                  恢复码：{recovery}
-                </div>
-                <button
-                  className="primary full"
-                  onClick={() => {
-                    void copyText(
-                      `浩家园账号ID：${user.id}\n恢复码：${recovery}`,
-                      "凭证已复制",
-                      "请手动复制凭证",
-                    );
-                  }}
-                >
-                  复制凭证
-                </button>
-                <button
-                  className="secondary full"
-                  onClick={() => {
-                    setRecovery("");
-                    setPanel(form.join ? "join" : "");
-                  }}
-                >
-                  已保存，开始体验
-                </button>
-              </>
-            )}
-            {panel === "recover" && (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void work(async () => {
-                    const v = await api("recover", {
-                      id: form.recoverID,
-                      code: form.code,
-                    });
-                    setUser(v.user);
-                    if (v.roomId) {
-                      accept(await api("room?id=" + v.roomId));
-                      setPanel("");
-                    } else {
-                      const invite = new URLSearchParams(location.search).get(
-                        "room",
-                      );
-                      if (invite) setForm((f) => ({ ...f, join: invite }));
-                      setPanel(invite ? "join" : "");
-                    }
-                  });
-                }}
-              >
-                <h2>恢复家园账号</h2>
-                {field("recoverID", "账号ID")}
-                {field("code", "恢复码", "password")}
-                <button className="primary full" disabled={busy}>
-                  登录
-                </button>
-              </form>
             )}
             {panel === "rules" && (
               <>
                 <span className="eyebrow dark">HOUSE RULES</span>
-                <h2>六款游戏规则</h2>
-                <p className="muted">当前开发基线 · 供客户复核与调整</p>
-                <a className="text-link" href="/rules.txt" download>
-                  下载完整 TXT ↗
+                <button
+                  className="rules-back"
+                  type="button"
+                  onClick={backFromRules}
+                >
+                  ← 返回上一步
+                </button>
+                <h2>{defs.find((d) => d.key === ruleGame)?.name} · 详细规则</h2>
+                <p className="muted">
+                  {defs.find((d) => d.key === ruleGame)?.players} 人玩法 ·
+                  当前开发基线，供客户复核与调整
+                </p>
+                <a
+                  className="text-link"
+                  href={`/rules/${encodeURIComponent(ruleFileName(ruleGame ?? ""))}.txt`}
+                  download
+                >
+                  下载本游戏规则 TXT ↗
                 </a>
                 <pre className="rules-text">{rules}</pre>
               </>
@@ -1953,9 +2041,9 @@ function App() {
                 <h2>房间 {room.id}</h2>
                 <button
                   className="secondary full"
-                  onClick={() => void openPanel("rules")}
+                  onClick={() => void openRules(room.config.game)}
                 >
-                  查看规则
+                  查看本桌游戏规则
                 </button>
                 <button
                   className="secondary full"

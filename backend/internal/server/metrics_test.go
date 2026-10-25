@@ -16,7 +16,7 @@ func TestMetricsAuthorizationAndCounters(t *testing.T) {
 	h := httptest.NewServer(s.Handler())
 	defer h.Close()
 	c := client()
-	request(t, c, "POST", h.URL+"/api/session", map[string]any{"name": "metrics"}, 200)
+	register(t, c, h.URL, "metrics-user")
 	request(t, c, "POST", h.URL+"/api/command", map[string]any{"op": "create", "requestId": "metrics-room", "config": map[string]any{"game": "sichuan"}}, 200)
 	request(t, c, "POST", h.URL+"/api/command", map[string]any{"op": "create"}, 400)
 	for _, tc := range []struct {

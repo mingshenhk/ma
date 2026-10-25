@@ -7,7 +7,7 @@
 |页面|原包证据（相对Z）|结构与功能|存在程度|H5映射|
 |---|---|---|---|---|
 |启动/热更新|ClientScene.lua、shell加载器|动态游戏下载/版本|部分存在|本地PWA启动|
-|登录/注册/重置|views/layer/logon/Logon*.lua、Register*.lua|账号/手机/站点选择|客户端完整，服务端缺失|游客会话|
+|登录/注册/重置|views/layer/logon/Logon*.lua、Register*.lua|账号/手机/站点选择|客户端完整，服务端缺失|用户名/密码登录注册；无重置|
 |大厅/游戏菜单|views/layer/plaza/GameListLayer.lua|右侧滚动游戏，左侧加房/创房、底栏、公告|客户端完整|五游戏入口|
 |头像/个人资料|views/layer/modifyuserinfo/ModifyInfo*.lua|昵称/头像/密码|客户端完整|昵称/原创头像|
 |创建房间|views/layer/battle/NBattleCreateLayer.lua、CreateConfigView.lua|SubGameListView、控件组、在线optionInfo|部分存在|证据配置/待验证提示|

@@ -45,23 +45,58 @@ func client() *http.Client {
 	j, _ := cookiejar.New(nil)
 	return &http.Client{Jar: j, Timeout: 5 * time.Second}
 }
+func register(t *testing.T, c *http.Client, baseURL, username string) map[string]any {
+	t.Helper()
+	return request(t, c, "POST", baseURL+"/api/register", map[string]any{"username": username, "password": "TestPassword123"}, 200)
+}
 func number(m map[string]any, k string) int { return int(m[k].(float64)) }
 
+func TestUsernamePasswordRegistrationAndLogin(t *testing.T) {
+	s, err := New(Options{Repository: JSONRepository{Dir: t.TempDir()}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	h := httptest.NewServer(s.Handler())
+	defer h.Close()
+	registered := client()
+	response := register(t, registered, h.URL, "SampleUser")
+	user := response["user"].(map[string]any)
+	if user["username"] != "SampleUser" || user["id"] == "" {
+		t.Fatalf("registration returned wrong public identity: %+v", user)
+	}
+	public, _ := json.Marshal(response)
+	for _, secret := range []string{"password", "passwordHash", "usernameKey", "recoveryCode"} {
+		if bytes.Contains(public, []byte(secret)) {
+			t.Fatalf("registration response leaked %q", secret)
+		}
+	}
+	request(t, client(), "POST", h.URL+"/api/register", map[string]any{"username": "sampleuser", "password": "TestPassword123"}, 409)
+	loggedIn := request(t, client(), "POST", h.URL+"/api/login", map[string]any{"username": "sAmPlEuSeR", "password": "TestPassword123"}, 200)
+	if loggedIn["user"].(map[string]any)["id"] != user["id"] {
+		t.Fatal("login should accept case-insensitive username and return the same account")
+	}
+	request(t, client(), "POST", h.URL+"/api/login", map[string]any{"username": "SampleUser", "password": "wrong-password"}, 401)
+	request(t, client(), "POST", h.URL+"/api/register", map[string]any{"username": "ab", "password": "short"}, 400)
+}
+
 func TestSessionCookieTransport(t *testing.T) {
-	for _, tc := range []struct {
+	for _, cfg := range []struct {
 		name               string
 		force, tls, secure bool
 	}{{"local-http", false, false, false}, {"proxy-https", true, false, true}, {"direct-tls", false, true, true}} {
-		t.Run(tc.name, func(t *testing.T) {
-			s, err := New(Options{Repository: JSONRepository{Dir: t.TempDir()}, CookieSecure: tc.force})
+		t.Run(cfg.name, func(t *testing.T) {
+			s, err := New(Options{Repository: JSONRepository{Dir: t.TempDir()}, CookieSecure: cfg.force})
 			if err != nil {
 				t.Fatal(err)
 			}
 			h := s.Handler()
 			var session *http.Cookie
-			for _, method := range []string{"POST", "DELETE"} {
-				r := httptest.NewRequest(method, "http://example.test/api/session", strings.NewReader(`{"name":"transport-test"}`))
-				if tc.tls {
+			for _, call := range []struct{ method, path, body string }{
+				{"POST", "/api/register", `{"username":"transport-test","password":"TestPassword123"}`},
+				{"DELETE", "/api/session", ""},
+			} {
+				r := httptest.NewRequest(call.method, "http://example.test"+call.path, strings.NewReader(call.body))
+				if cfg.tls {
 					r.TLS = &tls.ConnectionState{}
 				}
 				if session != nil {
@@ -70,17 +105,17 @@ func TestSessionCookieTransport(t *testing.T) {
 				w := httptest.NewRecorder()
 				h.ServeHTTP(w, r)
 				if w.Code != http.StatusOK {
-					t.Fatalf("%s: status %d", method, w.Code)
+					t.Fatalf("%s: status %d", call.method, w.Code)
 				}
 				cookies := w.Result().Cookies()
 				if len(cookies) != 1 {
-					t.Fatalf("%s: missing cookie", method)
+					t.Fatalf("%s: missing cookie", call.method)
 				}
 				session = cookies[0]
-				if session.Secure != tc.secure || !session.HttpOnly || session.SameSite != http.SameSiteLaxMode {
-					t.Fatalf("%s: wrong transport attributes", method)
+				if session.Secure != cfg.secure || !session.HttpOnly || session.SameSite != http.SameSiteLaxMode {
+					t.Fatalf("%s: wrong transport attributes", call.method)
 				}
-				if method == "DELETE" && session.MaxAge >= 0 {
+				if call.method == "DELETE" && session.MaxAge >= 0 {
 					t.Fatal("logout must expire cookie")
 				}
 			}
@@ -97,9 +132,9 @@ func TestHTTPWebsocketPrivacyReplayRestart(t *testing.T) {
 	h := httptest.NewServer(s.Handler())
 	defer h.Close()
 	a, b, outsider := client(), client(), client()
-	auth := request(t, a, "POST", h.URL+"/api/session", map[string]any{"name": "甲"}, 200)
-	request(t, b, "POST", h.URL+"/api/session", map[string]any{"name": "乙"}, 200)
-	request(t, outsider, "POST", h.URL+"/api/session", map[string]any{"name": "外部"}, 200)
+	auth := register(t, a, h.URL, "甲账号")
+	register(t, b, h.URL, "乙账号")
+	register(t, outsider, h.URL, "外部账号")
 	create := map[string]any{"op": "create", "requestId": "create-1", "config": map[string]any{"game": "hongzhong"}}
 	r := request(t, a, "POST", h.URL+"/api/command", create, 200)
 	// API command replies wrap the room in a named field.
@@ -196,8 +231,9 @@ func TestHTTPWebsocketPrivacyReplayRestart(t *testing.T) {
 	if !bytes.Equal(mustJSON(s.rooms[rid].State), mustJSON(restored.rooms[rid].State)) || restored.rooms[rid].Version != version {
 		t.Fatal("restart changed state")
 	}
-	if len(auth["recoveryCode"].(string)) < 20 {
-		t.Fatal("weak recovery code")
+	publicAuth, _ := json.Marshal(auth)
+	if auth["user"].(map[string]any)["username"] != "甲账号" || bytes.Contains(publicAuth, []byte("passwordHash")) || bytes.Contains(publicAuth, []byte("recoveryCode")) {
+		t.Fatal("registration must return the username without credential secrets")
 	}
 	// Revoked sessions must stop receiving room broadcasts.
 	request(t, a, "DELETE", h.URL+"/api/session", nil, 200)
