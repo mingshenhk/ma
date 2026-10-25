@@ -857,7 +857,7 @@ function App() {
             <p className="fine">
               内部试玩 · 仅使用娱乐积分
               <br />
-              当前为规则提案实现版，细节以客户复核为准。
+              当前使用本项目六款正式玩法规则。
             </p>
           </form>
         </section>
@@ -974,7 +974,7 @@ function App() {
                         }}
                       >
                         <span>
-                          {d.key === "sichuan" ? "四川血战·暂定" : "创建房间"}
+                          创建房间
                         </span>
                         <b>→</b>
                       </button>
@@ -1491,9 +1491,7 @@ function App() {
                 </div>
                 <div className="rule-note">
                   {def?.description}{" "}
-                  {config.game === "sichuan"
-                    ? "· 四川血战暂定版，后续可按客户反馈调整。"
-                    : "· 当前采用客户审阅规则稿。"}
+                  · 本项目正式规则
                 </div>
                 <div className="selected-game-rules">
                   <span>已选择：{def?.name}（{def?.players}人）</span>
@@ -1853,7 +1851,7 @@ function App() {
                 <h2>{defs.find((d) => d.key === ruleGame)?.name} · 详细规则</h2>
                 <p className="muted">
                   {defs.find((d) => d.key === ruleGame)?.players} 人玩法 ·
-                  当前开发基线，供客户复核与调整
+                  本项目正式规则
                 </p>
                 <a
                   className="text-link"

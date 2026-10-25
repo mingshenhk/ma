@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"math/big"
 	"sort"
 )
@@ -235,12 +236,18 @@ func Shuffle(a []int) error {
 	}
 	return nil
 }
-func Random(n int) int {
-	v, e := rand.Int(rand.Reader, big.NewInt(int64(n)))
-	if e != nil {
-		panic(e)
+func Random(n int) (int, error) {
+	return randomFrom(rand.Reader, n)
+}
+func randomFrom(source io.Reader, n int) (int, error) {
+	if n <= 0 {
+		return 0, errors.New("random bound must be positive")
 	}
-	return int(v.Int64())
+	v, e := rand.Int(source, big.NewInt(int64(n)))
+	if e != nil {
+		return 0, e
+	}
+	return int(v.Int64()), nil
 }
 func New(c Config, dealer int) (*State, error) {
 	c, e := Normalize(c)
@@ -249,7 +256,10 @@ func New(c Config, dealer int) (*State, error) {
 	}
 	d, _ := Def(c.Game)
 	if dealer < 0 || dealer >= d.Players {
-		dealer = Random(d.Players)
+		dealer, e = Random(d.Players)
+		if e != nil {
+			return nil, fmt.Errorf("choose dealer: %w", e)
+		}
 	}
 	s := &State{Config: c, Seats: make([]Seat, d.Players), Discards: make([][]int, d.Players), Dealer: dealer, Turn: dealer, First: true, TableSeat: -1, KongSeat: -1, Phase: "discard"}
 	for i := range s.Seats {

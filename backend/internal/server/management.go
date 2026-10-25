@@ -119,7 +119,12 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 		if len([]rune(name)) < 1 || len([]rune(name)) > 24 {
 			return nil, bad("名称需要1到24字")
 		}
-		c = &Club{ID: id(4), Name: name, Owner: u.ID, Members: map[string]bool{u.ID: true}, Managers: map[string]bool{}, Applications: map[string]int64{}, Disabled: map[string]bool{}, Templates: []ClubTemplate{}}
+		clubID, idErr := uniqueID(4, func(value string) bool { return s.accounts.Clubs[value] != nil })
+		if idErr != nil {
+			s.serviceError(idErr)
+			return nil, apiError{503, "创建茶馆繁忙，请稍后重试"}
+		}
+		c = &Club{ID: clubID, Name: name, Owner: u.ID, Members: map[string]bool{u.ID: true}, Managers: map[string]bool{}, Applications: map[string]int64{}, Disabled: map[string]bool{}, Templates: []ClubTemplate{}}
 		if input.RequireApproval != nil {
 			c.RequireApproval = *input.RequireApproval
 		}
@@ -228,7 +233,20 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 					if len(c.Templates) >= 30 {
 						return nil, bad("最多设置30个玩法")
 					}
-					template.ID = id(4)
+					templateID, idErr := uniqueID(4, func(value string) bool {
+						for _, existing := range c.Templates {
+							if existing.ID == value {
+								return true
+							}
+						}
+						return false
+					})
+					if idErr != nil {
+						s.accounts = before
+						s.serviceError(idErr)
+						return nil, apiError{503, "创建玩法繁忙，请稍后重试"}
+					}
+					template.ID = templateID
 					c.Templates = append(c.Templates, template)
 				} else {
 					found := false
@@ -380,9 +398,10 @@ func (s *Server) ensureClubTables(now time.Time) {
 				continue
 			}
 			d, _ := game.Def(cfg.Game)
-			roomID := ""
-			for roomID == "" || s.rooms[roomID] != nil {
-				roomID = strconv.Itoa(100000 + game.Random(900000))
+			roomID, idErr := uniqueRoomID(func(value string) bool { return s.rooms[value] != nil })
+			if idErr != nil {
+				s.serviceError(idErr)
+				continue
 			}
 			r := &Room{ID: roomID, ClubID: c.ID, TemplateID: template.ID, Config: cfg, Players: make([]*Player, d.Players), Status: "waiting", Version: 1, Created: now.Unix(), Updated: now.Unix()}
 			if err := s.repo.SaveRoom(r); err != nil {

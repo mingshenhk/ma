@@ -438,6 +438,11 @@ func TestAllGamesRoomLifecycle(t *testing.T) {
 			}
 			players := make([]*User, d.Players)
 			players[0] = &User{ID: "owner", Name: "玩家1"}
+			requestSequence := 0
+			nextRequestID := func() string {
+				requestSequence++
+				return fmt.Sprintf("lifecycle-%d", requestSequence)
+			}
 			v, e := s.command(players[0], Command{Op: "create", RequestID: "create", Config: game.Config{Game: d.Key}})
 			if e != nil {
 				t.Fatal(e)
@@ -445,13 +450,13 @@ func TestAllGamesRoomLifecycle(t *testing.T) {
 			rid := v.(map[string]any)["id"].(string)
 			for seat := 1; seat < d.Players; seat++ {
 				players[seat] = &User{ID: fmt.Sprintf("player-%d", seat), Name: fmt.Sprintf("玩家%d", seat+1)}
-				if _, e = s.command(players[seat], Command{Op: "join", RoomID: rid, RequestID: id(8)}); e != nil {
+				if _, e = s.command(players[seat], Command{Op: "join", RoomID: rid, RequestID: nextRequestID()}); e != nil {
 					t.Fatal(e)
 				}
 			}
 			apply := func(user *User, op string) {
 				t.Helper()
-				_, err := s.command(user, Command{Op: op, RoomID: rid, RequestID: id(8), Version: s.rooms[rid].Version})
+				_, err := s.command(user, Command{Op: op, RoomID: rid, RequestID: nextRequestID(), Version: s.rooms[rid].Version})
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -477,7 +482,7 @@ func TestAllGamesRoomLifecycle(t *testing.T) {
 				if seat < 0 {
 					t.Fatal("no player has a legal action")
 				}
-				_, e = s.command(players[seat], Command{Op: "action", RoomID: rid, RequestID: id(8), Version: r.Version, Action: action})
+				_, e = s.command(players[seat], Command{Op: "action", RoomID: rid, RequestID: nextRequestID(), Version: r.Version, Action: action})
 				if e != nil {
 					t.Fatalf("player %d action %s: %v", seat, action.Kind, e)
 				}
@@ -500,6 +505,113 @@ func TestAllGamesRoomLifecycle(t *testing.T) {
 				t.Fatal("all players should dissolve the room")
 			}
 		})
+	}
+}
+
+func TestRoomViewHidesPrivateGameInformation(t *testing.T) {
+	room := &Room{
+		ID: "room-1", Owner: "u0", Status: "playing",
+		Players: []*Player{{UserID: "u0", Name: "甲"}, {UserID: "u1", Name: "乙"}},
+		State: &game.State{
+			Config: game.Config{Game: "hongzhong"}, Phase: "discard", Turn: 0, Wall: []int{999},
+			Seats: []game.Seat{
+				{Hand: []int{101}, Melds: []game.Meld{{Kind: "concealed-kong", Cards: []int{11, 11, 11, 11}, Hidden: true}}},
+				{Hand: []int{202}, Melds: []game.Meld{{Kind: "concealed-kong", Cards: []int{22, 22, 22, 22}, Hidden: true}}},
+			},
+			Offer:  &game.Offer{Card: 303, From: 1, Source: "discard", Replies: map[int]game.Action{0: {Kind: "win", Cards: []int{404}}}, Eligible: []int{0}},
+			Events: []game.Event{{Seat: 0, Kind: "discard", Cards: []int{505}, Text: "公开出牌"}, {Seat: 1, Kind: "draw", Cards: []int{606}, Text: "摸牌"}},
+			Wins:   []game.Win{{Seat: 1, Hand: []int{707}}},
+		},
+	}
+	s := &Server{}
+	decode := func() map[string]any {
+		t.Helper()
+		data, err := json.Marshal(s.view(room, "u0"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		var got map[string]any
+		if err := json.Unmarshal(data, &got); err != nil {
+			t.Fatal(err)
+		}
+		return got
+	}
+	contains := func(value any, secret string) bool {
+		t.Helper()
+		encoded, err := json.Marshal(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return bytes.Contains(encoded, []byte(secret))
+	}
+
+	got := decode()
+	state := got["state"].(map[string]any)
+	seats := state["seats"].([]any)
+	if len(seats[0].(map[string]any)["hand"].([]any)) != 1 {
+		t.Fatal("viewer should receive their own hand")
+	}
+	opponent := seats[1].(map[string]any)
+	if len(opponent["hand"].([]any)) != 0 || opponent["count"] != float64(1) {
+		t.Fatal("opponent hand should be hidden while its count remains public")
+	}
+	if contains(got, "202") || contains(got, "606") || contains(got, "999") || contains(got, "replies") || contains(got, "eligible") {
+		t.Fatal("live room view leaked an opponent hand, private draw, wall order, or offer response")
+	}
+	oppMeld := opponent["melds"].([]any)[0].(map[string]any)
+	if cards := oppMeld["cards"].([]any); len(cards) != 4 || cards[0] != float64(0) {
+		t.Fatal("opponent concealed meld values should be masked")
+	}
+
+	room.State.End = "win"
+	got = decode()
+	if !contains(got, "202") || !contains(got, "606") || !contains(got, "707") || !contains(got, "22") {
+		t.Fatal("completed round should reveal its hands, events, and concealed melds")
+	}
+
+	room.State.End = ""
+	room.State.Phase = "float"
+	got = decode()
+	state = got["state"].(map[string]any)
+	for _, seat := range state["seats"].([]any) {
+		if len(seat.(map[string]any)["hand"].([]any)) != 0 {
+			t.Fatal("float phase must hide every hand")
+		}
+	}
+	if _, ok := state["offer"]; ok || len(state["events"].([]any)) != 0 {
+		t.Fatal("float phase must not expose offer or events")
+	}
+}
+
+func TestUniqueIdentifiersRetryCollisionsAndPropagateRandomErrors(t *testing.T) {
+	reader := bytes.NewReader([]byte{1, 2})
+	value, err := uniqueIDFrom(reader, 1, func(value string) bool { return value == "01" })
+	if err != nil || value != "02" {
+		t.Fatalf("unique ID should retry a collision: value=%q err=%v", value, err)
+	}
+	if _, err := idWithReader(bytes.NewReader([]byte{1}), 2); err == nil {
+		t.Fatal("short entropy source must fail")
+	}
+	if _, err := uniqueIDFrom(bytes.NewReader(make([]byte, 32)), 1, func(string) bool { return true }); err == nil {
+		t.Fatal("identifier allocation must stop after its bounded collision retries")
+	}
+	randomCalls := 0
+	roomID, err := uniqueRoomIDFrom(func(n int) (int, error) {
+		randomCalls++
+		if n != 900000 {
+			t.Fatalf("unexpected room ID bound: %d", n)
+		}
+		if randomCalls == 1 {
+			return 7, nil
+		}
+		return 8, nil
+	}, func(id string) bool { return id == "100007" })
+	if err != nil || roomID != "100008" || randomCalls != 2 {
+		t.Fatalf("room ID should retry collision: value=%q calls=%d err=%v", roomID, randomCalls, err)
+	}
+	wantErr := errors.New("entropy unavailable")
+	if _, err := uniqueRoomIDFrom(func(int) (int, error) { return 0, wantErr }, func(string) bool { return false }); !errors.Is(err, wantErr) {
+		t.Fatalf("random source failure should propagate, got %v", err)
 	}
 }
 

@@ -1,4 +1,4 @@
-> 历史来源分析（2026-10-23）：保留原包和截图证据，文中缺口及阶段限制不代表当前实现。当前六款规则以 docs/rules/CLIENT_REVIEW_RULES_SIX_GAMES_2026-10-24.txt 为准，交付状态见 docs/PROGRESS.md。
+> 历史来源分析（2026-10-23）：保留原包和截图证据，文中缺口及阶段限制不代表当前实现。当前六款正式规则以 docs/rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt 为准，交付状态见 docs/PROGRESS.md。
 
 # 原创H5视觉约定
 

@@ -173,12 +173,46 @@ func (e apiError) Error() string { return e.message }
 func bad(s string) error         { return apiError{400, s} }
 func conflict(s string) error    { return apiError{409, s} }
 func forbidden() error           { return apiError{403, "无权执行此操作"} }
-func id(n int) string {
-	b := make([]byte, n)
-	if _, err := rand.Read(b); err != nil {
-		panic(err)
+func idWithReader(source io.Reader, n int) (string, error) {
+	if n <= 0 {
+		return "", errors.New("identifier length must be positive")
 	}
-	return hex.EncodeToString(b)
+	b := make([]byte, n)
+	if _, err := io.ReadFull(source, b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
+}
+func uniqueIDFrom(source io.Reader, n int, exists func(string) bool) (string, error) {
+	for attempt := 0; attempt < 32; attempt++ {
+		value, err := idWithReader(source, n)
+		if err != nil {
+			return "", err
+		}
+		if !exists(value) {
+			return value, nil
+		}
+	}
+	return "", errors.New("unable to allocate unique identifier")
+}
+func uniqueID(n int, exists func(string) bool) (string, error) {
+	return uniqueIDFrom(rand.Reader, n, exists)
+}
+func uniqueRoomID(exists func(string) bool) (string, error) {
+	return uniqueRoomIDFrom(game.Random, exists)
+}
+func uniqueRoomIDFrom(random func(int) (int, error), exists func(string) bool) (string, error) {
+	for attempt := 0; attempt < 32; attempt++ {
+		value, err := random(900000)
+		if err != nil {
+			return "", err
+		}
+		roomID := strconv.Itoa(100000 + value)
+		if !exists(roomID) {
+			return roomID, nil
+		}
+	}
+	return "", errors.New("unable to allocate unique room identifier")
 }
 func hash(s string) string { h := sha256.Sum256([]byte(s)); return hex.EncodeToString(h[:]) }
 func clone[T any](v T) T   { b, _ := json.Marshal(v); var out T; _ = json.Unmarshal(b, &out); return out }
@@ -355,10 +389,21 @@ func (s *Server) storageError(e error) {
 	s.lastError = e.Error()
 	log.Printf("storage: %v", e)
 }
-func (s *Server) issue(u *User) string {
-	token := id(32)
+func (s *Server) serviceError(e error) {
+	s.failures++
+	s.lastError = e.Error()
+	log.Printf("service: %v", e)
+}
+func (s *Server) issue(u *User) (string, error) {
+	token, err := uniqueID(32, func(value string) bool {
+		_, exists := s.accounts.Sessions[hash(value)]
+		return exists
+	})
+	if err != nil {
+		return "", err
+	}
 	s.accounts.Sessions[hash(token)] = Session{u.ID, time.Now().Add(30 * 24 * time.Hour).Unix()}
-	return token
+	return token, nil
 }
 func (s *Server) setSessionCookie(w http.ResponseWriter, r *http.Request, token string) {
 	http.SetCookie(w, &http.Cookie{Name: "hjy_session", Value: token, Path: "/", HttpOnly: true, Secure: s.cookieSecure || r.TLS != nil, SameSite: http.SameSiteLaxMode, MaxAge: 30 * 24 * 3600})
@@ -697,9 +742,27 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			before := clone(s.accounts)
-			u = &User{ID: id(6), Username: input.Username, UsernameKey: key, PasswordHash: encoded, Name: input.Username, Avatar: game.Random(8), Created: time.Now().Unix()}
+			userID, idErr := uniqueID(6, func(value string) bool { return s.accounts.Users[value] != nil })
+			if idErr != nil {
+				err = apiError{503, "账号创建繁忙，请稍后重试"}
+				s.serviceError(idErr)
+				break
+			}
+			avatar, randomErr := game.Random(8)
+			if randomErr != nil {
+				err = apiError{503, "账号创建繁忙，请稍后重试"}
+				s.serviceError(randomErr)
+				break
+			}
+			u = &User{ID: userID, Username: input.Username, UsernameKey: key, PasswordHash: encoded, Name: input.Username, Avatar: avatar, Created: time.Now().Unix()}
+			token, issueErr := s.issue(u)
+			if issueErr != nil {
+				s.accounts = before
+				err = apiError{503, "账号创建繁忙，请稍后重试"}
+				s.serviceError(issueErr)
+				break
+			}
 			s.accounts.Users[u.ID] = u
-			token := s.issue(u)
 			err = s.saveAccounts(before)
 			if err != nil {
 				break
@@ -756,7 +819,12 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			before := clone(s.accounts)
-			token := s.issue(u)
+			token, issueErr := s.issue(u)
+			if issueErr != nil {
+				err = apiError{503, "登录繁忙，请稍后重试"}
+				s.serviceError(issueErr)
+				break
+			}
 			err = s.saveAccounts(before)
 			if err != nil {
 				break
@@ -883,7 +951,20 @@ func (s *Server) api(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			before := clone(s.accounts)
-			report := Report{id(6), u.ID, input.RoomID, input.Text, time.Now().Unix()}
+			reportID, idErr := uniqueID(6, func(value string) bool {
+				for _, existing := range s.accounts.Reports {
+					if existing.ID == value {
+						return true
+					}
+				}
+				return false
+			})
+			if idErr != nil {
+				err = apiError{503, "提交反馈繁忙，请稍后重试"}
+				s.serviceError(idErr)
+				break
+			}
+			report := Report{reportID, u.ID, input.RoomID, input.Text, time.Now().Unix()}
 			s.accounts.Reports = append(s.accounts.Reports, report)
 			err = s.saveAccounts(before)
 			result = map[string]string{"id": report.ID}
@@ -974,9 +1055,10 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 		}
 
 		d, _ := game.Def(cfg.Game)
-		roomID := ""
-		for roomID == "" || s.rooms[roomID] != nil {
-			roomID = strconv.Itoa(100000 + game.Random(900000))
+		roomID, idErr := uniqueRoomID(func(value string) bool { return s.rooms[value] != nil })
+		if idErr != nil {
+			s.serviceError(idErr)
+			return nil, apiError{503, "创建房间繁忙，请稍后重试"}
 		}
 		r := &Room{ID: roomID, Owner: u.ID, ClubID: c.ClubID, TemplateID: c.TemplateID, Config: cfg, Players: make([]*Player, d.Players), Status: "waiting", Version: 1, Created: time.Now().Unix(), Updated: time.Now().Unix(), Used: []string{u.ID + ":" + c.RequestID}}
 		r.Players[0] = &Player{UserID: u.ID, Name: u.Name, Avatar: u.Avatar}
