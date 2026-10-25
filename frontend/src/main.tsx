@@ -22,9 +22,7 @@ type Player = {
   userId: string;
   name: string;
   avatar: number;
-  bot: boolean;
   ready: boolean;
-  auto: boolean;
   total: number;
 };
 type Meld = { kind: string; cards: number[]; hidden?: boolean };
@@ -64,8 +62,6 @@ type Room = {
   version: number;
   round: number;
   me: number;
-  deadline: number;
-  serverTime: number;
   history: Round[];
   votes: Record<string, boolean> | null;
   voteDeadline: number;
@@ -414,7 +410,6 @@ function App() {
     [busy, setBusy] = useState(false),
     [connection, setConnection] = useState("离线"),
     [selected, setSelected] = useState<number[]>([]),
-    [clock, setClock] = useState(Date.now()),
     [history, setHistory] = useState<any[]>([]),
     [clubs, setClubs] = useState<Club[]>([]),
     [rules, setRules] = useState("正在读取规则…"),
@@ -434,7 +429,7 @@ function App() {
     roomRef = useRef<Room | null>(null),
     soundRef = useRef(sound),
     audioRef = useRef<AudioContext | null>(null),
-    offset = useRef(0),
+    autoPassKey = useRef(""),
     gameList = useRef<HTMLDivElement | null>(null),
     ruleRequestId = useRef(0),
     ruleDetailOrigin = useRef("");
@@ -452,7 +447,6 @@ function App() {
     }
   }
   const accept = (next: Room) => {
-    offset.current = next.serverTime - Date.now();
     setRoom((prev) =>
       !prev || prev.id !== next.id || next.version >= prev.version
         ? next
@@ -511,8 +505,6 @@ function App() {
       })
       .catch(() => {})
       .finally(() => setBoot(false));
-    const t = setInterval(() => setClock(Date.now()), 500);
-    return () => clearInterval(t);
   }, []);
   useEffect(() => {
     if (!error) return;
@@ -672,21 +664,37 @@ function App() {
   const isCardGame = ["runfast", "hongershi", "doushisi"].includes(
     room?.config.game || "",
   );
-  const direct = actions.filter((a) => !a.cards?.length);
+  const autoPass =
+    room?.status === "playing" &&
+    room.state?.phase !== "missing" &&
+    actions.length === 1 &&
+    actions[0]?.kind === "pass";
+  const direct = actions.filter(
+    (a) => !a.cards?.length && !(autoPass && a.kind === "pass"),
+  );
   const cardActions = actions.filter(
     (a) =>
       a.cards?.length &&
       (!selected.length || sameCards(a.cards, selectedCards)),
   );
-  const selectedPlayAction =
-    isCardGame && selected.length
-      ? actions.find(
-          (a) => a.kind === "play" && sameCards(a.cards || [], selectedCards),
-        )
-      : undefined;
+  const selectedPlayAction = (() => {
+    if (!isCardGame || !selected.length) return undefined;
+    const legal = actions.find(
+      (a) => a.kind === "play" && sameCards(a.cards || [], selectedCards),
+    );
+    if (legal) return legal;
+    return { kind: "play", cards: selectedCards, label: "出牌" };
+  })();
   const visibleCardActions = cardActions.filter((a) =>
     isCardGame ? a.kind !== "play" : isMahjong ? a.kind !== "discard" : true,
   );
+  useEffect(() => {
+    if (!autoPass || !room) return;
+    const key = `${room.id}:${room.version}`;
+    if (autoPassKey.current === key) return;
+    autoPassKey.current = key;
+    act(actions[0]);
+  }, [autoPass, room?.id, room?.version]);
   const colorClass = (n: number) =>
     n > 0 ? "positive" : n < 0 ? "negative" : "";
   function opt(key: string, value: number) {
@@ -1079,15 +1087,11 @@ function App() {
                             {i === room.me ? "（我）" : ""}
                           </strong>
                           <small>
-                            {p.bot
-                              ? "练习伙伴"
-                              : p.auto
-                                ? "托管中"
-                                : p.ready
-                                  ? "已准备"
-                                  : room.status === "waiting"
-                                    ? "未准备"
-                                    : "真人玩家"}
+                            {p.ready
+                              ? "已准备"
+                              : room.status === "waiting"
+                                ? "未准备"
+                                : "真人玩家"}
                             {room.state?.dealer === i ? " · 庄" : ""}
                           </small>
                           <b
@@ -1142,25 +1146,10 @@ function App() {
                           ))}
                         </div>
                       ) : null}
-                      {p.bot && room.status === "waiting" && isOwner && (
-                        <button
-                          className="text-link"
-                          onClick={() =>
-                            void work(() => command("removeBot", { value: i }))
-                          }
-                        >
-                          移除
-                        </button>
-                      )}
                     </>
                   ) : (
                     <div className="empty-seat">
                       <span>＋</span>等待好友入座
-                      {isOwner && (
-                        <button onClick={() => void work(() => command("bot"))}>
-                          添加练习伙伴
-                        </button>
-                      )}
                     </div>
                   )}
                 </div>
@@ -1171,7 +1160,7 @@ function App() {
                 <div className="waiting-card">
                   <span className="eyebrow">房号 {room.id}</span>
                   <h2>好牌，就等你来</h2>
-                  <p>邀请好友，或添加练习伙伴体验玩法。</p>
+                  <p>邀请好友入座后即可开始对局。</p>
                 </div>
               ) : (
                 <>
@@ -1183,9 +1172,6 @@ function App() {
                       : names[room.status]}
                     <small>
                       余牌 {room.state.wallCount} 张{" "}
-                      {room.status === "playing" && room.deadline > 0
-                        ? ` · ${Math.max(0, Math.ceil((room.deadline - (clock + offset.current)) / 1000))}秒`
-                        : ""}
                     </small>
                   </div>
                   <div className="discard-fields">
@@ -1345,9 +1331,6 @@ function App() {
                       {selectedPlayAction?.label || "出牌"}
                     </button>
                   )}
-                  {selected.length > 0 && !cardActions.length && (
-                    <span>所选牌不符合当前可出牌型</span>
-                  )}
                 </div>
               </div>
             )}
@@ -1360,13 +1343,6 @@ function App() {
                       ? "漂分确定前不展示手牌"
                       : `${room.state.seats[room.me]?.count}张`}
                   </span>
-                  {my?.auto && <b>托管中</b>}
-                  <button
-                    onClick={() => void work(() => command("auto"))}
-                    disabled={room.status !== "playing"}
-                  >
-                    {my?.auto ? "取消托管" : "开启托管"}
-                  </button>
                 </div>
                 <div className="my-hand">
                   {room.state.seats[room.me]?.hand.map((c, i) => (
@@ -1801,7 +1777,7 @@ function App() {
                   进入全屏
                 </button>
                 <p className="fine">
-                  横屏体验更佳。网络恢复后会自动重连；轮到操作超时后由系统执行合法动作。
+                  横屏体验更佳。网络恢复后会自动重连；只有过牌可选时才会自动过牌，有碰、杠、胡等操作时由玩家选择。出牌由玩家自己决定，系统只校验规则是否合法。
                 </p>
                 <p className="fine">
                   添加到桌面：iPhone Safari 使用“分享 → 添加到主屏幕”；Android

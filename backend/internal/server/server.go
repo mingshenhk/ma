@@ -78,9 +78,7 @@ type Player struct {
 	UserID string `json:"userId"`
 	Name   string `json:"name"`
 	Avatar int    `json:"avatar"`
-	Bot    bool   `json:"bot"`
 	Ready  bool   `json:"ready"`
-	Auto   bool   `json:"auto"`
 	Total  int    `json:"total"`
 }
 type Round struct {
@@ -103,7 +101,6 @@ type Room struct {
 	Round        int             `json:"round"`
 	State        *game.State     `json:"state,omitempty"`
 	History      []Round         `json:"history"`
-	Deadline     int64           `json:"deadline"`
 	Created      int64           `json:"created"`
 	Updated      int64           `json:"updated"`
 	Votes        map[string]bool `json:"votes,omitempty"`
@@ -115,8 +112,6 @@ type Options struct {
 	StaticDir     string
 	AdminKey      string
 	CookieSecure  bool
-	ActionTimeout time.Duration
-	BotDelay      time.Duration
 }
 type peer struct {
 	user, room string
@@ -132,7 +127,6 @@ type Server struct {
 	peers                        map[*peer]bool
 	static, admin                string
 	cookieSecure                 bool
-	timeout, botDelay            time.Duration
 	requests, commands, failures uint64
 	lastError                    string
 	limits                       map[string]rate
@@ -180,15 +174,34 @@ func New(o Options) (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
-	if o.ActionTimeout <= 0 {
-		o.ActionTimeout = 30 * time.Second
-	}
-	if o.BotDelay <= 0 {
-		o.BotDelay = 900 * time.Millisecond
-	}
-	s := &Server{repo: o.Repository, accounts: a, rooms: map[string]*Room{}, peers: map[*peer]bool{}, static: o.StaticDir, admin: o.AdminKey, cookieSecure: o.CookieSecure, timeout: o.ActionTimeout, botDelay: o.BotDelay, limits: map[string]rate{}}
+	s := &Server{repo: o.Repository, accounts: a, rooms: map[string]*Room{}, peers: map[*peer]bool{}, static: o.StaticDir, admin: o.AdminKey, cookieSecure: o.CookieSecure, limits: map[string]rate{}}
 	s.started = time.Now()
 	for _, r := range rooms {
+		legacyBot := false
+		for i, p := range r.Players {
+			if p != nil && (strings.HasPrefix(p.UserID, "bot-") || strings.HasPrefix(p.Name, "练习伙伴")) {
+				legacyBot = true
+				if r.Status == "waiting" {
+					r.Players[i] = nil
+				}
+			}
+		}
+		if legacyBot {
+			if r.Status == "waiting" {
+				for _, p := range r.Players {
+					if p != nil {
+						p.Ready = false
+					}
+				}
+			} else if r.Status == "playing" || r.Status == "roundEnd" {
+				r.Status = "closed"
+			}
+			r.Version++
+			r.Updated = time.Now().Unix()
+			if err := o.Repository.SaveRoom(r); err != nil {
+				return nil, err
+			}
+		}
 		s.rooms[r.ID] = r
 	}
 	return s, nil
@@ -778,29 +791,6 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 		if r.Owner == "" {
 			r.Owner = u.ID
 		}
-	case "bot":
-		if r.Owner != u.ID || r.Status != "waiting" {
-			err = forbidden()
-			break
-		}
-		slot := -1
-		for i, v := range r.Players {
-			if v == nil {
-				slot = i
-				break
-			}
-		}
-		if slot < 0 {
-			err = bad("房间已满")
-			break
-		}
-		r.Players[slot] = &Player{UserID: "bot-" + id(4), Name: fmt.Sprintf("练习伙伴%d", slot+1), Avatar: slot + 1, Bot: true, Ready: true, Auto: true}
-	case "removeBot":
-		if r.Owner != u.ID || r.Status != "waiting" || c.Value < 0 || c.Value >= len(r.Players) || r.Players[c.Value] == nil || !r.Players[c.Value].Bot {
-			err = forbidden()
-			break
-		}
-		r.Players[c.Value] = nil
 	case "ready":
 		if r.Status != "waiting" && r.Status != "roundEnd" {
 			err = bad("当前不能准备")
@@ -832,10 +822,6 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 		if err == nil {
 			r.Round++
 			r.Status = "playing"
-			for _, v := range r.Players {
-				v.Ready = v.Bot
-			}
-			r.Deadline = time.Now().Add(s.phaseDuration(r)).UnixMilli()
 			s.complete(r)
 		}
 	case "action":
@@ -845,28 +831,21 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 		}
 		err = game.Apply(r.State, p, c.Action)
 		if err == nil {
-			r.Deadline = time.Now().Add(s.phaseDuration(r)).UnixMilli()
 			s.complete(r)
 		}
-	case "auto":
-		if r.Status != "playing" {
-			err = bad("当前不在对局中")
-			break
-		}
-		r.Players[p].Auto = !r.Players[p].Auto
 	case "leave":
 		if r.Status == "finished" || r.Status == "closed" {
 			break // Preserve participants in completed history.
 		}
 		if r.Status == "playing" || r.Status == "roundEnd" {
-			err = bad("对局已开始，请发起解散或开启托管")
+			err = bad("对局已开始，请发起解散投票")
 			break
 		}
 		r.Players[p] = nil
 		if r.Owner == u.ID {
 			r.Owner = ""
 			for _, v := range r.Players {
-				if v != nil && !v.Bot {
+				if v != nil {
 					r.Owner = v.UserID
 					break
 				}
@@ -887,7 +866,7 @@ func (s *Server) command(u *User, c Command) (result any, err error) {
 		r.Votes[u.ID] = true
 		all := true
 		for _, v := range r.Players {
-			if v != nil && !v.Bot && !r.Votes[v.UserID] {
+			if v != nil && !r.Votes[v.UserID] {
 				all = false
 			}
 		}
@@ -934,23 +913,13 @@ func (s *Server) complete(r *Room) {
 	if r.Round >= r.Config.Rounds {
 		r.Status = "finished"
 	}
-	r.Deadline = 0
 }
 func (s *Server) tick(now time.Time) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for _, r := range s.rooms {
 		voteDue := r.Votes != nil && r.VoteDeadline <= now.UnixMilli()
-		actionDue := false
-		if r.Status == "playing" && r.State != nil {
-			for p, v := range r.Players {
-				if v != nil && (now.UnixMilli() >= r.Deadline || (v.Bot || v.Auto) && now.UnixMilli() >= r.Deadline-s.phaseDuration(r).Milliseconds()+s.botDelay.Milliseconds()) && len(game.Legal(r.State, p)) > 0 {
-					actionDue = true
-					break
-				}
-			}
-		}
-		if !voteDue && !actionDue {
+		if !voteDue {
 			continue
 		}
 		before := clone(r)
@@ -959,29 +928,6 @@ func (s *Server) tick(now time.Time) {
 			r.Votes = nil
 			r.VoteDeadline = 0
 			changed = true
-		}
-		if r.Status == "playing" && r.State != nil {
-			fastDue := now.UnixMilli() >= r.Deadline-s.phaseDuration(r).Milliseconds()+s.botDelay.Milliseconds()
-			for p, v := range r.Players {
-				if v == nil {
-					continue
-				}
-				if now.UnixMilli() < r.Deadline && (!(v.Bot || v.Auto) || !fastDue) {
-					continue
-				}
-				legal := game.Legal(r.State, p)
-				if len(legal) == 0 {
-					continue
-				}
-				if err := game.Apply(r.State, p, game.Auto(r.State, p)); err != nil {
-					s.storageError(err)
-					continue
-				}
-				r.Deadline = now.Add(s.phaseDuration(r)).UnixMilli()
-				s.complete(r)
-				changed = true
-				break
-			}
 		}
 		if changed {
 			r.Version++
@@ -997,19 +943,10 @@ func (s *Server) tick(now time.Time) {
 	s.ensureClubTables(now)
 }
 
-// Responses use ten seconds, other turns thirty by default. Scaling with the
-// configured timeout also keeps integration tests deterministic and fast.
-func (s *Server) phaseDuration(r *Room) time.Duration {
-	if r.State != nil && r.State.Offer != nil {
-		return s.timeout / 3
-	}
-	return s.timeout
-}
-
 // view deliberately builds an allow-listed projection. Never serialize State to a client.
 func (s *Server) view(r *Room, user string) any {
 	me := seatOf(r, user)
-	v := map[string]any{"id": r.ID, "owner": r.Owner, "clubId": r.ClubID, "config": r.Config, "players": r.Players, "status": r.Status, "version": r.Version, "round": r.Round, "me": me, "deadline": r.Deadline, "serverTime": time.Now().UnixMilli(), "history": r.History, "votes": r.Votes, "voteDeadline": r.VoteDeadline}
+	v := map[string]any{"id": r.ID, "owner": r.Owner, "clubId": r.ClubID, "config": r.Config, "players": r.Players, "status": r.Status, "version": r.Version, "round": r.Round, "me": me, "history": r.History, "votes": r.Votes, "voteDeadline": r.VoteDeadline}
 	if r.State == nil {
 		return v
 	}

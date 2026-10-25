@@ -277,7 +277,7 @@ func TestTeaHouseAutomaticTablesAndManagerDissolution(t *testing.T) {
 	}
 	// Closing an active room retains completed rounds and never settles the unfinished round.
 	r := s.rooms[rid]
-	r.Status, r.Deadline = "playing", time.Now().Add(time.Hour).UnixMilli()
+	r.Status = "playing"
 	r.History = []Round{{Number: 1, Scores: []int{4, -4}}}
 	r.Players[0].Total = 4
 	request(t, member, "POST", h.URL+"/api/clubs", map[string]any{"op": "dissolveRoom", "id": cid, "roomId": rid}, 403)
@@ -285,13 +285,13 @@ func TestTeaHouseAutomaticTablesAndManagerDissolution(t *testing.T) {
 	request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "dissolveRoom", "id": otherClub, "roomId": rid}, 400)
 	repo.fail = true
 	request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "dissolveRoom", "id": cid, "roomId": rid}, 503)
-	if s.rooms[rid].Status != "playing" || s.rooms[rid].Deadline == 0 {
+	if s.rooms[rid].Status != "playing" {
 		t.Fatal("failed closure did not roll back")
 	}
 	repo.fail = false
 	request(t, owner, "POST", h.URL+"/api/clubs", map[string]any{"op": "dissolveRoom", "id": cid, "roomId": rid}, 200)
 	r = s.rooms[rid]
-	if r.Status != "closed" || r.Deadline != 0 || len(r.History) != 1 || r.Players[0].Total != 4 {
+	if r.Status != "closed" || len(r.History) != 1 || r.Players[0].Total != 4 {
 		t.Fatal("closure changed completed results or left room active")
 	}
 	request(t, member, "POST", h.URL+"/api/command", map[string]any{"op": "join", "requestId": "closed-join", "roomId": rid}, 200)

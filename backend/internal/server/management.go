@@ -136,7 +136,7 @@ func (s *Server) clubsAPI(r *http.Request, u *User) (any, error) {
 				}
 				if r.Status != "closed" && r.Status != "finished" {
 					previous := clone(r)
-					r.Status, r.Deadline, r.VoteDeadline, r.Votes = "closed", 0, 0, nil
+					r.Status, r.VoteDeadline, r.Votes = "closed", 0, nil
 					r.Version++
 					r.Updated = time.Now().Unix()
 					if err := s.repo.SaveRoom(r); err != nil {

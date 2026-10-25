@@ -237,7 +237,9 @@ func TestHTTPWebsocketPrivacyReplayRestart(t *testing.T) {
 	}
 	// Revoked sessions must stop receiving room broadcasts.
 	request(t, a, "DELETE", h.URL+"/api/session", nil, 200)
-	cmd(b, "auto", "toggle-auto", version, 200)
+	s.mu.Lock()
+	s.broadcast(s.rooms[rid])
+	s.mu.Unlock()
 	if _, _, e := ws.Read(ctx); e == nil {
 		t.Fatal("revoked websocket received private snapshot")
 	}
@@ -286,35 +288,55 @@ func TestSaveFailureRollsBackAndLeavingRevokesReplay(t *testing.T) {
 func TestAllGamesRoomLifecycle(t *testing.T) {
 	for _, d := range game.Definitions {
 		t.Run(d.Key, func(t *testing.T) {
-			s, e := New(Options{Repository: JSONRepository{Dir: t.TempDir()}, ActionTimeout: time.Second, BotDelay: time.Millisecond})
+			s, e := New(Options{Repository: JSONRepository{Dir: t.TempDir()}})
 			if e != nil {
 				t.Fatal(e)
 			}
-			u := &User{ID: "owner", Name: "玩家"}
-			v, e := s.command(u, Command{Op: "create", RequestID: "create", Config: game.Config{Game: d.Key}})
+			players := make([]*User, d.Players)
+			players[0] = &User{ID: "owner", Name: "玩家1"}
+			v, e := s.command(players[0], Command{Op: "create", RequestID: "create", Config: game.Config{Game: d.Key}})
 			if e != nil {
 				t.Fatal(e)
 			}
 			rid := v.(map[string]any)["id"].(string)
-			apply := func(op string) {
+			for seat := 1; seat < d.Players; seat++ {
+				players[seat] = &User{ID: fmt.Sprintf("player-%d", seat), Name: fmt.Sprintf("玩家%d", seat+1)}
+				if _, e = s.command(players[seat], Command{Op: "join", RoomID: rid, RequestID: id(8)}); e != nil {
+					t.Fatal(e)
+				}
+			}
+			apply := func(user *User, op string) {
 				t.Helper()
-				_, err := s.command(u, Command{Op: op, RoomID: rid, RequestID: id(8), Version: s.rooms[rid].Version})
+				_, err := s.command(user, Command{Op: op, RoomID: rid, RequestID: id(8), Version: s.rooms[rid].Version})
 				if err != nil {
 					t.Fatal(err)
 				}
 			}
-			for i := 1; i < d.Players; i++ {
-				apply("bot")
+			for _, user := range players {
+				apply(user, "ready")
 			}
-			apply("ready")
-			apply("start")
-			apply("auto")
-			clock := time.Now().Add(time.Hour)
+			apply(players[0], "start")
 			for step := 0; s.rooms[rid].Status == "playing"; step++ {
-				if step > 2000 {
+				if step > 5000 {
 					t.Fatal("room stuck")
 				}
-				s.tick(clock.Add(time.Duration(step) * time.Second))
+				r := s.rooms[rid]
+				seat := -1
+				var action game.Action
+				for i := range r.Players {
+					if legal := game.Legal(r.State, i); len(legal) > 0 {
+						seat = i
+						action = game.Auto(r.State, i)
+						break
+					}
+				}
+				if seat < 0 {
+					t.Fatal("no player has a legal action")
+				}
+				_, e = s.command(players[seat], Command{Op: "action", RoomID: rid, RequestID: id(8), Version: r.Version, Action: action})
+				if e != nil {
+					t.Fatalf("player %d action %s: %v", seat, action.Kind, e)
+				}
 			}
 			r := s.rooms[rid]
 			if r.Status != "roundEnd" || len(r.History) != 1 {
@@ -327,9 +349,11 @@ func TestAllGamesRoomLifecycle(t *testing.T) {
 			if total != 0 {
 				t.Fatal("room scores not zero-sum")
 			}
-			apply("dissolve")
+			for _, user := range players {
+				apply(user, "dissolve")
+			}
 			if r.Status != "closed" {
-				t.Fatal("owner plus bots should dissolve")
+				t.Fatal("all players should dissolve the room")
 			}
 		})
 	}
