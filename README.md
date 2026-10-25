@@ -1,6 +1,6 @@
 # 浩家园 H5 棋牌平台
 
-当前是可本地运行的六款游戏开发验收版，仍在补齐四川游戏家园的大厅、茶馆及交互流程。不能视为“大部分原版功能已复刻完成”。原五款固定两人，新增普通麻将固定四人；使用娱乐积分。六款玩法均按本项目正式规则实施，统一规则见 [六款正式规则](docs/rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt)。原服行为一致性单独跟踪。
+当前是六款游戏的本地开发验收版，不是可直接面向公众稳定运营的生产服务；四川游戏家园的完整复刻仍未完成。不能视为“大部分原版功能已复刻完成”。原五款固定两人，新增普通麻将固定四人；使用娱乐积分。六款玩法均按本项目正式规则实施，统一规则见 [六款正式规则](docs/rules/PROJECT_RULES_SIX_GAMES_2026-10-25.txt)。原服行为一致性单独跟踪。
 
 | 游戏 | 人数 | 对应 ID | 当前基线 |
 | --- | --- | --- | --- |
@@ -28,7 +28,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/run.ps1
 
 ## Linux 与 Docker
 
-发布包含 Linux amd64 程序，使用 `sh scripts/run.sh`；源码使用 `sh scripts/build.sh` 构建。跨平台编译已通过，Linux 实际运行和 Docker 构建尚未验收。
+发布包含 Linux amd64 程序，使用 `sh scripts/run.sh`；源码使用 `sh scripts/build.sh` 构建。2026-10-25 已验证 Docker 镜像构建及单容器 Linux amd64 启动、首页和 `/readyz`。完整 Compose+Caddy HTTPS、公网域名、真实公网牌局、备份恢复和服务器容量仍未验收。服务使用本地 JSON 文件单写持久化，没有 PostgreSQL/Redis 或多实例能力；请先阅读 [部署说明](docs/DEPLOYMENT.md) 和 [已知限制](docs/KNOWN_ISSUES.md)，不能仅凭镜像可启动就对外正式运营。
 
 公网与手机访问的 HTTPS、域名、持久化和备份配置见 [部署说明](docs/DEPLOYMENT.md)。本地默认仅监听回环地址，手机不能直接访问电脑的 `127.0.0.1`。
 
