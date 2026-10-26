@@ -129,3 +129,10 @@ Caddy公网HTTPS、真实域名、实体手机、长时间真实对局和多实�
 - 使用当前牌面资源运行 `npm run build`，TypeScript 检查与 Vite 生产构建通过；`git diff --check` 通过。
 - 本机现存服务由 `bin/haojiayuan.exe` 提供，首页、`/healthz`、`/readyz` 均返回 HTTP 200；没有 Go 工具链，未能从当前源码重建或运行 Go 测试。Docker CLI 存在，但 Docker Engine 未运行。
 - 两个现存 `cloudflared` 进程的目标均为 `http://127.0.0.1:8080`。没有可识别的公网主机名，未验证 Cloudflare 公网页面及 WebSocket，因此不记为 Cloudflare 上线验收。
+
+## 2026-10-26 手机麻将牌桌调整与发布
+
+- 按用户截图调整麻将牌桌比例、按座位分配弃牌区，并实现手机麻将房间横屏锁定及浏览器不支持锁定时的旋转布局回退。`npm run build`（TypeScript 检查及 Vite 构建）通过，`git diff --check` 通过。
+- 此环境没有 Go 工具链，本轮前后端中的后端源码未改动，因此未重跑 Go 测试；已运行的本机服务 `/`、`/healthz`、`/readyz` 返回 HTTP 200。此项只确认现存服务可响应，不代表从当前源码构建的发布包。
+- 未在实体手机或横竖屏实际浏览器验证方向锁定、旋转坐标、触控与长牌桌拥挤情况。当前牌图继续使用公开来源且有许可说明的图片；按用户授权尝试静态识别包内资源仍未获得可用图片，不能记录为已使用包内牌图。
+- 本轮 Cloudflare 上线以取得 Quick Tunnel 公网地址并直接验证其 HTTPS 页面与健康接口后记录；Quick Tunnel 地址为临时预览入口，不代表固定域名、持久托管、生产备份或生产安全验收。

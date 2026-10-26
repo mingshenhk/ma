@@ -441,6 +441,7 @@ function App() {
     [list, setList] = useState<any[]>([]),
     [admin, setAdmin] = useState<any>(null),
     [sound, setSound] = useState(localStorage.getItem("hjy_sound") !== "0");
+  const [portraitFallback, setPortraitFallback] = useState(false);
   const [config, setConfig] = useState<Config>({
     game: "hongzhong",
     base: 1,
@@ -683,6 +684,46 @@ function App() {
   const isMahjong = ["hongzhong", "nohongzhong", "sichuan"].includes(
     room?.config.game || "",
   );
+  useEffect(() => {
+    if (
+      !isMahjong ||
+      !room ||
+      !window.matchMedia("(max-width: 900px)").matches
+    ) {
+      setPortraitFallback(false);
+      return;
+    }
+    const orientation = window.screen.orientation as ScreenOrientation & {
+      lock?: (value: "landscape") => Promise<void>;
+      unlock?: () => void;
+    };
+    let active = true;
+    const syncPortraitLayout = () => {
+      if (active)
+        setPortraitFallback(
+          window.matchMedia("(orientation: portrait)").matches,
+        );
+    };
+    syncPortraitLayout();
+    if (orientation?.lock) {
+      try {
+        void orientation
+          .lock("landscape")
+          .then(syncPortraitLayout)
+          .catch(syncPortraitLayout);
+      } catch {
+        syncPortraitLayout();
+      }
+    }
+    window.addEventListener("orientationchange", syncPortraitLayout);
+    return () => {
+      active = false;
+      window.removeEventListener("orientationchange", syncPortraitLayout);
+      try {
+        orientation?.unlock?.();
+      } catch {}
+    };
+  }, [isMahjong, room?.id]);
   const isCardGame = ["runfast", "hongershi", "doushisi"].includes(
     room?.config.game || "",
   );
@@ -753,7 +794,13 @@ function App() {
   return (
     <main
       onPointerDown={unlockSound}
-      className={room ? "app in-room" : user ? "app lobby-app" : "app"}
+      className={
+        room
+          ? `app in-room${isMahjong ? " mahjong-room" : ""}${portraitFallback ? " mahjong-portrait-fallback" : ""}`
+          : user
+            ? "app lobby-app"
+            : "app"
+      }
     >
       <div className="grain" />
       <div className="scenery mountain-one" />
@@ -1180,6 +1227,39 @@ function App() {
                 </div>
               );
             })}
+            {room.state?.discards && (
+              <div className="discard-fields" aria-label="各家弃牌区">
+                {room.state.discards.map((cards, i) => {
+                  const relative =
+                    (i - room.me + room.players.length) % room.players.length;
+                  const pos =
+                    room.players.length === 2
+                      ? relative === 0
+                        ? "self"
+                        : "opposite"
+                      : ["self", "right", "opposite", "left"][relative];
+                  return (
+                    <div
+                      key={i}
+                      className={`discard-seat discard-${pos}`}
+                      aria-label={`${room.players[i]?.name || "空座"}的弃牌`}
+                    >
+                      <small>{room.players[i]?.name || "等待入座"}</small>
+                      <div>
+                        {(cards || []).map((c, j) => (
+                          <Card
+                            key={j}
+                            value={c}
+                            game={room.config.game}
+                            small
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
             <div className="table-center">
               {!room.state ? (
                 <div className="waiting-card">
@@ -1198,23 +1278,6 @@ function App() {
                     <small>
                       余牌 {room.state.wallCount} 张{" "}
                     </small>
-                  </div>
-                  <div className="discard-fields">
-                    {room.state.discards?.map((cards, i) => (
-                      <div key={i} className="discard-seat">
-                        <small>{room.players[i]?.name}</small>
-                        <div>
-                          {(cards || []).slice(-20).map((c, j) => (
-                            <Card
-                              key={j}
-                              value={c}
-                              game={room.config.game}
-                              small
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    ))}
                   </div>
                   {room.state.table?.length > 0 && (
                     <div className="played-cards">

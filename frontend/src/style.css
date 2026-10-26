@@ -4140,3 +4140,285 @@ select {
   .modal-rules .muted,
   .modal-rules .text-link { font-size: 13px; }
 }
+
+/* Mahjong uses a compact table layout with full-size tile faces. */
+.mahjong-room .table-shell {
+  min-width: 0;
+}
+.mahjong-room .felt-table {
+  min-height: 500px;
+}
+.mahjong-room .card:not(.small) {
+  width: clamp(42px, 4.3vw, 84px);
+  height: clamp(62px, 7vw, 132px);
+}
+.mahjong-room .card.small {
+  width: clamp(16px, 1.45vw, 28px);
+  height: clamp(24px, 2.3vw, 44px);
+}
+.mahjong-room .my-hand-area {
+  left: 12%;
+  right: 7%;
+  bottom: 15px;
+}
+.mahjong-room .my-hand {
+  flex-wrap: nowrap;
+  gap: clamp(1px, 0.18vw, 4px);
+  min-height: auto;
+}
+.mahjong-room .hand-caption {
+  margin-bottom: 7px;
+}
+.mahjong-room .action-dock {
+  bottom: clamp(140px, 21vh, 220px);
+}
+.mahjong-room .table-center {
+  bottom: 38%;
+  gap: clamp(5px, 1vw, 12px);
+}
+.mahjong-room .discard-fields {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  max-height: none;
+  overflow: hidden;
+  pointer-events: none;
+}
+.mahjong-room .discard-seat {
+  position: absolute;
+  max-width: none;
+  max-height: 30%;
+  overflow: hidden;
+  border-radius: 6px;
+  padding: 2px 4px;
+  background: #103d3340;
+}
+.mahjong-room .discard-seat > small {
+  display: block;
+  margin-bottom: 2px;
+  color: #c5d2ac;
+  font-size: clamp(7px, 0.55vw, 10px);
+  line-height: 1.15;
+}
+.mahjong-room .discard-seat > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 1px;
+  max-height: 100%;
+  overflow: hidden;
+}
+.mahjong-room .discard-self {
+  left: 25%;
+  right: 8%;
+  bottom: 27%;
+  max-height: 18%;
+}
+.mahjong-room .discard-opposite {
+  left: 22%;
+  right: 22%;
+  top: 13%;
+  max-height: 20%;
+}
+.mahjong-room .discard-left {
+  left: 2%;
+  width: 25%;
+  top: 43%;
+  max-height: 24%;
+}
+.mahjong-room .discard-right {
+  right: 2%;
+  width: 25%;
+  top: 43%;
+  max-height: 24%;
+}
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .mahjong-room .in-room,
+  .mahjong-room .topbar {
+    min-height: 0;
+  }
+  .mahjong-room .topbar {
+    height: 43px;
+    padding: 4px 3%;
+  }
+  .mahjong-room .brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .mahjong-room .brand > span {
+    font-size: 17px;
+  }
+  .mahjong-room .table-shell {
+    height: calc(100dvh - 47px);
+    padding: 0 8px 4px;
+  }
+  .mahjong-room .table-meta {
+    height: 29px;
+    gap: 5px 10px;
+    font-size: 9px;
+  }
+  .mahjong-room .table-meta > span:nth-child(2) {
+    font-size: 11px;
+  }
+  .mahjong-room .felt-table {
+    height: calc(100% - 29px);
+    min-height: 0;
+    border-width: 4px;
+    border-radius: 32px;
+  }
+  .mahjong-room .card:not(.small) {
+    width: clamp(31px, 4.4dvh, 48px);
+    height: clamp(45px, 12.5dvh, 68px);
+  }
+  .mahjong-room .card.small {
+    width: clamp(15px, 2.05dvh, 19px);
+    height: clamp(22px, 6.2dvh, 26px);
+  }
+  .mahjong-room .my-hand-area {
+    left: 15%;
+    right: 4%;
+    bottom: 7px;
+  }
+  .mahjong-room .hand-caption {
+    margin-bottom: 3px;
+    font-size: 8px;
+  }
+  .mahjong-room .seat-self {
+    bottom: 9px;
+    left: 7px;
+  }
+  .mahjong-room .seat-opposite {
+    top: 7px;
+  }
+  .mahjong-room .seat .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+  .mahjong-room .opponent-hand {
+    margin-top: 2px;
+  }
+  .mahjong-room .action-dock {
+    bottom: 78px;
+  }
+  .mahjong-room .discard-self {
+    left: 25%;
+    right: 6%;
+    bottom: 25%;
+    max-height: 19%;
+  }
+  .mahjong-room .discard-opposite {
+    top: 23%;
+    max-height: 18%;
+  }
+  .mahjong-room .discard-left,
+  .mahjong-room .discard-right {
+    top: 43%;
+    width: 27%;
+    max-height: 27%;
+  }
+}
+
+/* Screen Orientation lock is restricted on some mobile browsers. Rotate the
+   Mahjong room itself as a fallback so the playable area stays landscape. */
+@media (max-width: 900px) and (orientation: portrait) {
+  .app.mahjong-room.mahjong-portrait-fallback {
+    position: fixed;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100dvh;
+    height: 100vw;
+    min-height: 0;
+    overflow: hidden;
+    transform-origin: top left;
+    transform: rotate(90deg) translateY(-100%);
+  }
+  .mahjong-room.mahjong-portrait-fallback .topbar {
+    height: 43px;
+    min-height: 0;
+    padding: 4px 3%;
+  }
+  .mahjong-room.mahjong-portrait-fallback .brand img {
+    width: 28px;
+    height: 28px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .brand > span {
+    font-size: 17px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .table-shell {
+    height: calc(100% - 47px);
+    padding: 0 8px 4px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .table-meta {
+    height: 29px;
+    gap: 5px 10px;
+    font-size: 9px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .table-meta > span:nth-child(2) {
+    font-size: 11px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .felt-table {
+    height: calc(100% - 29px);
+    min-height: 0;
+    border-width: 4px;
+    border-radius: 32px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .card:not(.small) {
+    width: clamp(31px, 8vw, 48px);
+    height: clamp(45px, 13vw, 68px);
+  }
+  .mahjong-room.mahjong-portrait-fallback .card.small {
+    width: clamp(15px, 4.2vw, 19px);
+    height: clamp(22px, 6.7vw, 26px);
+  }
+  .mahjong-room.mahjong-portrait-fallback .my-hand-area {
+    left: 15%;
+    right: 4%;
+    bottom: 7px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .my-hand {
+    flex-wrap: nowrap;
+  }
+  .mahjong-room.mahjong-portrait-fallback .hand-caption {
+    margin-bottom: 3px;
+    font-size: 8px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .seat-self {
+    bottom: 9px;
+    left: 7px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .seat-opposite {
+    top: 7px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .seat .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .opponent-hand {
+    margin-top: 2px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .action-dock {
+    bottom: 78px;
+  }
+  .mahjong-room.mahjong-portrait-fallback .discard-self {
+    left: 25%;
+    right: 6%;
+    bottom: 25%;
+    max-height: 19%;
+  }
+  .mahjong-room.mahjong-portrait-fallback .discard-opposite {
+    top: 23%;
+    max-height: 18%;
+  }
+  .mahjong-room.mahjong-portrait-fallback .discard-left,
+  .mahjong-room.mahjong-portrait-fallback .discard-right {
+    top: 43%;
+    width: 27%;
+    max-height: 27%;
+  }
+}
