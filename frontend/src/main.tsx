@@ -850,7 +850,10 @@ function App() {
             <button
               className="text-link"
               type="button"
-              onClick={() => setAuthMode((mode) => mode === "login" ? "register" : "login")}
+              onClick={() => {
+                setError("");
+                setAuthMode((mode) => mode === "login" ? "register" : "login");
+              }}
             >
               {authMode === "login" ? "还没有账号？立即注册" : "已有账号？返回登录"}
             </button>
