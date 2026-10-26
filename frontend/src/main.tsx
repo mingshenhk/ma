@@ -724,9 +724,9 @@ function App() {
       } catch {}
     };
   }, [isMahjong, room?.id]);
-  const isCardGame = ["runfast", "hongershi", "doushisi"].includes(
-    room?.config.game || "",
-  );
+  const isSingleDiscardGame =
+    isMahjong || ["hongershi", "doushisi"].includes(room?.config.game || "");
+  const isCombinationGame = room?.config.game === "runfast";
   const autoPass =
     room?.status === "playing" &&
     room.state?.phase !== "missing" &&
@@ -741,15 +741,17 @@ function App() {
       (!selected.length || sameCards(a.cards, selectedCards)),
   );
   const selectedPlayAction = (() => {
-    if (!isCardGame || !selected.length) return undefined;
-    const legal = actions.find(
+    if (!isCombinationGame || !selected.length) return undefined;
+    return actions.find(
       (a) => a.kind === "play" && sameCards(a.cards || [], selectedCards),
     );
-    if (legal) return legal;
-    return { kind: "play", cards: selectedCards, label: "出牌" };
   })();
   const visibleCardActions = cardActions.filter((a) =>
-    isCardGame ? a.kind !== "play" : isMahjong ? a.kind !== "discard" : true,
+    isCombinationGame
+      ? a.kind !== "play"
+      : isSingleDiscardGame
+        ? a.kind !== "discard"
+        : true,
   );
   useEffect(() => {
     if (!autoPass || !room) return;
@@ -1356,9 +1358,15 @@ function App() {
                 <div className="action-tip">
                   {selected.length
                     ? `已选 ${selected.length} 张`
-                    : actions.length
-                      ? "轮到你了，选择合法操作"
-                      : "等待其他玩家…"}{" "}
+                    : isSingleDiscardGame &&
+                        actions.some((a) => a.kind === "discard")
+                      ? "单击抬牌，双击出牌"
+                      : isCombinationGame &&
+                          actions.some((a) => a.kind === "play")
+                        ? "选择牌型后点击出牌"
+                        : actions.length
+                          ? "轮到你了，选择合法操作"
+                          : "等待其他玩家…"}{" "}
                   <button onClick={() => setSelected([])}>重选</button>
                 </div>
                 <div className="action-buttons">
@@ -1410,13 +1418,13 @@ function App() {
                       ))}
                     </select>
                   )}
-                  {isCardGame && selected.length > 0 && (
+                  {isCombinationGame && selected.length > 0 && (
                     <button
                       disabled={busy || !selectedPlayAction}
                       className="primary"
                       onClick={() => selectedPlayAction && act(selectedPlayAction)}
                     >
-                      {selectedPlayAction?.label || "出牌"}
+                      出牌
                     </button>
                   )}
                 </div>
@@ -1442,7 +1450,7 @@ function App() {
                       onClick={
                         room.status === "playing"
                           ? () => {
-                              if (isMahjong) setSelected([i]);
+                              if (isSingleDiscardGame) setSelected([i]);
                               else
                                 setSelected((s) =>
                                   s.includes(i)
@@ -1453,7 +1461,7 @@ function App() {
                           : undefined
                       }
                       onDoubleClick={
-                        isMahjong && room.status === "playing"
+                        isSingleDiscardGame && room.status === "playing"
                           ? () => {
                               const discard = actions.find(
                                 (a) =>

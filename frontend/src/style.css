@@ -1367,13 +1367,10 @@ select {
   padding: 0;
 }
 .card.mahjong-card.selected {
-  box-shadow: 0 0 0 2px #edce7b, 0 5px 8px #0b2a2660;
+  box-shadow: none;
 }
 .card.selected {
   transform: translateY(-16px);
-  box-shadow:
-    0 0 0 2px #edce7b,
-    2px 4px 10px #0b2a2660;
 }
 .card:hover:not(.static) {
   transform: translateY(-8px);
