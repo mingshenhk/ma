@@ -36,3 +36,5 @@
 2026-10-26 发布准备：更新后的前端 `npm run build` 通过，`git diff --check` 通过。现存 `bin/haojiayuan.exe` 对本机 `/`、`/healthz`、`/readyz` 均返回 HTTP 200；该二进制不代表从当前源码重建。此环境未安装 Go，Docker Engine 未运行。检测到两个 cloudflared 进程都转发到 `127.0.0.1:8080`，但当前不能识别其公网主机名或确认线上响应；不据此宣称 Cloudflare 部署已验收。
 
 2026-10-26 手机麻将牌桌调整：根据用户提供的牌桌截图调整牌身与桌面比例，弃牌区按座位相对位置布置（对家弃牌放在桌面上沿，四人局同时区分左右），小屏手机牌局尝试锁定横屏；浏览器不支持锁定时旋转牌桌作为回退。`npm run build` 和 `git diff --check` 通过。当前牌图仍是带来源说明的公开素材；虽然用户已授权尝试识别/解密包内牌图，但只读静态检查未找到可用的 PNG 数据或解码信息，暂未使用包内图片。未做实体手机验收。
+
+2026-10-26 发布状态：手机牌桌改动提交 `c6fdb23` 已推送至 GitHub `origin/main`，提交前端构建通过。本机服务首页及 healthz/readyz 可响应。尝试启动 Cloudflare Quick Tunnel 两次均在向 `api.trycloudflare.com/tunnel` 创建入口时超时退出，未得到公网 hostname，也未能验证公网页面、健康接口或 WebSocket；因此本轮 Git 已发布，Cloudflare 公网部署未完成。需要 Quick Tunnel API 可用，或配置 Cloudflare 登录账号、命名 Tunnel 和域名后继续。

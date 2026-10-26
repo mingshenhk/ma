@@ -135,4 +135,4 @@ Caddy公网HTTPS、真实域名、实体手机、长时间真实对局和多实�
 - 按用户截图调整麻将牌桌比例、按座位分配弃牌区，并实现手机麻将房间横屏锁定及浏览器不支持锁定时的旋转布局回退。`npm run build`（TypeScript 检查及 Vite 构建）通过，`git diff --check` 通过。
 - 此环境没有 Go 工具链，本轮前后端中的后端源码未改动，因此未重跑 Go 测试；已运行的本机服务 `/`、`/healthz`、`/readyz` 返回 HTTP 200。此项只确认现存服务可响应，不代表从当前源码构建的发布包。
 - 未在实体手机或横竖屏实际浏览器验证方向锁定、旋转坐标、触控与长牌桌拥挤情况。当前牌图继续使用公开来源且有许可说明的图片；按用户授权尝试静态识别包内资源仍未获得可用图片，不能记录为已使用包内牌图。
-- 本轮 Cloudflare 上线以取得 Quick Tunnel 公网地址并直接验证其 HTTPS 页面与健康接口后记录；Quick Tunnel 地址为临时预览入口，不代表固定域名、持久托管、生产备份或生产安全验收。
+- 两次尝试启动 Cloudflare Quick Tunnel，`cloudflared` 均因向 `https://api.trycloudflare.com/tunnel` POST 时等待响应超时退出；没有获得公网 hostname。该 API 的 GET 根路径返回 405 不能证明隧道创建可用。未验证公网 HTTPS 页面、健康接口或 WebSocket，因此 Cloudflare 未上线。需待该 API 可用，或用 Cloudflare 账号配置命名 Tunnel 与域名后再部署验收。
