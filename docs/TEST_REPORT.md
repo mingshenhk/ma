@@ -147,3 +147,10 @@ Caddy公网HTTPS、真实域名、实体手机、长时间真实对局和多实�
 - 麻将、红二十、斗十四按单张出牌处理：单击抬起一张，双击只在该牌存在合法 `discard` 动作时提交出牌；普通出牌不再显示为按钮，报牌、吃碰杠等仍保留独立操作。跑得快支持多选，显式“出牌”按钮仅在所选牌匹配服务端提供的合法组合时可用；非法组合不再合成并发送一个必然被拒绝的动作。
 - 所有玩法的选中牌移除黄色边框，保留抬牌位移。
 - `npm run build` 通过（`tsc --noEmit` 与 Vite 生产构建）；`git diff --check` 通过。未进入真实牌局做浏览器端到端验证，未在实体手机验证双击/触控行为；本轮没有后端改动，未运行 Go 测试。
+
+## 2026-10-26 Cloudflare 临时公网体验部署
+
+- 使用官方 `cloudflared` 客户端建立 Quick Tunnel，将 Cloudflare 临时 HTTPS hostname 转发到本机应用 `127.0.0.1:8080`。公网 GET `/`、`/healthz`、`/readyz` 均返回 HTTP 200；首页引用的当前 JS、CSS 资源也均返回 HTTP 200。
+- 对 `/ws?room=probe` 的无会话探测返回 HTTP 403。服务端在身份、房间与座位校验失败时会拒绝升级；因此这里只能说明未认证请求被拒绝，不能据此宣称有效会话 WebSocket 或实际牌局已经验证。
+- Quick Tunnel 由本机 cloudflared 进程（PID 36248）和本机游戏服务提供，进程退出或本机服务不可用时入口即失效。Quick Tunnel 属开发/测试用途，没有正式域名、Cloudflare 命名 Tunnel、远程服务器或生产可用性承诺；本次是临时公网预览，不记为长期服务器生产部署。入口说明见 [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/)。
+- 未运行 Go 测试、Docker Compose/Caddy 完整栈、有效账号登录、真实对局、有效会话 WebSocket、手机真机或长期稳定性测试。部署前已有 Docker Engine 不可用的环境限制；正式服务器部署仍需配置远程主机、命名 Tunnel/域名和备份，并完成相应验收。
