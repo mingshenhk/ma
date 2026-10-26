@@ -4211,15 +4211,15 @@ select {
   overflow: hidden;
 }
 .mahjong-room .discard-self {
-  left: 25%;
-  right: 8%;
-  bottom: 27%;
+  left: 20%;
+  right: 20%;
+  bottom: 38%;
   max-height: 18%;
 }
 .mahjong-room .discard-opposite {
   left: 22%;
   right: 22%;
-  top: 13%;
+  top: 23%;
   max-height: 20%;
 }
 .mahjong-room .discard-left {
@@ -4305,9 +4305,9 @@ select {
     bottom: 78px;
   }
   .mahjong-room .discard-self {
-    left: 25%;
-    right: 6%;
-    bottom: 25%;
+    left: 15%;
+    right: 15%;
+    bottom: 38%;
     max-height: 19%;
   }
   .mahjong-room .discard-opposite {
@@ -4406,9 +4406,9 @@ select {
     bottom: 78px;
   }
   .mahjong-room.mahjong-portrait-fallback .discard-self {
-    left: 25%;
-    right: 6%;
-    bottom: 25%;
+    left: 15%;
+    right: 15%;
+    bottom: 38%;
     max-height: 19%;
   }
   .mahjong-room.mahjong-portrait-fallback .discard-opposite {
