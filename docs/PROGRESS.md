@@ -30,3 +30,7 @@
 2026-10-25 Docker 复查：Docker Engine 恢复后，前端/Go 多阶段镜像构建通过，Dockerfile内 Go 测试通过；Alpine运行镜像约10 MB、非root UID 10001，单容器 `/readyz`、首页和 Docker HEALTHCHECK 均通过。Docker Scout 扫描23个包，无 critical/high/medium/low；仍列一条未分类 musl CVE-2026-107891。Alpine 3.24.3 发布说明将其列为 musl 修复，但 Scout 对包版本1.2.6-r3仍按r6门槛报告；具体包补丁内容未独立核验，因此保留为未解决扫描告警，不记为零漏洞。完整 Caddy/TLS 公网栈和服务器压测未验收。详见 TEST_REPORT.md 与 KNOWN_ISSUES.md。
 
 2026-10-26 注册流程修复：确认运行中的后端二进制比公开注册路由源码旧，旧版把 `/api/register` 请求错误地交给登录校验。已用 Go 1.27.3 重建并重启，保留旧二进制备份；隔离、本地及公网隧道上的无效注册请求均进入用户名校验并返回 HTTP 400，没有创建账号。前端切换登录/注册时也会清除残留错误提示。此次只验证了注册路由与输入校验，没有完成有效账号注册或浏览器端到端验收；详见 TEST_REPORT.md。
+
+2026-10-26 麻将牌面视觉更新：红中断勾卡、无红中断勾卡与四川麻将改用完整牌身 PNG（27 种序数牌和红中），牌图含牌边与厚度。静态检查下载目录的 `majiang.zip` 发现其内层 `game.zip` 含 `game_handcard*.png` 等麻将资源；对 979 个 PNG 文件名仅读取文件头，均无标准 PNG 签名，未执行任何原包程序或解码器，因此不能直接在网页中安全使用。本轮采用公开麻将牌图并记录来源和许可；没有运行测试、构建或浏览器验收。
+
+2026-10-26 发布准备：更新后的前端 `npm run build` 通过，`git diff --check` 通过。现存 `bin/haojiayuan.exe` 对本机 `/`、`/healthz`、`/readyz` 均返回 HTTP 200；该二进制不代表从当前源码重建。此环境未安装 Go，Docker Engine 未运行。检测到两个 cloudflared 进程都转发到 `127.0.0.1:8080`，但当前不能识别其公网主机名或确认线上响应；不据此宣称 Cloudflare 部署已验收。

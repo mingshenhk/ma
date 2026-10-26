@@ -251,9 +251,26 @@ function Card({
         </>
       );
     }
-  } else if (game === "hongzhong" && value === 0x35) {
-    red = true;
-    content = <strong className="character">中</strong>;
+  } else if (
+    game === "hongzhong" ||
+    game === "nohongzhong" ||
+    game === "sichuan"
+  ) {
+    const suit = value >> 4;
+    const rank = value & 15;
+    const redDragon = game === "hongzhong" && value === 0x35;
+    red = redDragon || suit === 3;
+    const face = redDragon
+      ? "red-dragon"
+      : `${["", "circles", "bamboos", "characters"][suit]}-${rank}`;
+    content = (
+      <img
+        className="mahjong-face"
+        src={`/assets/mahjong/faces/${face}.png`}
+        alt=""
+        draggable={false}
+      />
+    );
   } else {
     const suit = value >> 4,
       rank = value & 15;
@@ -275,6 +292,11 @@ function Card({
       onDoubleClick={onDoubleClick}
       className={
         "card " +
+        ((game === "hongzhong" ||
+          game === "nohongzhong" ||
+          game === "sichuan") && value
+          ? "mahjong-card "
+          : "") +
         (small ? "small " : "") +
         (red ? "red " : "") +
         (!value ? "back " : "") +
